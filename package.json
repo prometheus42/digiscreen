@@ -1,0 +1,63 @@
+{
+  "name": "digiscreen",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@panzoom/panzoom": "^4.3.2",
+    "core-js": "^3.9.1",
+    "destyle.css": "^1.0.15",
+    "file-saver": "^2.0.5",
+    "fscreen": "^1.2.0",
+    "html2canvas": "^1.0.0-rc.7",
+    "konva": "^7.2.5",
+    "pell": "^1.0.6",
+    "sortablejs": "1.10.2",
+    "vue": "^2.6.12",
+    "vue-drag-resize": "^1.4.2",
+    "vue-i18n": "^8.24.1",
+    "vue-konva": "^2.1.7",
+    "wordcloud": "^1.1.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.12"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "no-prototype-builtins": "off",
+      "generator-star-spacing": "off",
+      "indent": [
+        "error",
+        "tab"
+      ],
+      "no-tabs": 0,
+      "no-console": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
