@@ -555,6 +555,10 @@ export default {
 		selectionnerDebut (event) {
 			const stage = event.target.getStage()
 			if (this.outilSelectionner) {
+				if (this.outil !== '' && this.creation === true) {
+					this.selectionnerFin()
+					return
+				}
 				this.positionX1 = stage.getPointerPosition().x
 				this.positionY1 = stage.getPointerPosition().y
 				this.positionX2 = stage.getPointerPosition().x
