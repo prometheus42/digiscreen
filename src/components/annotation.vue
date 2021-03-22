@@ -254,6 +254,10 @@ export default {
 		const rect = document.querySelector('#annotation').getBoundingClientRect()
 		this.dimensionsCanva.w = rect.width
 		this.dimensionsCanva.h = rect.height
+		window.addEventListener('keydown', this.supprimerClavier, false)
+	},
+	beforeDestroy () {
+		window.removeEventListener('keydown', this.supprimerClavier, false)
 	},
 	methods: {
 		definirOutilPrincipal (type) {
@@ -454,6 +458,15 @@ export default {
 				this.supprimer('selection')
 			}
 			this.enregistrer()
+		},
+		supprimerClavier (event) {
+			if (event.key === 'Backspace' || event.key === 'Delete') {
+				if (this.nom !== 'selection') {
+					this.supprimer('objet')
+				} else if (this.nom === 'selection') {
+					this.supprimerSelection()
+				}
+			}
 		},
 		afficherReinitialiser () {
 			this.confirmation = true
