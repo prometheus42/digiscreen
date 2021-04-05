@@ -151,5 +151,6 @@ export default {
 	deverrouiller: 'Déverrouiller',
 	reinitialiserAnnotations: 'Souhaitez-vous vraiment supprimer toutes les annotations ?',
 	reinitialiser: 'Réinitialiser',
-	soutien: 'Je souhaite apporter mon soutien ❤️.'
+	soutien: 'Je souhaite apporter mon soutien ❤️.',
+	codeSource: 'Code source'
 }

@@ -151,5 +151,6 @@ export default {
 	deverrouiller: 'Unlock',
 	reinitialiserAnnotations: 'Do you really want to delete all annotations?',
 	reinitialiser: 'Clear all',
-	soutien: 'I would like to support this project ❤️.'
+	soutien: 'I would like to support this project ❤️.',
+	codeSource: 'Source code'
 }
