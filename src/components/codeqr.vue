@@ -115,8 +115,8 @@ export default {
 			text: texte,
 			width: this.$convertirRem(100),
 			height: this.$convertirRem(100),
-			colorDark : "#000000",
-			colorLight : "#ffffff",
+			colorDark: '#000000',
+			colorLight: '#ffffff',
 			// eslint-disable-next-line
 			correctLevel : QRCode.CorrectLevel.H
 		})
