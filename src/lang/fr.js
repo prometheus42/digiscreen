@@ -108,6 +108,7 @@ export default {
 	pagePrecedente: 'Page précédente',
 	pageSuivante: 'Page suivante',
 	pages: 'Pages',
+	ajouterPage: 'Ajouter une page',
 	importer: 'Importer',
 	exporter: 'Exporter',
 	importerEcran: 'Importer un écran',
