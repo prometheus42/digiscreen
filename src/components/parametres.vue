@@ -54,10 +54,10 @@
 					<label>{{ $t('pages') }}</label>
 					<div class="pages">
 						<span :class="{'selectionne': $parent.page === index}" @click="afficherPage(index)" v-for="index in $parent.pages.length" :key="'page_' + index">{{ index }}</span>
-						<span role="button" title="Ajouter une page" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
+						<span role="button" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
 					</div>
 					<label>{{ $t('exporter') }}</label>
-					<span role="button" class="bouton" @click="exporter">{{ $t('exporterEcran') }}</span>
+					<span role="button" class="bouton" tabindex="0" @click="exporter">{{ $t('exporterEcran') }}</span>
 					<label>{{ $t('importer') }}</label>
 					<label for="televerser" class="bouton">{{ $t('importerEcran') }}</label>
 					<input type="file" id="televerser" name="televerser" style="display: none;" accept=".dgb, .dgs" @change="importer">

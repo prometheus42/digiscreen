@@ -16,7 +16,7 @@
 				<div class="contenu inactif" v-if="mode === 'edition'">
 					<label>{{ $t('lienVideo') }}</label>
 					<input type="search" :value="video" @input="video = $event.target.value" @keydown.enter="valider">
-					<span class="bouton" role="button" @click="valider">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="valider">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'decoupage'">
 					<div class="video">
@@ -54,8 +54,8 @@
 						</div>
 					</div>
 					<div class="actions">
-						<span class="bouton" role="button" @click="decouper">{{ $t('apercu') }}</span>
-						<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="decouper">{{ $t('apercu') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 					</div>
 				</div>
 				<template v-else>

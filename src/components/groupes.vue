@@ -19,7 +19,7 @@
 					<textarea class="groupes" :value="texte" @input="texte = $event.target.value" :placeholder="$t('exempleGroupe')"></textarea>
 					<label>{{ $t('nombrePersonnesGroupe') }}</label>
 					<input type="number" :value="personnes" :min="1" @input="personnes = $event.target.value">
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="groupes">
@@ -212,7 +212,7 @@ export default {
     padding-bottom: 1.5rem;
     border-bottom: 1px solid #ddd;
     margin-bottom: 1.5rem;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .panneau .conteneur .groupe ul {

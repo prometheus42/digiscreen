@@ -37,8 +37,8 @@
 							<canvas :id="'canvas_' + id" class="canvas" />
 						</div>
 						<div class="actions">
-							<span class="bouton" role="button" @click="visualiser">{{ $t('apercu') }}</span>
-							<span class="bouton" role="button" :class="{'inactif': !apercu}" @click="generer">{{ $t('valider') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="visualiser">{{ $t('apercu') }}</span>
+							<span class="bouton" role="button" tabindex="0" :class="{'inactif': !apercu}" @click="generer">{{ $t('valider') }}</span>
 						</div>
 					</div>
 					<transition name="fondu">
@@ -46,8 +46,8 @@
 							<span class="consigne">{{ $t('consigneListeMots') }}</span>
 							<textarea @input="liste = $event.target.value" :placeholder="$t('exempleListe')"></textarea>
 							<div class="actions">
-								<span class="bouton" role="button" @click="fermerListe">{{ $t('annuler') }}</span>
-								<span class="bouton" role="button" @click="ajouterMots">{{ $t('ajouter') }}</span>
+								<span class="bouton" role="button" tabindex="0" @click="fermerListe">{{ $t('annuler') }}</span>
+								<span class="bouton" role="button" tabindex="0" @click="ajouterMots">{{ $t('ajouter') }}</span>
 							</div>
 						</div>
 					</transition>

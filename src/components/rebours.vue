@@ -23,7 +23,7 @@
 						</div>
 					</div>
 					<div class="actions">
-						<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 					</div>
 				</div>
 				<div class="contenu inactif" v-else>
@@ -36,7 +36,7 @@
 					</div>
 					<div class="actions">
 						<span class="bouton danger" v-if="tempsEcoule">{{ $t('tempsEcoule') }}</span>
-						<span class="bouton" role="button" @click="demarrer(0)" v-else-if="mode === 'lecture'">{{ $t('demarrer') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="demarrer(0)" v-else-if="mode === 'lecture'">{{ $t('demarrer') }}</span>
 						<span class="bouton" role="button" @click="pause" v-else-if="mode === 'decompte'"><i class="material-icons">pause</i></span>
 						<span class="bouton" role="button" @click="continuer" v-else-if="mode === 'pause'"><i class="material-icons">play_arrow</i></span>
 					</div>

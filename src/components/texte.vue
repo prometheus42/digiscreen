@@ -14,7 +14,7 @@
 				<div class="contenu inactif panneau-texte">
 					<div class="texte" v-if="mode === 'lecture'" v-html="texte" />
 					<div class="editeur" v-if="mode === 'edition'" />
-					<span class="bouton" role="button" @click="generer" v-if="mode === 'edition'">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer" v-if="mode === 'edition'">{{ $t('valider') }}</span>
 				</div>
 			</div>
 		</vue-drag-resize>

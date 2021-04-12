@@ -119,9 +119,9 @@
 					<div class="contenu">
 						<textarea :value="texte" @input="texte = $event.target.value" :placeholder="$t('monTexte')" />
 						<div class="actions">
-							<span class="bouton" role="button" @click="fermerModale">{{ $t('annuler') }}</span>
-							<span class="bouton" role="button" @click="ajouterTexte" v-if="outil === 'texte'">{{ $t('valider') }}</span>
-							<span class="bouton" role="button" @click="enregistrerTexte" v-else>{{ $t('valider') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="fermerModale">{{ $t('annuler') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="ajouterTexte" v-if="outil === 'texte'">{{ $t('valider') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="enregistrerTexte" v-else>{{ $t('valider') }}</span>
 						</div>
 					</div>
 				</div>
@@ -134,8 +134,8 @@
 					<div class="contenu">
 						<p>{{ $t('reinitialiserAnnotations') }}</p>
 						<div class="actions">
-							<span class="bouton" role="button" @click="fermerConfirmation">{{ $t('annuler') }}</span>
-							<span class="bouton" role="button" @click="reinitialiser">{{ $t('valider') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="fermerConfirmation">{{ $t('annuler') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="reinitialiser">{{ $t('valider') }}</span>
 						</div>
 					</div>
 				</div>

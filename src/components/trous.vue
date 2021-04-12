@@ -18,7 +18,7 @@
 					<span class="consigne" v-html="$t('consigneTrouSimple')" />
 					<span class="consigne" v-html="$t('consigneTrouSelection')" />
 					<textarea class="texte-a-trous" :value="texte" @input="texte = $event.target.value" :placeholder="$t('exempleTrou')"></textarea>
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="texte-a-trous">
@@ -55,7 +55,7 @@
 						<span class="bouton verifier" @click="verifier">{{ $t('verifier') }}</span>
 						<span class="emoticones">🙁🙁</span>
 					</div>
-					<span class="bouton verifier" role="button" v-else @click="verifier">{{ $t('verifier') }}</span>
+					<span class="bouton verifier" role="button" tabindex="0" v-else @click="verifier">{{ $t('verifier') }}</span>
 				</div>
 			</div>
 		</vue-drag-resize>

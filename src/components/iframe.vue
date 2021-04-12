@@ -16,7 +16,7 @@
 				<div class="contenu inactif">
 					<label>{{ $t('lienContenuLigne') }}</label>
 					<input type="search" :value="lien" @input="lien = $event.target.value" @keydown.enter="generer">
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 			</div>
 			<div class="conteneur actif panneau-iframe" v-else>

@@ -28,12 +28,12 @@
 							<label :for="'choix_non_' + id">{{ $t('non') }}</label>
 						</span>
 					</div>
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="tirage" v-html="tirage" />
 					<div class="actions">
-						<span class="bouton" role="button" @click="tirer" v-if="items.length > 1">{{ $t('tirer') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="tirer" v-if="items.length > 1">{{ $t('tirer') }}</span>
 					</div>
 				</div>
 			</div>

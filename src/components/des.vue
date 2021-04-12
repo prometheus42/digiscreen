@@ -14,13 +14,13 @@
 				<div class="contenu inactif" v-if="mode === 'edition'">
 					<label>{{ $t('nombreDes') }}</label>
 					<input type="number" :value="des" :min="1" :max="6" @input="des = $event.target.value" @keydown.enter="generer">
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="des">
 						<span :class="'de de-' + resultat" v-for="(resultat, index) in resultats" :key="'de_' + index" />
 					</div>
-					<span class="bouton" role="button" @click="jeter">{{ $t('jeter') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="jeter">{{ $t('jeter') }}</span>
 				</div>
 			</div>
 		</vue-drag-resize>

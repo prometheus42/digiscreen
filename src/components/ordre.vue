@@ -31,7 +31,7 @@
 					</div>
 					<span class="bouton-secondaire" role="button" :title="$t('ajouterItem')" @click="ajouterItem"><i class="material-icons">add_circle_outline</i></span>
 					<div class="actions">
-						<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 					</div>
 				</div>
 				<div class="contenu inactif" v-else>
@@ -50,7 +50,7 @@
 						<span class="bouton verifier" @click="verifier">{{ $t('verifier') }}</span>
 						<span class="emoticones">🙁🙁</span>
 					</div>
-					<span class="bouton verifier" role="button" v-else @click="verifier">{{ $t('verifier') }}</span>
+					<span class="bouton verifier" role="button" tabindex="0" v-else @click="verifier">{{ $t('verifier') }}</span>
 				</div>
 			</div>
 		</vue-drag-resize>

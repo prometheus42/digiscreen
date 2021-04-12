@@ -29,7 +29,7 @@
 							<span class="transparent" :class="{'selectionne': couleur === 'transparent'}" role="button" @click="couleur = 'transparent'" />
 						</div>
 					</div>
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 			</div>
 		</div>

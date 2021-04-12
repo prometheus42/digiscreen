@@ -19,10 +19,10 @@
 						<span class="millisecondes">{{ texteMillisecondes }}</span>
 					</div>
 					<div class="actions">
-						<span class="bouton" role="button" @click="demarrer" v-if="mode === 'stop'">{{ $t('demarrer') }}</span>
-						<span class="bouton" role="button" @click="demarrer" v-else-if="mode === 'pause'"><i class="material-icons">play_arrow</i></span>
-						<span class="bouton" role="button" @click="pause" v-else-if="mode === 'lecture'"><i class="material-icons">pause</i></span>
-						<span class="bouton" role="button" @click="stop" v-if="mode !== 'stop'"><i class="material-icons">autorenew</i></span>
+						<span class="bouton" role="button" tabindex="0" @click="demarrer" v-if="mode === 'stop'">{{ $t('demarrer') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="demarrer" v-else-if="mode === 'pause'"><i class="material-icons">play_arrow</i></span>
+						<span class="bouton" role="button" tabindex="0" @click="pause" v-else-if="mode === 'lecture'"><i class="material-icons">pause</i></span>
+						<span class="bouton" role="button" tabindex="0" @click="stop" v-if="mode !== 'stop'"><i class="material-icons">autorenew</i></span>
 					</div>
 				</div>
 			</div>

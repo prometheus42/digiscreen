@@ -35,8 +35,8 @@
 						</select>
 					</div>
 					<div class="actions">
-						<span class="bouton" role="button" @click="parler">{{ $t('ecouter') }}</span>
-						<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="parler">{{ $t('ecouter') }}</span>
+						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 					</div>
 				</div>
 				<span class="bouton audio" role="button" @click="parler" v-else><i class="material-icons">play_arrow</i></span>

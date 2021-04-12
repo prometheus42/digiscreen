@@ -15,11 +15,11 @@
 					<label>{{ $t('lienFichierAudio') }}</label>
 					<div class="valider">
 						<input type="search" :value="audio" @input="audio = $event.target.value" @keydown.enter="valider">
-						<span role="button" :title="$t('valider')" class="bouton-secondaire" @click="valider"><i class="material-icons">done</i></span>
+						<span role="button" tabindex="0" :title="$t('valider')" class="bouton-secondaire" @click="valider"><i class="material-icons">done</i></span>
 					</div>
 					<div class="separateur"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
-					<label class="bouton" role="button" for="selectionner-audio">{{ $t('selectionnerAudio') }}</label>
+					<label class="bouton" role="button" tabindex="0" for="selectionner-audio">{{ $t('selectionnerAudio') }}</label>
 					<input id="selectionner-audio" type="file" @change="televerserAudio" style="display: none" accept=".mp3, .wav, .m4a, .ogg">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementAudio">
@@ -34,7 +34,7 @@
 						<input type="range" :min="0.5" :max="2" :value="vitesse" :step="0.1" @change="modifierVitesse">
 						<span class="valeur">{{ vitesse }}</span>
 					</div>
-					<span class="bouton" role="button" @click="generer">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<audio controls :src="audio" v-else></audio>
 			</div>

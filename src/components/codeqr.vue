@@ -16,7 +16,7 @@
 					<input type="search" :maxlength="256" :value="texte" @input="texte = $event.target.value" v-if="mode === 'edition'">
 					<input type="text" class="domaine" :value="lien" disabled v-else-if="mode === 'lecture' && lien !== ''">
 					<div :id="'qr_' + id" class="codeqr" :class="{'edition': mode === 'edition'}" />
-					<span class="bouton" role="button" @click="generer" v-if="mode === 'edition'">{{ $t('valider') }}</span>
+					<span class="bouton" role="button" tabindex="0" @click="generer" v-if="mode === 'edition'">{{ $t('valider') }}</span>
 				</div>
 			</div>
 		</vue-drag-resize>
