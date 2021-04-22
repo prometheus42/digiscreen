@@ -45,6 +45,7 @@ export default {
 	documentAppareil: 'Documento en su dispositivo (.pdf, .odt, .odp, .ods)',
 	selectionnerDocument: 'Seleccionar un documento',
 	selectionnerAudio: 'Seleccionar un fichero de audio',
+	selectionnerVideo: 'Seleccionar un vídeo',
 	ou: 'o',
 	nuageMots: 'Nube de palabras',
 	mots: 'Palabras',

@@ -45,6 +45,7 @@ export default {
 	documentAppareil: 'Document on your device (.pdf, .odt, .odp, .ods)',
 	selectionnerDocument: 'Select a document',
 	selectionnerAudio: 'Select an audio file',
+	selectionnerVideo: 'Select a video',
 	ou: 'or',
 	nuageMots: 'Wordcloud',
 	mots: 'Words',
