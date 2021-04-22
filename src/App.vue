@@ -15,114 +15,114 @@
 			<span v-for="element in (grille.colonnes * grille.lignes)" :key="'element_' + element" />
 		</div>
 		<nav v-if="!alerte" :data-html2canvas-ignore="true">
-			<div @click="creerPanneau('codeqr')" v-if="modules.includes('codeqr')">
+			<div @click="creerPanneau('codeqr')" v-if="modules.includes('codeqr')" :title="$t('codeqr')">
 				<span class="icone"><i class="material-icons">qr_code</i></span>
 				<span class="titre">{{ $t('codeqr') }}</span>
 			</div>
-			<div @click="creerPanneau('texte')" v-if="modules.includes('texte')">
+			<div @click="creerPanneau('texte')" v-if="modules.includes('texte')" :title="$t('texte')">
 				<span class="icone"><i class="material-icons">title</i></span>
 				<span class="titre">{{ $t('texte') }}</span>
 			</div>
-			<div @click="creerPanneau('image')" v-if="modules.includes('image')">
+			<div @click="creerPanneau('image')" v-if="modules.includes('image')" :title="$t('image')">
 				<span class="icone"><i class="material-icons">insert_photo</i></span>
 				<span class="titre">{{ $t('image') }}</span>
 			</div>
-			<div @click="creerPanneau('dessin')" v-if="modules.includes('dessin')">
+			<div @click="creerPanneau('dessin')" v-if="modules.includes('dessin')" :title="$t('dessin')">
 				<span class="icone"><i class="material-icons">gesture</i></span>
 				<span class="titre">{{ $t('dessin') }}</span>
 			</div>
-			<div @click="creerPanneau('document')" v-if="modules.includes('document')">
+			<div @click="creerPanneau('document')" v-if="modules.includes('document')" :title="$t('doc')">
 				<span class="icone"><i class="material-icons">description</i></span>
 				<span class="titre">{{ $t('doc') }}</span>
 			</div>
-			<div @click="creerPanneau('audio')" v-if="modules.includes('audio')">
+			<div @click="creerPanneau('audio')" v-if="modules.includes('audio')" :title="$t('audio')">
 				<span class="icone"><i class="material-icons">volume_up</i></span>
 				<span class="titre">{{ $t('audio') }}</span>
 			</div>
-			<div @click="creerPanneau('synthese')" v-if="modules.includes('synthese')">
+			<div @click="creerPanneau('synthese')" v-if="modules.includes('synthese')" :title="$t('synthese')">
 				<span class="icone"><i class="material-icons">record_voice_over</i></span>
 				<span class="titre">{{ $t('synthese') }}</span>
 			</div>
-			<div @click="creerPanneau('video')" v-if="modules.includes('video')">
+			<div @click="creerPanneau('video')" v-if="modules.includes('video')" :title="$t('video')">
 				<span class="icone"><i class="material-icons">movie_creation</i></span>
 				<span class="titre">{{ $t('video') }}</span>
 			</div>
-			<div @click="creerPanneau('iframe')" v-if="modules.includes('iframe')">
+			<div @click="creerPanneau('iframe')" v-if="modules.includes('iframe')" :title="$t('iframe')">
 				<span class="icone"><i class="material-icons">code</i></span>
 				<span class="titre">{{ $t('iframe') }}</span>
 			</div>
-			<div @click="creerPanneau('nuage')" v-if="modules.includes('nuage')">
+			<div @click="creerPanneau('nuage')" v-if="modules.includes('nuage')" :title="$t('nuage')">
 				<span class="icone"><i class="material-icons">cloud</i></span>
 				<span class="titre">{{ $t('nuage') }}</span>
 			</div>
-			<div @click="creerPanneau('ordre')" v-if="modules.includes('ordre')">
+			<div @click="creerPanneau('ordre')" v-if="modules.includes('ordre')" :title="$t('ordre')">
 				<span class="icone"><i class="material-icons">sort_by_alpha</i></span>
 				<span class="titre">{{ $t('ordre') }}</span>
 			</div>
-			<div @click="creerPanneau('trous')" v-if="modules.includes('trous')">
+			<div @click="creerPanneau('trous')" v-if="modules.includes('trous')" :title="$t('trous')">
 				<span class="icone"><i class="material-icons">wysiwyg</i></span>
 				<span class="titre">{{ $t('trous') }}</span>
 			</div>
-			<div @click="creerPanneau('tirage')" v-if="modules.includes('tirage')">
+			<div @click="creerPanneau('tirage')" v-if="modules.includes('tirage')" :title="$t('tirage')">
 				<span class="icone"><i class="material-icons">shuffle</i></span>
 				<span class="titre">{{ $t('tirage') }}</span>
 			</div>
-			<div @click="creerPanneau('des')" v-if="modules.includes('des')">
+			<div @click="creerPanneau('des')" v-if="modules.includes('des')" :title="$t('des')">
 				<span class="icone"><i class="material-icons">casino</i></span>
 				<span class="titre">{{ $t('des') }}</span>
 			</div>
-			<div @click="creerPanneau('groupes')" v-if="modules.includes('groupes')">
+			<div @click="creerPanneau('groupes')" v-if="modules.includes('groupes')" :title="$t('groupes')">
 				<span class="icone"><i class="material-icons">group</i></span>
 				<span class="titre">{{ $t('groupes') }}</span>
 			</div>
-			<div @click="creerPanneau('chrono')" v-if="modules.includes('chrono')">
+			<div @click="creerPanneau('chrono')" v-if="modules.includes('chrono')" :title="$t('chrono')">
 				<span class="icone"><i class="material-icons">timer</i></span>
 				<span class="titre">{{ $t('chrono') }}</span>
 			</div>
-			<div @click="creerPanneau('rebours')" v-if="modules.includes('rebours')">
+			<div @click="creerPanneau('rebours')" v-if="modules.includes('rebours')" :title="$t('rebours')">
 				<span class="icone"><i class="material-icons">hourglass_empty</i></span>
 				<span class="titre">{{ $t('rebours') }}</span>
 			</div>
-			<div @click="$lancerConfettis()" v-if="modules.includes('bravo')">
+			<div @click="$lancerConfettis()" v-if="modules.includes('bravo')" :title="$t('bravo')">
 				<span class="icone"><i class="material-icons">thumb_up</i></span>
 				<span class="titre">{{ $t('bravo') }}</span>
 			</div>
-			<div @click="ouvrirModale('grille')" v-if="modules.includes('grille') && Object.keys(grille).length === 0">
+			<div @click="ouvrirModale('grille')" v-if="modules.includes('grille') && Object.keys(grille).length === 0" :title="$t('grille')">
 				<span class="icone"><i class="material-icons">view_module</i></span>
 				<span class="titre">{{ $t('grille') }}</span>
 			</div>
-			<div @click="reinitialiserGrille" class="actif" v-else-if="modules.includes('grille') && Object.keys(grille).length > 0">
+			<div @click="reinitialiserGrille" class="actif" v-else-if="modules.includes('grille') && Object.keys(grille).length > 0" :title="$t('grille')">
 				<span class="icone"><i class="material-icons">view_module</i></span>
 				<span class="titre">{{ $t('grille') }}</span>
 			</div>
 			<div class="separateur">
 				<span>·</span>
 			</div>
-			<div @click="capturer">
+			<div @click="capturer" :title="$t('capture')">
 				<span class="icone"><i class="material-icons">camera</i></span>
 				<span class="titre">{{ $t('capture') }}</span>
 			</div>
-			<div @click="annoter" v-if="!annotation">
+			<div @click="annoter" v-if="!annotation" :title="$t('annoter')">
 				<span class="icone"><i class="material-icons">rate_review</i></span>
 				<span class="titre">{{ $t('annoter') }}</span>
 			</div>
-			<div @click="arreterAnnoter" class="actif" v-else>
+			<div @click="arreterAnnoter" class="actif" v-else :title="$t('annoter')">
 				<span class="icone"><i class="material-icons">rate_review</i></span>
 				<span class="titre">{{ $t('annoter') }}</span>
 			</div>
-			<div @click="entrerPleinEcran" v-if="!pleinEcran">
+			<div @click="entrerPleinEcran" v-if="!pleinEcran" :title="$t('ecran')">
 				<span class="icone"><i class="material-icons">open_in_full</i></span>
 				<span class="titre">{{ $t('ecran') }}</span>
 			</div>
-			<div @click="sortirPleinEcran" v-else>
+			<div @click="sortirPleinEcran" v-else :title="$t('ecran')">
 				<span class="icone"><i class="material-icons">close_fullscreen</i></span>
 				<span class="titre">{{ $t('ecran') }}</span>
 			</div>
-			<div @click="ouvrirMenu">
+			<div @click="ouvrirMenu" :title="$t('options')">
 				<span class="icone"><i class="material-icons">settings</i></span>
 				<span class="titre">{{ $t('options') }}</span>
 			</div>
-			<div @click="ouvrirModale('info')">
+			<div @click="ouvrirModale('info')" :title="$t('aPropos')">
 				<span class="icone"><i class="material-icons">info</i></span>
 				<span class="titre">{{ $t('aPropos') }}</span>
 			</div>
@@ -316,7 +316,7 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 41, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(20.5), z: z })
 				break
 			case 'video':
-				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(10), z: z })
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 27, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(13.5), z: z })
 				break
 			case 'iframe':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11), z: z })
