@@ -15,7 +15,7 @@
 					<label>{{ $t('lienFichierAudio') }}</label>
 					<div class="valider">
 						<input type="search" :value="audio" @input="audio = $event.target.value" @keydown.enter="valider">
-						<span role="button" tabindex="0" :title="$t('valider')" class="bouton-secondaire" @click="valider"><i class="material-icons">done</i></span>
+						<span role="button" tabindex="0" :title="$t('valider')" class="bouton-secondaire" @click="valider"><i class="material-icons">search</i></span>
 					</div>
 					<div class="separateur"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
@@ -211,6 +211,10 @@ export default {
 .panneau .panneau-audio audio {
 	width: 100%;
 	outline: none;
+}
+
+.panneau .panneau-audio audio + label {
+	margin-top: 2rem;
 }
 
 .panneau .panneau-audio .valider {
