@@ -10,6 +10,8 @@
 					<label>{{ $t('langue') }}</label>
 					<div class="langue">
 						<span :class="{'selectionne': $parent.langue === 'fr'}" @click="modifierLangue('fr')">FR</span>
+						<span :class="{'selectionne': $parent.langue === 'es'}" @click="modifierLangue('es')">ES</span>
+						<span :class="{'selectionne': $parent.langue === 'it'}" @click="modifierLangue('it')">IT</span>
 						<span :class="{'selectionne': $parent.langue === 'en'}" @click="modifierLangue('en')">EN</span>
 					</div>
 					<label>{{ $t('imageFondPage') }}</label>
@@ -36,7 +38,7 @@
 							<img src="@/assets/img/miniatures/aurore.jpg" alt="Aurore">
 						</span>
 					</div>
-					<div class="recherche">
+					<div class="recherche" v-if="pixabayAPIKey !== ''">
 						<div class="rechercher">
 							<input type="text" :value="requete" @input="requete = $event.target.value" @keyup="verifierRequete" @keydown.enter="valider" :placeholder="$t('lienImageRecherche')">
 							<span role="button" :title="$t('rechercher')" class="bouton-secondaire" @click="valider"><i class="material-icons">search</i></span>
@@ -210,7 +212,7 @@ export default {
 		return {
 			ouvert: false,
 			image: '',
-			pixabayAPIKey: process.env.VUE_APP_PIXABAY_API_KEY,
+			pixabayAPIKey: '',
 			requete: '',
 			resultats: {},
 			page: 1
@@ -219,6 +221,11 @@ export default {
 	watch: {
 		page: function (page) {
 			this.rechercher(page)
+		}
+	},
+	created () {
+		if (process.env.VUE_APP_PIXABAY_API_KEY) {
+			this.pixabayAPIKey = process.env.VUE_APP_PIXABAY_API_KEY
 		}
 	},
 	mounted () {
