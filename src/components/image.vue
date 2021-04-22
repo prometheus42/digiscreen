@@ -19,12 +19,12 @@
 			</header>
 			<div class="conteneur actif panneau-image">
 				<div class="contenu inactif" v-if="mode === 'edition' && !chargementImage">
-					<label>{{ $t('lienImageRecherche') }}</label>
-					<div class="rechercher">
+					<label v-if="pixabayAPIKey !== ''">{{ $t('lienImageRecherche') }}</label>
+					<div class="rechercher" v-if="pixabayAPIKey !== ''">
 						<input type="search" :value="image" @input="image = $event.target.value" @keydown.enter="generer">
 						<span role="button" :title="$t('rechercher')" class="bouton-secondaire" @click="generer"><i class="material-icons">search</i></span>
 					</div>
-					<div class="separateur"><span>{{ $t('ou') }}</span></div>
+					<div class="separateur" v-if="pixabayAPIKey !== ''"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
 					<label class="bouton" role="button" for="selectionner-image">{{ $t('selectionnerImage') }}</label>
 					<input id="selectionner-image" type="file" @change="televerserImage" style="display: none" accept=".jpg, .jpeg, .png, .gif">
@@ -96,7 +96,7 @@ export default {
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0, zoom: 0 },
 			image: '',
-			pixabayAPIKey: process.env.VUE_APP_PIXABAY_API_KEY,
+			pixabayAPIKey: '',
 			requete: '',
 			resultats: {},
 			page: 1,
@@ -138,6 +138,9 @@ export default {
 		}
 	},
 	created () {
+		if (process.env.VUE_APP_PIXABAY_API_KEY) {
+			this.pixabayAPIKey = process.env.VUE_APP_PIXABAY_API_KEY
+		}
 		this.id = this.panneau.id
 		this.w = this.panneau.w
 		this.h = this.panneau.h
