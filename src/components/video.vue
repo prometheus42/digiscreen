@@ -13,10 +13,21 @@
 				</div>
 			</header>
 			<div class="conteneur actif panneau-video">
-				<div class="contenu inactif" v-if="mode === 'edition'">
+				<div class="contenu inactif" v-if="mode === 'edition' && !chargementVideo">
 					<label>{{ $t('lienVideo') }}</label>
-					<input type="search" :value="video" @input="video = $event.target.value" @keydown.enter="valider">
-					<span class="bouton" role="button" tabindex="0" @click="valider">{{ $t('valider') }}</span>
+					<div class="valider">
+						<input type="search" :value="video" @input="video = $event.target.value" @keydown.enter="valider">
+						<span role="button" tabindex="0" :title="$t('valider')" class="bouton-secondaire" @click="valider"><i class="material-icons">search</i></span>
+					</div>
+					<div class="separateur"><span>{{ $t('ou') }}</span></div>
+					<label>{{ $t('fichierAppareil') }}</label>
+					<label class="bouton" role="button" tabindex="0" for="selectionner-video">{{ $t('selectionnerVideo') }}</label>
+					<input id="selectionner-video" type="file" @change="televerserVideo" style="display: none" accept=".mp4, .m4v">
+				</div>
+				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementVideo">
+					<div class="conteneur-chargement">
+						<div class="chargement" />
+					</div>
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'decoupage'">
 					<div class="video">
@@ -58,12 +69,13 @@
 						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 					</div>
 				</div>
-				<template v-else>
+				<template v-else-if="mode === 'lecture' && videoId !== ''">
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-if="debut === 0 && fin === 0" />
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?start=' + debut + '&end=' + fin + '&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-else-if="debut > 0 && fin > 0" />
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?start=' + debut + '&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-else-if="debut > 0" />
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?end=' + fin + '&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-else />
 				</template>
+				<video controls :src="video" v-else></video>
 			</div>
 		</vue-drag-resize>
 	</transition>
@@ -101,20 +113,22 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 25,
+			minw: 40,
 			minh: 20,
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0 },
 			video: '',
-			googleAPIKey: process.env.VUE_APP_GOOGLE_API_KEY,
+			dataURL: '',
+			googleAPIKey: '',
 			videoId: '',
 			debutMinutes: '',
 			debutSecondes: '',
 			finMinutes: '',
 			finSecondes: '',
 			debut: 0,
-			fin: 0
+			fin: 0,
+			chargementVideo: false
 		}
 	},
 	computed: {
@@ -125,7 +139,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { video: this.video, videoId: this.videoId, debutMinutes: this.debutMinutes, debutSecondes: this.debutSecondes, finMinutes: this.finMinutes, finSecondes: this.finSecondes }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { video: this.video, videoId: this.videoId, dataURL: this.dataURL, debutMinutes: this.debutMinutes, debutSecondes: this.debutSecondes, finMinutes: this.finMinutes, finSecondes: this.finSecondes }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -133,6 +147,9 @@ export default {
 		}
 	},
 	created () {
+		if (process.env.VUE_APP_GOOGLE_API_KEY) {
+			this.googleAPIKey = process.env.VUE_APP_GOOGLE_API_KEY
+		}
 		this.id = this.panneau.id
 		this.w = this.panneau.w
 		this.h = this.panneau.h
@@ -150,7 +167,15 @@ export default {
 			this.minimiser()
 		}
 		if (this.panneau.contenu !== '') {
-			this.video = this.panneau.contenu.video
+			if (this.panneau.contenu.dataURL) {
+				this.dataURL = this.panneau.contenu.dataURL
+			}
+			if (this.dataURL !== '') {
+				const blob = this.convertirDataURL(this.dataURL)
+				this.video = window.URL.createObjectURL(blob)
+			} else {
+				this.video = this.panneau.contenu.video
+			}
 			this.videoId = this.panneau.contenu.videoId
 			this.debutMinutes = this.panneau.contenu.debutMinutes
 			this.debutSecondes = this.panneau.contenu.debutSecondes
@@ -158,7 +183,9 @@ export default {
 			this.finSecondes = this.panneau.contenu.finSecondes
 		}
 		if (this.mode === 'lecture') {
-			this.definirTemps()
+			if (this.videoId !== '') {
+				this.definirTemps()
+			}
 			this.redimensionnement = true
 		} else if (this.mode === 'decoupage') {
 			this.editer()
@@ -179,26 +206,33 @@ export default {
 				const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
 				if (this.video.match(regExp)) {
 					this.videoId = this.video.match(regExp)[2]
-					const xhr = new XMLHttpRequest()
-					xhr.onload = function () {
-						if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-							if (xhr.response && Object.keys(xhr.response).length > 0) {
-								const duree = xhr.response.items[0].contentDetails.duration
-								const temps = this.convertirTemps(duree)
-								let h = 0
-								if (temps.h > 0) {
-									h = temps.h * 60
+					if (this.googleAPIKey !== '') {
+						const xhr = new XMLHttpRequest()
+						xhr.onload = function () {
+							if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+								if (xhr.response && Object.keys(xhr.response).length > 0) {
+									const duree = xhr.response.items[0].contentDetails.duration
+									const temps = this.convertirTemps(duree)
+									let h = 0
+									if (temps.h > 0) {
+										h = temps.h * 60
+									}
+									this.debutMinutes = 0
+									this.debutSecondes = 0
+									this.finMinutes = temps.m + h
+									this.finSecondes = temps.s
 								}
-								this.debutMinutes = 0
-								this.debutSecondes = 0
-								this.finMinutes = temps.m + h
-								this.finSecondes = temps.s
 							}
-						}
-					}.bind(this)
-					xhr.open('GET', 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=' + this.googleAPIKey + '&id=' + this.videoId, true)
-					xhr.responseType = 'json'
-					xhr.send()
+						}.bind(this)
+						xhr.open('GET', 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=' + this.googleAPIKey + '&id=' + this.videoId, true)
+						xhr.responseType = 'json'
+						xhr.send()
+					} else {
+						this.debutMinutes = 0
+						this.debutSecondes = 0
+						this.finMinutes = 0
+						this.finSecondes = 0
+					}
 				} else {
 					return false
 				}
@@ -225,20 +259,34 @@ export default {
 				this.x = this.donnees.x
 				this.y = this.donnees.y
 			}
+			if (this.videoId !== '') {
+				this.definirTemps()
+			}
 			this.positionner()
 		},
 		editer () {
-			this.mode = 'decoupage'
+			if (this.videoId !== '') {
+				this.mode = 'decoupage'
+			} else {
+				this.video = ''
+				this.dataURL = ''
+				this.mode = 'edition'
+			}
 			this.redimensionnement = false
 			if (this.statut !== '') {
 				this.normaliser()
 			}
-			this.donnees.w = this.w
-			this.donnees.h = this.h
-			this.donnees.x = this.x
-			this.donnees.y = this.y
-			this.w = 40
-			this.h = 40
+			if (this.videoId !== '') {
+				this.donnees.w = this.w
+				this.donnees.h = this.h
+				this.donnees.x = this.x
+				this.donnees.y = this.y
+				this.w = 40
+				this.h = 40
+			} else {
+				this.w = 40
+				this.h = 27
+			}
 			this.positionner()
 		},
 		definirTemps () {
@@ -294,6 +342,27 @@ export default {
 				total = total + s
 			}
 			return { h: parseInt(h), m: parseInt(m), s: parseInt(s), total: total }
+		},
+		televerserVideo (event) {
+			const fichier = event.target.files[0]
+			if (fichier) {
+				this.chargementVideo = true
+				const reader = new FileReader()
+				reader.readAsDataURL(fichier)
+				reader.onloadend = function (e) {
+					this.chargementVideo = false
+					this.dataURL = e.target.result
+					this.video = window.URL.createObjectURL(fichier)
+					this.generer()
+				}.bind(this)
+			}
+		},
+		convertirDataURL (dataurl) {
+			let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n)
+			while (n--) {
+				u8arr[n] = bstr.charCodeAt(n)
+			}
+			return new Blob([u8arr], { type:mime })
 		}
 	}
 }
@@ -318,5 +387,83 @@ export default {
 
 .panneau .conteneur .temps .minutes {
     margin-right: 1rem;
+}
+
+.panneau .panneau-video .valider {
+	display: flex;
+}
+
+.panneau .panneau-video .valider .bouton-secondaire {
+    width: auto!important;
+    margin-left: 0.5rem;
+    height: 4rem!important;
+}
+
+.panneau .panneau-video .conteneur-chargement {
+	font-size: 0;
+	line-height: 1;
+	text-align: center;
+}
+
+.panneau .panneau-video .conteneur-chargement {
+	font-size: 0;
+	line-height: 1;
+	text-align: center;
+}
+
+.panneau .panneau-video .chargement {
+	display: inline-block;
+	border: 7px solid #ddd;
+	border-top: 7px solid #00ced1;
+	border-radius: 50%;
+	width: 45px;
+	height: 45px;
+	animation: rotation 0.7s linear infinite;
+}
+  
+@keyframes rotation {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.panneau .panneau-video .separateur {
+    position: relative;
+    margin: 2rem 25% 2rem;
+    text-align: center;
+    width: 50%;
+}
+
+.panneau .panneau-video .separateur::before {
+    position: absolute;
+    top: 50%;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.panneau .panneau-video .separateur span {
+    position: relative;
+    margin: 0;
+    font-size: 1.5rem;
+    z-index: 2;
+    display: inline-block;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    vertical-align: middle;
+    background-color: #fff;
+}
+
+.panneau .panneau-video label.bouton {
+	width: auto!important;
+    display: inline-block!important;
+	margin-top: 0;
+	margin-bottom: 0!important;
+}
+
+.panneau .panneau-video video {
+	max-width: 100%;
+	height: auto;
 }
 </style>
