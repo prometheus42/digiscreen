@@ -754,7 +754,6 @@ nav .separateur {
 	color: #00ced1;
 	margin-top: 0;
 	user-select: none;
-	-webkit-user-select: none;
 	-webkit-touch-callout: none;
 }
 
