@@ -133,7 +133,7 @@ export default {
 	},
 	computed: {
 		titre () {
-			return this.$t('videoYoutube')
+			return this.$t('video')
 		}
 	},
 	watch: {
@@ -369,23 +369,23 @@ export default {
 </script>
 
 <style>
-.panneau .conteneur .temps {
+.panneau .panneau-video .temps {
 	margin-top: 2rem;
 }
 
-.panneau .conteneur .debut,
-.panneau .conteneur .fin {
+.panneau .panneau-video .debut,
+.panneau .panneau-video .fin {
     display: inline-flex;
 	justify-content: center;
 	width: 50%;
 	flex-wrap: wrap;
 }
 
-.panneau .conteneur .temps .minutes-secondes {
+.panneau .panneau-video .temps .minutes-secondes {
     display: flex;
 }
 
-.panneau .conteneur .temps .minutes {
+.panneau .panneau-video .temps .minutes {
     margin-right: 1rem;
 }
 
