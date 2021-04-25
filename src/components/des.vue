@@ -77,7 +77,6 @@ export default {
 			}
 		},
 		finRedimensionnement: function () {
-			console.log('ok')
 			this.positionner()
 		}
 	},
