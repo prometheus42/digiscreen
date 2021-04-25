@@ -92,7 +92,6 @@ export default {
 			z: 0,
 			minw: 25,
 			minh: 15,
-			zoom: 1,
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0, zoom: 0 },
@@ -101,7 +100,8 @@ export default {
 			modale: false,
 			liste: '',
 			apercu: false,
-			panzoom: ''
+			panzoom: '',
+			zoom: 1
 		}
 	},
 	computed: {
@@ -112,7 +112,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { mots: this.mots, nuage: this.nuage, coordonnees: this.panzoom.getPan() }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z, zoom: this.zoom })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { mots: this.mots, nuage: this.nuage, coordonnees: this.panzoom.getPan(), zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		zoom: function (zoom) {
@@ -141,7 +141,6 @@ export default {
 		this.x = this.panneau.x
 		this.y = this.panneau.y
 		this.z = this.panneau.z
-		this.zoom = this.panneau.zoom
 		this.statut = this.panneau.statut
 		this.dimensions = this.panneau.dimensions
 		if (this.panneau.mode !== '') {
@@ -155,6 +154,7 @@ export default {
 		if (this.panneau.contenu !== '') {
 			this.mots = this.panneau.contenu.mots
 			this.nuage = this.panneau.contenu.nuage
+			this.zoom = this.panneau.contenu.zoom
 		}
 		this.positionner()
 	},
@@ -175,7 +175,7 @@ export default {
 		} else if (this.mode === 'lecture') {
 			this.redimensionnement = true
 			this.$nextTick(function () {
-				const element = document.querySelector('#' + this.id + ' .conteneur iframe')
+				const element = document.querySelector('#' + this.id + ' .conteneur img')
 				this.panzoom = Panzoom(element, {
 					maxScale: 15,
 					minScale: 0.5,
@@ -323,6 +323,19 @@ export default {
 		fermerListe () {
 			this.modale = false
 		},
+		zoomer () {
+			if (this.zoom < 15) {
+				this.zoom = this.zoom + 0.1
+			}
+		},
+		dezoomer () {
+			if (this.zoom > 0.5) {
+				this.zoom = this.zoom - 0.1
+			}
+		},
+		recadrer () {
+			this.zoom = 1
+		},
 		modifierZoom (event) {
 			this.zoom = event.detail.scale
 		}
@@ -332,6 +345,7 @@ export default {
 
 <style>
 .panneau .panneau-nuage {
+	overflow: hidden!important;
 	border-bottom-left-radius: 1rem;
 	border-bottom-right-radius: 1rem;
 }
@@ -432,5 +446,11 @@ export default {
 .panneau .liste textarea {
 	max-height: 18rem;
 	height: 18rem;
+}
+
+.panneau .panneau-nuage img {
+    max-width: 100%;
+    max-height: 100%;
+    align-self: center;
 }
 </style>

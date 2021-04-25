@@ -91,7 +91,6 @@ export default {
 			z: 0,
 			minw: 25,
 			minh: 15,
-			zoom: 1,
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0, zoom: 0 },
@@ -101,6 +100,7 @@ export default {
 			resultats: {},
 			page: 1,
 			panzoom: '',
+			zoom: 1,
 			chargementImage: false
 		}
 	},
@@ -112,7 +112,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.panzoom.getPan() }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z, zoom: this.zoom })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.panzoom.getPan(), zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		zoom: function (zoom) {
@@ -147,7 +147,6 @@ export default {
 		this.x = this.panneau.x
 		this.y = this.panneau.y
 		this.z = this.panneau.z
-		this.zoom = this.panneau.zoom
 		this.statut = this.panneau.statut
 		this.dimensions = this.panneau.dimensions
 		if (this.panneau.mode !== '') {
@@ -162,6 +161,7 @@ export default {
 			this.image = this.panneau.contenu.image
 			this.requete = this.panneau.contenu.requete
 			this.page = this.panneau.contenu.page
+			this.zoom = this.panneau.contenu.zoom
 		}
 		this.positionner()
 	},
@@ -332,6 +332,19 @@ export default {
 					}.bind(this)
 				}.bind(this)
 			}
+		},
+		zoomer () {
+			if (this.zoom < 15) {
+				this.zoom = this.zoom + 0.1
+			}
+		},
+		dezoomer () {
+			if (this.zoom > 0.5) {
+				this.zoom = this.zoom - 0.1
+			}
+		},
+		recadrer () {
+			this.zoom = 1
 		},
 		modifierZoom (event) {
 			this.zoom = event.detail.scale
