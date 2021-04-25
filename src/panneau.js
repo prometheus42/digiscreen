@@ -68,19 +68,6 @@ export default {
 			if (this.y > document.body.clientHeight - (this.$convertirRem(7.5) + this.$convertirRem(this.h))) {
 				this.y = document.body.clientHeight - (this.$convertirRem(7.5) + this.$convertirRem(this.h))
 			}
-		},
-		zoomer () {
-			if (this.zoom < 15) {
-				this.zoom = this.zoom + 0.1
-			}
-		},
-		dezoomer () {
-			if (this.zoom > 0.5) {
-				this.zoom = this.zoom - 0.1
-			}
-		},
-		recadrer () {
-			this.zoom = 1
 		}
 	}
 }
