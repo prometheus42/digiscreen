@@ -1,8 +1,13 @@
 <template>
 	<transition name="fondu">
-		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement">
+		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement" :style="{'background': definirCouleurFond()}">
 			<header class="actif">
-				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}">{{ titre }}</div>
+				<div class="titre actif" :class="{'visible': statut === 'min'}">{{ titre }}</div>
+				<div class="actions-panneau inactif">
+					<span class="zoomer" role="button" @click="augmenterTaille" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
+					<span class="dezoomer" role="button" @click="reduireTaille" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
+					<span class="recadrer" role="button" @click="annulerTaille" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
+				</div>
 				<div class="actions-panneau inactif">
 					<span class="editer" role="button" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
@@ -11,10 +16,12 @@
 				</div>
 			</header>
 			<div class="conteneur actif">
-				<div class="contenu inactif panneau-texte">
-					<div class="texte" v-if="mode === 'lecture'" v-html="texte" />
-					<div class="editeur" v-if="mode === 'edition'" />
-					<span class="bouton" role="button" tabindex="0" @click="generer" v-if="mode === 'edition'">{{ $t('valider') }}</span>
+				<div class="contenu inactif panneau-texte" v-if="mode === 'edition'">
+					<div class="editeur" />
+					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
+				</div>
+				<div class="contenu inactif panneau-texte" v-else>
+					<div class="texte" :style="{'font-size': $convertirRem(taille) + 'px'}" v-html="texte" />
 				</div>
 			</div>
 		</vue-drag-resize>
@@ -58,7 +65,9 @@ export default {
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0 },
 			editeur: '',
-			texte: ''
+			texte: '',
+			taille: 3.2,
+			couleurFond: '#ffffff'
 		}
 	},
 	computed: {
@@ -69,7 +78,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: this.texte, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { texte: this.texte, taille: this.taille, couleurFond: this.couleurFond }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -91,7 +100,11 @@ export default {
 		if (this.panneau.statut === 'min') {
 			this.minimiser()
 		}
-		if (this.panneau.contenu !== '') {
+		if (typeof this.panneau.contenu === 'object' && this.panneau.contenu.constructor === Object) {
+			this.texte = this.panneau.contenu.texte
+			this.taille = this.panneau.contenu.taille
+			this.couleurFond = this.panneau.contenu.couleurFond
+		} else if (this.panneau.contenu !== '') {
 			this.texte = this.panneau.contenu
 		}
 		if (this.mode === 'lecture') {
@@ -106,6 +119,14 @@ export default {
 				this.creer()
 				document.getElementsByClassName('pell-content')[0].focus()
 			}.bind(this))
+		}
+	},
+	beforeDestroy () {
+		if (document.querySelector('#couleur-texte-' + this.id)) {
+			document.querySelector('#couleur-texte-' + this.id).removeEventListener('change', this.modifierCouleurTexte)
+		}
+		if (document.querySelector('#couleur-fond-' + this.id)) {
+			document.querySelector('#couleur-fond-' + this.id).removeEventListener('change', this.modifierCouleurFond)
 		}
 	},
 	methods: {
@@ -161,12 +182,8 @@ export default {
 					{ name: 'liste', title: that.$t('liste'), icon: '<i class="material-icons">format_list_bulleted</i>', result: () => pell.exec('insertUnorderedList') },
 					{ name: 'aligner-gauche', title: that.$t('alignerGauche'), icon: '<i class="material-icons">format_align_left</i>', result: () => pell.exec('JustifyLeft') },
 					{ name: 'centrer', title: that.$t('centrer'), icon: '<i class="material-icons">format_align_center</i>', result: () => pell.exec('JustifyCenter') },
-					{ name: 'noir', title: that.$t('noir'), icon: '<i class="material-icons" style="color: black;">fiber_manual_record</i>', result: () => pell.exec('foreColor', 'black') },
-					{ name: 'rouge', title: that.$t('rouge'), icon: '<i class="material-icons" style="color: #ea6051;">fiber_manual_record</i>', result: () => pell.exec('foreColor', '#ea6051') },
-					{ name: 'jaune', title: that.$t('jaune'), icon: '<i class="material-icons" style="color: #f1c40f;">fiber_manual_record</i>', result: () => pell.exec('foreColor', '#f1c40f') },
-					{ name: 'vert', title: that.$t('vert'), icon: '<i class="material-icons" style="color: #2ecc71;">fiber_manual_record</i>', result: () => pell.exec('foreColor', '#2ecc71') },
-					{ name: 'bleu', title: that.$t('bleu'), icon: '<i class="material-icons" style="color: #3498db;">fiber_manual_record</i>', result: () => pell.exec('foreColor', '#3498db') },
-					{ name: 'violet', title: that.$t('violet'), icon: '<i class="material-icons" style="color: #9b59b6;">fiber_manual_record</i>', result: () => pell.exec('foreColor', '#9b59b6') }
+					{ name: 'couleur-texte', title: that.$t('couleurTexte'), icon: '<label for="couleur-texte-' + this.id + '"><i class="material-icons">format_color_text</i></label><input id="couleur-texte-' + this.id + '" type="color">', result: () => void 0 },
+					{ name: 'couleur-fond', title: that.$t('couleurFond'), icon: '<label for="couleur-fond-' + this.id + '"><i class="material-icons">format_color_fill</i></label><input id="couleur-fond-' + this.id + '" type="color" value="' + this.couleurFond + '">', result: () => void 0 }
 				]
 			})
 			this.editeur.onpaste = function (event) {
@@ -176,6 +193,36 @@ export default {
 				pell.exec('insertText', texte)
 			}
 			this.editeur.content.innerHTML = this.texte
+			document.querySelector('#' + this.id + ' .editeur .pell-content').style.backgroundColor = this.couleurFond
+			document.querySelector('#couleur-texte-' + this.id).addEventListener('change', this.modifierCouleurTexte)
+			document.querySelector('#couleur-fond-' + this.id).addEventListener('change', this.modifierCouleurFond)
+		},
+		modifierCouleurTexte (event) {
+			pell.exec('foreColor', event.target.value)
+		},
+		modifierCouleurFond (event) {
+			document.querySelector('#' + this.id + ' .editeur .pell-content').style.backgroundColor = event.target.value
+			this.couleurFond = event.target.value
+		},
+		definirCouleurFond () {
+			if (this.mode === 'lecture') {
+				return this.couleurFond
+			} else {
+				return '#fff'
+			}
+		},
+		augmenterTaille () {
+			if (this.taille < 10) {
+				this.taille = this.taille + 0.1
+			}
+		},
+		reduireTaille () {
+			if (this.taille > 1) {
+				this.taille = this.taille - 0.1
+			}
+		},
+		annulerTaille () {
+			this.taille = 3.2
 		}
 	}
 }
@@ -184,7 +231,6 @@ export default {
 <style>
 .panneau .conteneur .texte {
 	font-weight: 400;
-	font-size: 3.2rem;
 	line-height: 1.4;
 	user-select: none;
 }
@@ -212,6 +258,9 @@ export default {
 }
 
 .pell-actionbar {
+	display: flex;
+	justify-content: center;
+	align-items: center;
     background-color: #fff;
 	border-bottom: 1px solid #ddd;
 	position: sticky;
@@ -220,17 +269,49 @@ export default {
 }
 
 .pell-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2.4rem;
     height: 3.4rem;
     outline: 0;
-    width: 3.4rem;
-	vertical-align: bottom;
-	font-size: 2.4rem;
+    width: auto;
+	padding: 0 0.5rem;
+	background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 
 .pell-button-selected {
     background-color: #f0f0f0;
+}
+
+.pell-button label {
+	font-size: 2.2rem!important;
+	font-weight: 400!important;
+	margin: 0!important;
+	width: 2.2rem!important;
+}
+
+.pell-button input[type="color"] {
+	width: 2rem;
+	height: 2rem;
+	border: none;
+	margin-left: 0.5rem;
+	cursor: pointer;
+}
+
+.pell-button input[type="color"]::-moz-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+.pell-button input[type="color"]::-webkit-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+.pell-button input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
 }
 </style>
