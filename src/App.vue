@@ -1,5 +1,5 @@
 <template>
-	<main :style="{'background-image': 'url(' + fond + ')'}">
+	<main :style="definirFond()">
 		<div id="alerte" v-if="alerte">
 			<div class="conteneur">
 				<span class="marque">Digiscreen by La Digitale</span>
@@ -31,7 +31,7 @@
 				<span class="icone"><i class="material-icons">gesture</i></span>
 				<span class="titre">{{ $t('dessin') }}</span>
 			</div>
-			<div @click="creerPanneau('document')" v-if="modules.includes('document')" :title="$t('doc')">
+			<div @click="creerPanneau('document')" v-if="modules.includes('document')" :title="$t('document')">
 				<span class="icone"><i class="material-icons">description</i></span>
 				<span class="titre">{{ $t('doc') }}</span>
 			</div>
@@ -39,7 +39,7 @@
 				<span class="icone"><i class="material-icons">volume_up</i></span>
 				<span class="titre">{{ $t('audio') }}</span>
 			</div>
-			<div @click="creerPanneau('synthese')" v-if="modules.includes('synthese')" :title="$t('synthese')">
+			<div @click="creerPanneau('synthese')" v-if="modules.includes('synthese')" :title="$t('syntheseVocale')">
 				<span class="icone"><i class="material-icons">record_voice_over</i></span>
 				<span class="titre">{{ $t('synthese') }}</span>
 			</div>
@@ -47,23 +47,23 @@
 				<span class="icone"><i class="material-icons">movie_creation</i></span>
 				<span class="titre">{{ $t('video') }}</span>
 			</div>
-			<div @click="creerPanneau('iframe')" v-if="modules.includes('iframe')" :title="$t('iframe')">
+			<div @click="creerPanneau('iframe')" v-if="modules.includes('iframe')" :title="$t('contenuIntegre')">
 				<span class="icone"><i class="material-icons">code</i></span>
 				<span class="titre">{{ $t('iframe') }}</span>
 			</div>
-			<div @click="creerPanneau('nuage')" v-if="modules.includes('nuage')" :title="$t('nuage')">
+			<div @click="creerPanneau('nuage')" v-if="modules.includes('nuage')" :title="$t('nuageMots')">
 				<span class="icone"><i class="material-icons">cloud</i></span>
 				<span class="titre">{{ $t('nuage') }}</span>
 			</div>
-			<div @click="creerPanneau('ordre')" v-if="modules.includes('ordre')" :title="$t('ordre')">
+			<div @click="creerPanneau('ordre')" v-if="modules.includes('ordre')" :title="$t('remiseOrdre')">
 				<span class="icone"><i class="material-icons">sort_by_alpha</i></span>
 				<span class="titre">{{ $t('ordre') }}</span>
 			</div>
-			<div @click="creerPanneau('trous')" v-if="modules.includes('trous')" :title="$t('trous')">
+			<div @click="creerPanneau('trous')" v-if="modules.includes('trous')" :title="$t('texteATrous')">
 				<span class="icone"><i class="material-icons">wysiwyg</i></span>
 				<span class="titre">{{ $t('trous') }}</span>
 			</div>
-			<div @click="creerPanneau('tirage')" v-if="modules.includes('tirage')" :title="$t('tirage')">
+			<div @click="creerPanneau('tirage')" v-if="modules.includes('tirage')" :title="$t('tirageSort')">
 				<span class="icone"><i class="material-icons">shuffle</i></span>
 				<span class="titre">{{ $t('tirage') }}</span>
 			</div>
@@ -75,15 +75,23 @@
 				<span class="icone"><i class="material-icons">group</i></span>
 				<span class="titre">{{ $t('groupes') }}</span>
 			</div>
-			<div @click="creerPanneau('chrono')" v-if="modules.includes('chrono')" :title="$t('chrono')">
+			<div @click="creerPanneau('chrono')" v-if="modules.includes('chrono')" :title="$t('chronometre')">
 				<span class="icone"><i class="material-icons">timer</i></span>
 				<span class="titre">{{ $t('chrono') }}</span>
 			</div>
-			<div @click="creerPanneau('rebours')" v-if="modules.includes('rebours')" :title="$t('rebours')">
+			<div @click="creerPanneau('rebours')" v-if="modules.includes('rebours')" :title="$t('compteRebours')">
 				<span class="icone"><i class="material-icons">hourglass_empty</i></span>
 				<span class="titre">{{ $t('rebours') }}</span>
 			</div>
-			<div @click="$lancerConfettis()" v-if="modules.includes('bravo')" :title="$t('bravo')">
+			<div @click="creerPanneau('horloge')" v-if="modules.includes('horloge')" :title="$t('horloge')">
+				<span class="icone"><i class="material-icons">query_builder</i></span>
+				<span class="titre">{{ $t('horloge') }}</span>
+			</div>
+			<div @click="creerPanneau('sonometre')" v-if="modules.includes('sonometre')" :title="$t('sonometre')">
+				<span class="icone"><i class="material-icons">hearing</i></span>
+				<span class="titre">{{ $t('volume') }}</span>
+			</div>
+			<div @click="$lancerConfettis()" v-if="modules.includes('bravo')" :title="$t('confettis')">
 				<span class="icone"><i class="material-icons">thumb_up</i></span>
 				<span class="titre">{{ $t('bravo') }}</span>
 			</div>
@@ -145,6 +153,8 @@
 			<PGroupes :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'groupes'" :key="panneau.id" />
 			<PChrono :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'chrono'" :key="panneau.id" />
 			<PRebours :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'rebours'" :key="panneau.id" />
+			<PHorloge :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'horloge'" :key="panneau.id" />
+			<PSonometre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'sonometre'" :key="panneau.id" />
 		</template>
 		<MGrille v-if="modale === 'grille'" />
 		<MInfo v-else-if="modale === 'info'" />
@@ -175,6 +185,8 @@ import PDes from '@/components/des.vue'
 import PGroupes from '@/components/groupes.vue'
 import PChrono from '@/components/chrono.vue'
 import PRebours from '@/components/rebours.vue'
+import PHorloge from '@/components/horloge.vue'
+import PSonometre from '@/components/sonometre.vue'
 import MGrille from '@/components/grille.vue'
 import MInfo from '@/components/info.vue'
 import MParametres from '@/components/parametres.vue'
@@ -203,6 +215,8 @@ export default {
 		PGroupes,
 		PChrono,
 		PRebours,
+		PHorloge,
+		PSonometre,
 		MGrille,
 		MInfo,
 		MParametres,
@@ -216,7 +230,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'synthese', 'video', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'bravo', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'bravo', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -287,6 +301,13 @@ export default {
 		}.bind(this))
 	},
 	methods: {
+		definirFond () {
+			if (this.fond.substring(0, 1) === '#') {
+				return { 'background-color': this.fond }
+			} else {
+				return { 'background-image': 'url(' + this.fond + ')' }
+			}
+		},
 		creerPanneau (type) {
 			const id = 'panneau_' + (new Date()).getTime()
 			const largeur = document.body.clientWidth / 2
@@ -301,7 +322,7 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 53, h: 46, x: largeur - this.$convertirRem(26.5), y: hauteur - this.$convertirRem(23), z: z })
 				break
 			case 'image':
-				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', zoom: 1, statut: '', dimensions: {}, contenu: '', w: 40, h: 27, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(13.5), z: z })
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 27, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(13.5), z: z })
 				break
 			case 'dessin':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 48, h: 35, x: largeur - this.$convertirRem(24), y: hauteur - this.$convertirRem(17.5), z: z })
@@ -322,7 +343,7 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11), z: z })
 				break
 			case 'nuage':
-				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', zoom: 1, statut: '', dimensions: {}, contenu: '', w: 80, h: 59.5, x: largeur - this.$convertirRem(40), y: hauteur - this.$convertirRem(29.75), z: z })
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 80, h: 59.5, x: largeur - this.$convertirRem(40), y: hauteur - this.$convertirRem(29.75), z: z })
 				break
 			case 'ordre':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 46, h: 50.4, x: largeur - this.$convertirRem(23), y: hauteur - this.$convertirRem(25.2), z: z })
@@ -344,6 +365,12 @@ export default {
 				break
 			case 'rebours':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22.2, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11.1), z: z })
+				break
+			case 'horloge':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 38, h: 42, x: largeur - this.$convertirRem(19), y: hauteur - this.$convertirRem(21), z: z })
+				break
+			case 'sonometre':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 24, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(12), z: z })
 				break
 			}
 		},

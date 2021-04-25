@@ -14,7 +14,7 @@
 						<span :class="{'selectionne': $parent.langue === 'it'}" @click="modifierLangue('it')">IT</span>
 						<span :class="{'selectionne': $parent.langue === 'en'}" @click="modifierLangue('en')">EN</span>
 					</div>
-					<label>{{ $t('imageFondPage') }}</label>
+					<label>{{ $t('arrierePlanPage') }}</label>
 					<div class="fond">
 						<span @click="modifierFond('./static/img/digitale.jpg')">
 							<img src="@/assets/img/miniatures/digitale.jpg" alt="Digitale">
@@ -36,6 +36,15 @@
 						</span>
 						<span @click="modifierFond('./static/img/aurore.jpg')">
 							<img src="@/assets/img/miniatures/aurore.jpg" alt="Aurore">
+						</span>
+						<span class="couleur-fond" @click="modifierFond('#ffffff')" style="background-color: #ffffff; border: 1px solid #ddd;" />
+						<span class="couleur-fond" @click="modifierFond('#00ced1')" style="background-color: #00ced1;" />
+						<span class="couleur-fond" @click="modifierFond('#ff2d55')" style="background-color: #ff2d55;" />
+						<span class="couleur-fond" @click="modifierFond('#f7d000')" style="background-color: #f7d000;" />
+						<span class="couleur-fond" @click="modifierFond('#dddddd')" style="background-color: #dddddd;" />
+						<span class="couleur-fond icone">
+							<label for="couleur-fond-page"><i class="material-icons">colorize</i></label>
+							<input type="color" id="couleur-fond-page" value="#001d1d" :title="$t('selectionnerCouleur')">
 						</span>
 					</div>
 					<div class="recherche" v-if="pixabayAPIKey !== ''">
@@ -115,7 +124,7 @@
 							</label>
 						</div>
 						<div class="module">
-							<span>{{ $t('videoYoutube') }}</span>
+							<span>{{ $t('video') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="video" :checked="$parent.modules.includes('video')" @change="modifierModule">
 								<span class="curseur" />
@@ -185,6 +194,20 @@
 							</label>
 						</div>
 						<div class="module">
+							<span>{{ $t('horloge') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="horloge" :checked="$parent.modules.includes('horloge')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
+							<span>{{ $t('sonometre') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="sonometre" :checked="$parent.modules.includes('sonometre')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
 							<span>{{ $t('confettis') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="bravo" :checked="$parent.modules.includes('bravo')" @change="modifierModule">
@@ -232,6 +255,12 @@ export default {
 		setTimeout(function () {
 			this.ouvert = true
 		}.bind(this), 10)
+		document.querySelector('#couleur-fond-page').addEventListener('change', this.modifierCouleurFond)
+	},
+	beforeDestroy () {
+		if (document.querySelector('#couleur-fond-page')) {
+			document.querySelector('#couleur-fond-page').removeEventListener('change', this.modifierCouleurFond)
+		}
 	},
 	methods: {
 		modifierLangue (langue) {
@@ -241,6 +270,9 @@ export default {
 		modifierFond (fond) {
 			const index = this.$parent.page - 1
 			this.$parent.pages[index].fond = fond
+		},
+		modifierCouleurFond (event) {
+			this.modifierFond(event.target.value)
 		},
 		valider () {
 			if (this.requete !== '' && this.$verifierURL(this.requete) === true) {
@@ -353,7 +385,6 @@ export default {
 <style>
 .menu .pages,
 .menu .langue,
-.menu .fond,
 .menu .recherche {
 	margin-bottom: 2rem;
 }
@@ -361,8 +392,8 @@ export default {
 .menu .pages span:not(.bouton-secondaire),
 .menu .langue span {
 	display: inline-flex;
-	width: 4.8rem;
-	height: 4.8rem;
+	width: 4.5rem;
+	height: 4.5rem;
 	justify-content: center;
 	align-items: center;
 	line-height: 1;
@@ -381,19 +412,69 @@ export default {
 	border: 1px solid #222;
 }
 
+.menu .fond {
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+}
+
 .menu .fond span {
-	display: inline-block;
 	margin-right: 1rem;
+	margin-bottom: 1rem;
 	cursor: pointer;
 }
 
+.menu .fond span.couleur-fond {
+	width: 4.5rem;
+	height: 4.5rem;
+	border-radius: 50%;
+}
+
 .menu .fond span img {
-	width: 4.8rem;
-	height: 4.8rem;
+	width: 4.5rem;
+	height: 4.5rem;
 	font-size: 0;
 	line-height: 1;
 	border-radius: 50%;
 	user-select: none;
+}
+
+.menu .fond span.couleur-fond.icone {
+	display: flex;
+	align-items: center;
+	width: 10rem;
+	height: 4.5rem;
+}
+
+.menu .fond span label {
+	font-size: 3.6rem;
+	width: 4.5rem;
+	text-align: center;
+	margin-bottom: 0;
+	font-weight: 400;
+}
+
+.menu .fond input[type="color"] {
+	width: 4.5rem;
+	height: 4.5rem;
+	border: none;
+	margin-left: 1rem;
+	cursor: pointer;
+}
+
+.menu .fond input[type="color"]::-moz-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+.menu .fond input[type="color"]::-webkit-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+.menu .fond input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
 }
 
 .menu .pages span:last-child,
@@ -420,15 +501,11 @@ export default {
 	margin-bottom: 2rem;
 }
 
-.menu .modules .module:last-child {
-	margin-bottom: 0;
-}
-
 .menu .modules .module .interrupteur {
 	position: relative;
 	display: inline-block;
 	width: 6rem;
-	height: 3.4rem;
+	height: 3rem;
 }
 
 .menu .modules .module .interrupteur input {
@@ -449,7 +526,7 @@ export default {
 .menu .modules .module .interrupteur .curseur::before {
 	position: absolute;
 	content: '';
-	height: 2.6rem;
+	height: 2.2rem;
 	width: 2.6rem;
 	left: 0.4rem;
 	bottom: 0.4rem;
