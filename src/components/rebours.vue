@@ -179,6 +179,7 @@ export default {
 		},
 		decompter () {
 			const temps = this.calculerTempsRestant(this.duree)
+			let audio = ''
 			if (temps.secondes < 10) {
 				this.texteSecondes = '0' + temps.secondes
 			} else {
@@ -189,9 +190,18 @@ export default {
 			} else {
 				this.texteMinutes = temps.minutes
 			}
+			if (temps.total <= 10000) {
+				document.querySelector('#' + this.id + ' .decompte').classList.add('rouge')
+			}
+			if (temps.total <= 10000 && temps.total > 0) {
+				audio = new Audio('./static/audio/bip.mp3')
+				this.$lireAudio(audio)
+			}
 			if (temps.total <= 0) {
 				clearInterval(this.decompte)
 				this.tempsEcoule = true
+				audio = new Audio('./static/audio/fin.mp3')
+				this.$lireAudio(audio)
 			}
 		},
 		pause () {
@@ -246,6 +256,10 @@ export default {
 .rebours .decompte .secondes {
 	width: 11rem;
 	margin: 0;
+}
+
+.rebours .decompte.rouge {
+	color: #ff7575;
 }
 
 .rebours + .actions .bouton {
