@@ -159,5 +159,6 @@ export default {
 	volume: 'Volume',
 	sonometre: 'Fonometro',
 	sensibilite: 'Sensibilità',
-	erreurSonometre: 'Errore durante il tentativo di recuperare il flusso di input del microfono.'
+	erreurSonometre: 'Errore durante il tentativo di recuperare il flusso di input del microfono.',
+	erreurTailleFichier: 'La dimensione massima accettata è di 1 MB. Per i file più grandi, si raccomanda di utilizzare il formato PDF.'
 }

@@ -61,8 +61,8 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 50,
-			minh: 35,
+			minw: 40,
+			minh: 16,
 			statut: '',
 			dimensions: {},
 			document: '',
@@ -149,16 +149,20 @@ export default {
 						this.document = window.URL.createObjectURL(fichier)
 						this.generer()
 					}.bind(this)
-				} else if ((extension.toLowerCase() === 'odt' || extension.toLowerCase() === 'odp' || extension.toLowerCase() === 'ods') && fichier.size < 1024000) {
-					this.chargementDocument = true
-					this.type = 'doc'
-					const reader = new FileReader()
-					reader.readAsDataURL(fichier)
-					reader.onloadend = function (e) {
-						this.chargementDocument = false
-						this.document = e.target.result
-						this.generer()
-					}.bind(this)
+				} else if (extension.toLowerCase() === 'odt' || extension.toLowerCase() === 'odp' || extension.toLowerCase() === 'ods') {
+					if (fichier.size < 1024000) {
+						this.chargementDocument = true
+						this.type = 'doc'
+						const reader = new FileReader()
+						reader.readAsDataURL(fichier)
+						reader.onloadend = function (e) {
+							this.chargementDocument = false
+							this.document = e.target.result
+							this.generer()
+						}.bind(this)
+					} else {
+						alert(this.$t('erreurTailleFichier'))
+					}
 				}
 			}
 		},
