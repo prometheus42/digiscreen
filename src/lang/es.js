@@ -29,7 +29,7 @@ export default {
 	valider: 'Confirmar',
 	demarrer: 'Comenzar',
 	chronometre: 'Cronómetro',
-	pause: 'Rompa',
+	pause: 'Pausa',
 	lienOuTexte: 'Enlace o texto',
 	nombreDes: 'Número de dados',
 	jeter: 'Lanzar',
