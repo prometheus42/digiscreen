@@ -2,7 +2,7 @@
 	<transition name="fondu">
 		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement" :style="{'background': definirCouleurFond()}">
 			<header class="actif">
-				<div class="titre actif" :class="{'visible': statut === 'min'}">{{ titre }}</div>
+				<div class="titre actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
 					<span class="zoomer" role="button" @click="augmenterTaille" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
 					<span class="dezoomer" role="button" @click="reduireTaille" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
@@ -53,6 +53,7 @@ export default {
 			mode: 'edition',
 			deplacement: false,
 			redimensionnement: false,
+			titre: '',
 			id: '',
 			w: 0,
 			h: 0,
@@ -70,11 +71,6 @@ export default {
 			couleurFond: '#ffffff'
 		}
 	},
-	computed: {
-		titre () {
-			return this.$t('texte')
-		}
-	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
@@ -86,6 +82,7 @@ export default {
 		}
 	},
 	created () {
+		this.titre = this.$t('texte')
 		this.id = this.panneau.id
 		this.w = this.panneau.w
 		this.h = this.panneau.h
@@ -94,6 +91,9 @@ export default {
 		this.z = this.panneau.z
 		this.statut = this.panneau.statut
 		this.dimensions = this.panneau.dimensions
+		if (this.panneau.titre) {
+			this.titre = this.panneau.titre
+		}
 		if (this.panneau.mode !== '') {
 			this.mode = this.panneau.mode
 		}

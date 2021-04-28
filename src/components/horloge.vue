@@ -2,7 +2,7 @@
 	<transition name="fondu">
 		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'min': statut === 'min'}" :isDraggable="true" :isResizable="false" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="[]" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement">
 			<header class="actif">
-				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}">{{ titre }}</div>
+				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
 					<span class="afficher" role="button" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
@@ -48,6 +48,7 @@ export default {
 			chargement: true,
 			mode: 'lecture',
 			deplacement: false,
+			titre: '',
 			id: '',
 			w: 0,
 			h: 0,
@@ -67,11 +68,6 @@ export default {
 			radius: ''
 		}
 	},
-	computed: {
-		titre () {
-			return this.$t('horloge')
-		}
-	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
@@ -84,6 +80,7 @@ export default {
 		}
 	},
 	created () {
+		this.titre = this.$t('horloge')
 		this.id = this.panneau.id
 		this.w = this.panneau.w
 		this.h = this.panneau.h
@@ -92,6 +89,9 @@ export default {
 		this.z = this.panneau.z
 		this.statut = this.panneau.statut
 		this.dimensions = this.panneau.dimensions
+		if (this.panneau.titre) {
+			this.titre = this.panneau.titre
+		}
 		if (this.panneau.statut === 'min') {
 			this.minimiser()
 		}

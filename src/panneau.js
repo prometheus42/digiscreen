@@ -68,6 +68,12 @@ export default {
 			if (this.y > document.body.clientHeight - (this.$convertirRem(7.5) + this.$convertirRem(this.h))) {
 				this.y = document.body.clientHeight - (this.$convertirRem(7.5) + this.$convertirRem(this.h))
 			}
+		},
+		renommer (module) {
+			const titre = prompt(this.$t('nouveauTitre'), module)
+			if (titre !== null) {
+				this.titre = titre
+			}
 		}
 	}
 }

@@ -160,5 +160,7 @@ export default {
 	sonometre: 'Fonometro',
 	sensibilite: 'Sensibilità',
 	erreurSonometre: 'Errore durante il tentativo di recuperare il flusso di input del microfono.',
-	erreurTailleFichier: 'La dimensione massima accettata è di 1 MB. Per i file più grandi, si raccomanda di utilizzare il formato PDF.'
+	erreurTailleFichier: 'La dimensione massima accettata è di 1 MB. Per i file più grandi, si raccomanda di utilizzare il formato PDF.',
+	nouveauTitre: 'Titolo di questa finestra:',
+	calendrier: 'Calendario'
 }

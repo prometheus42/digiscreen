@@ -201,6 +201,13 @@
 							</label>
 						</div>
 						<div class="module">
+							<span>{{ $t('calendrier') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="calendrier" :checked="$parent.modules.includes('calendrier')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
 							<span>{{ $t('sonometre') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="sonometre" :checked="$parent.modules.includes('sonometre')" @change="modifierModule">
