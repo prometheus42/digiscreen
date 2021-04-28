@@ -87,6 +87,10 @@
 				<span class="icone"><i class="material-icons">query_builder</i></span>
 				<span class="titre">{{ $t('horloge') }}</span>
 			</div>
+			<div @click="creerPanneau('calendrier')" v-if="modules.includes('calendrier')" :title="$t('calendrier')">
+				<span class="icone"><i class="material-icons">today</i></span>
+				<span class="titre">{{ $t('calendrier') }}</span>
+			</div>
 			<div @click="creerPanneau('sonometre')" v-if="modules.includes('sonometre')" :title="$t('sonometre')">
 				<span class="icone"><i class="material-icons">hearing</i></span>
 				<span class="titre">{{ $t('volume') }}</span>
@@ -154,6 +158,7 @@
 			<PChrono :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'chrono'" :key="panneau.id" />
 			<PRebours :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'rebours'" :key="panneau.id" />
 			<PHorloge :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'horloge'" :key="panneau.id" />
+			<PCalendrier :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'calendrier'" :key="panneau.id" />
 			<PSonometre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'sonometre'" :key="panneau.id" />
 		</template>
 		<MGrille v-if="modale === 'grille'" />
@@ -186,6 +191,7 @@ import PGroupes from '@/components/groupes.vue'
 import PChrono from '@/components/chrono.vue'
 import PRebours from '@/components/rebours.vue'
 import PHorloge from '@/components/horloge.vue'
+import PCalendrier from '@/components/calendrier.vue'
 import PSonometre from '@/components/sonometre.vue'
 import MGrille from '@/components/grille.vue'
 import MInfo from '@/components/info.vue'
@@ -216,6 +222,7 @@ export default {
 		PChrono,
 		PRebours,
 		PHorloge,
+		PCalendrier,
 		PSonometre,
 		MGrille,
 		MInfo,
@@ -230,7 +237,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'bravo', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'bravo', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -369,6 +376,9 @@ export default {
 			case 'horloge':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 38, h: 42, x: largeur - this.$convertirRem(19), y: hauteur - this.$convertirRem(21), z: z })
 				break
+			case 'calendrier':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 34, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(17), z: z })
+				break
 			case 'sonometre':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 24, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(12), z: z })
 				break
@@ -377,6 +387,7 @@ export default {
 		modifierPanneau (donnees) {
 			this.panneaux.forEach(function (panneau, index) {
 				if (panneau.id === donnees.id) {
+					this.panneaux[index].titre = donnees.titre
 					this.panneaux[index].mode = donnees.mode
 					this.panneaux[index].statut = donnees.statut
 					this.panneaux[index].dimensions = donnees.dimensions
