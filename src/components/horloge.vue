@@ -55,7 +55,7 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 38,
+			minw: 40,
 			minh: 42,
 			statut: '',
 			dimensions: {},
