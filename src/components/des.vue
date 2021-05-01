@@ -13,7 +13,7 @@
 			<div class="conteneur actif panneau-des">
 				<div class="contenu inactif" v-if="mode === 'edition'">
 					<label>{{ $t('nombreDes') }}</label>
-					<input type="number" :value="des" :min="1" :max="6" @input="des = $event.target.value" @keydown.enter="generer">
+					<input type="number" :value="des" :min="1" :max="6" @input="des = parseInt($event.target.value)" @keydown.enter="generer">
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif" v-else>
@@ -57,7 +57,7 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 40,
+			minw: 20,
 			minh: 22,
 			statut: '',
 			dimensions: {},
@@ -114,12 +114,24 @@ export default {
 	methods: {
 		generer () {
 			this.mode = 'lecture'
-			if (this.des > 3) {
-				this.w = 40
-				this.h = 36
-			} else {
+			if (this.des === 1) {
+				this.w = 20
+				this.h = 24
+			} else if (this.des === 2) {
+				this.w = 30
+				this.h = 24
+			} else if (this.des === 3) {
 				this.w = 40
 				this.h = 24
+			} else if (this.des > 3 && this.des < 7) {
+				this.w = 40
+				this.h = 36
+			} else if (this.des > 6 && this.des < 10) {
+				this.w = 40
+				this.h = 48
+			} else if (this.des > 9) {
+				this.w = 40
+				this.h = 60
 			}
 			if (this.donnees.x > 0 && this.donnees.y > 0) {
 				this.x = this.donnees.x
