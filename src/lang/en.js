@@ -83,6 +83,8 @@ export default {
 	fin: 'End',
 	min: 'Min.',
 	sec: 'Sec.',
+	tailleTextePlus: 'Increase font size',
+	tailleTexteMoins: 'Reduce font size',
 	gras: 'Bold',
 	italique: 'Italic',
 	souligne: 'Underlined',

@@ -1,6 +1,6 @@
 <template>
 	<transition name="fondu">
-		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement" :style="{'background': definirCouleurFond()}">
+		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'max': statut === 'max', 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement" :style="{'background': definirCouleurFond()}">
 			<header class="actif">
 				<div class="titre actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
@@ -12,12 +12,14 @@
 					<span class="editer" role="button" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
+					<span class="afficher" role="button" @click="maximiser" v-if="mode === 'edition' && statut === ''"><i class="material-icons">fullscreen</i></span>
+					<span class="afficher" role="button" @click="normaliser" v-else-if="mode === 'edition' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
 					<span class="fermer" role="button" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
 			<div class="conteneur actif">
-				<div class="contenu inactif panneau-texte" v-if="mode === 'edition'">
-					<div class="editeur" />
+				<div class="contenu inactif panneau-texte edition" v-if="mode === 'edition'">
+					<div class="editeur" :style="{'font-size': $convertirRem(taille) + 'px'}" />
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
 				<div class="contenu inactif panneau-texte" v-else>
@@ -52,7 +54,7 @@ export default {
 			chargement: true,
 			mode: 'edition',
 			deplacement: false,
-			redimensionnement: false,
+			redimensionnement: true,
 			titre: '',
 			id: '',
 			w: 0,
@@ -60,8 +62,8 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 20,
-			minh: 8,
+			minw: 53,
+			minh: 46,
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0 },
@@ -97,7 +99,9 @@ export default {
 		if (this.panneau.mode !== '') {
 			this.mode = this.panneau.mode
 		}
-		if (this.panneau.statut === 'min') {
+		if (this.panneau.statut === 'max') {
+			this.maximiser()
+		} else if (this.panneau.statut === 'min') {
 			this.minimiser()
 		}
 		if (typeof this.panneau.contenu === 'object' && this.panneau.contenu.constructor === Object) {
@@ -106,9 +110,6 @@ export default {
 			this.couleurFond = this.panneau.contenu.couleurFond
 		} else if (this.panneau.contenu !== '') {
 			this.texte = this.panneau.contenu
-		}
-		if (this.mode === 'lecture') {
-			this.redimensionnement = true
 		}
 		this.positionner()
 	},
@@ -133,7 +134,6 @@ export default {
 		generer () {
 			if (this.texte !== '') {
 				this.mode = 'lecture'
-				this.redimensionnement = true
 				this.editeur = ''
 				if (this.donnees.w > 0 && this.donnees.h > 0) {
 					this.w = this.donnees.w
@@ -146,12 +146,13 @@ export default {
 					this.x = this.donnees.x
 					this.y = this.donnees.y
 				}
+				this.minw = 20
+				this.minh = 8
 				this.positionner()
 			}
 		},
 		editer () {
 			this.mode = 'edition'
-			this.redimensionnement = false
 			this.$nextTick(function () {
 				this.creer()
 				if (this.statut !== '') {
@@ -163,6 +164,8 @@ export default {
 				this.donnees.y = this.y
 				this.w = 53
 				this.h = 46
+				this.minw = 53
+				this.minh = 46
 				this.positionner()
 			}.bind(this))
 		},
@@ -174,6 +177,8 @@ export default {
 					this.texte = texte
 				}.bind(this),
 				actions: [
+					{ name: 'taille-plus', title: that.$t('tailleTextePlus'), icon: '<i class="material-icons">add</i>', result: () => that.augmenterTaille() },
+					{ name: 'taille-moins', title: that.$t('tailleTexteMoins'), icon: '<i class="material-icons">remove</i>', result: () => that.reduireTaille() },
 					{ name: 'gras', title: that.$t('gras'), icon: '<i class="material-icons">format_bold</i>', result: () => pell.exec('bold') },
 					{ name: 'italique', title: that.$t('italique'), icon: '<i class="material-icons">format_italic</i>', result: () => pell.exec('italic') },
 					{ name: 'souligne', title: that.$t('souligne'), icon: '<i class="material-icons">format_underlined</i>', result: () => pell.exec('underline') },
@@ -213,12 +218,12 @@ export default {
 		},
 		augmenterTaille () {
 			if (this.taille < 10) {
-				this.taille = this.taille + 0.1
+				this.taille = this.taille + 0.2
 			}
 		},
 		reduireTaille () {
 			if (this.taille > 1) {
-				this.taille = this.taille - 0.1
+				this.taille = this.taille - 0.2
 			}
 		},
 		annulerTaille () {
@@ -229,6 +234,11 @@ export default {
 </script>
 
 <style>
+.panneau .panneau-texte.edition {
+	width: 100%;
+	height: 100%;
+}
+
 .panneau .conteneur .texte {
 	font-weight: 400;
 	line-height: 1.4;
@@ -236,6 +246,7 @@ export default {
 }
 
 .editeur {
+	height: calc(100% - 6rem);
 	border-bottom: 1px solid #ddd;
 }
 
@@ -245,15 +256,13 @@ export default {
 }
 
 .pell-content {
-	font-size: 2.4rem;
-    height: 30rem;
+    height: calc(100% - 4.5rem);
+	width: 100%;
 	outline: 0;
 	line-height: 1.5;
 	padding: 2rem 1rem;
-	position: sticky;
 	text-align: left;
 	overflow: auto;
-	top: 0;
 	cursor: text;
 }
 
@@ -263,9 +272,7 @@ export default {
 	align-items: center;
     background-color: #fff;
 	border-bottom: 1px solid #ddd;
-	position: sticky;
-	z-index: 1;
-	top: 0;
+	height: 4.5rem;
 }
 
 .pell-button {

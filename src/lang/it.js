@@ -83,6 +83,8 @@ export default {
 	fin: 'Fine',
 	min: 'Min.',
 	sec: 'Sec.',
+	tailleTextePlus: 'Aumentare la dimensione',
+	tailleTexteMoins: 'Riduci la dimensione',
 	gras: 'Grassetto',
 	italique: 'Corsivo',
 	souligne: 'Sottolineato',
