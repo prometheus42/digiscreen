@@ -34,4 +34,5 @@ https://ladigitale.dev/digiscreen/
 
 ### Remerciements et crédits
 Traduction en italien par Paolo Mauri (https://gitlab.com/maupao) et Roberto Marcolin (nilocram)
+
 Traduction en espagnol par Fernando S. Delgado Trujillo (https://gitlab.com/fersdt)
