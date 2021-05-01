@@ -20,11 +20,14 @@ npm run serve
 npm run build
 ```
 
-### Fichier .env nécessaire à la racine avant compilation avec 2 variables
+### Variables d'environnement (fichier .env à créer à la racine avant compilation)
 ```
 VUE_APP_GOOGLE_API_KEY (clé API Google pour Youtube)
 VUE_APP_PIXABAY_API_KEY (clé API Pixabay)
 ```
+
+### Production
+Le dossier dist peut être déployé directement sur un serveur de fichier. Cette version compilée n'intègre pas les clés API Pixabay et Google pour YouTube.
 
 ### Démo
 https://ladigitale.dev/digiscreen/
