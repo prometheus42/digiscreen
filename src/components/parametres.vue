@@ -131,6 +131,13 @@
 							</label>
 						</div>
 						<div class="module">
+							<span>{{ $t('lien') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="lien" :checked="$parent.modules.includes('lien')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
 							<span>{{ $t('contenuIntegre') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="iframe" :checked="$parent.modules.includes('iframe')" @change="modifierModule">

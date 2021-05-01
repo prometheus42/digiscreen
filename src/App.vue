@@ -47,6 +47,10 @@
 				<span class="icone"><i class="material-icons">movie_creation</i></span>
 				<span class="titre">{{ $t('video') }}</span>
 			</div>
+			<div @click="creerPanneau('lien')" v-if="modules.includes('lien')" :title="$t('lien')">
+				<span class="icone"><i class="material-icons">link</i></span>
+				<span class="titre">{{ $t('lien') }}</span>
+			</div>
 			<div @click="creerPanneau('iframe')" v-if="modules.includes('iframe')" :title="$t('contenuIntegre')">
 				<span class="icone"><i class="material-icons">code</i></span>
 				<span class="titre">{{ $t('iframe') }}</span>
@@ -148,6 +152,7 @@
 			<PAudio :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'audio'" :key="panneau.id" />
 			<PSynthese :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" :listeVoix="listeVoix" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'synthese'" :key="panneau.id" />
 			<PVideo :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'video'" :key="panneau.id" />
+			<PLien :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'lien'" :key="panneau.id" />
 			<PIframe :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'iframe'" :key="panneau.id" />
 			<PNuage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'nuage'" :key="panneau.id" />
 			<POrdre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'ordre'" :key="panneau.id" />
@@ -181,6 +186,7 @@ import PDocument from '@/components/document.vue'
 import PAudio from '@/components/audio.vue'
 import PSynthese from '@/components/synthese.vue'
 import PVideo from '@/components/video.vue'
+import PLien from '@/components/lien.vue'
 import PIframe from '@/components/iframe.vue'
 import PNuage from '@/components/nuage.vue'
 import POrdre from '@/components/ordre.vue'
@@ -212,6 +218,7 @@ export default {
 		PAudio,
 		PSynthese,
 		PVideo,
+		PLien,
 		PIframe,
 		PNuage,
 		POrdre,
@@ -237,7 +244,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'bravo', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'bravo', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -298,7 +305,6 @@ export default {
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
 			window.speechSynthesis.onvoiceschanged = this.recupererVoix
 		}
-		window.addEventListener('resize', this.verifierDimensions)
 		fscreen.addEventListener('fullscreenchange', function () {
 			if (fscreen.fullscreenElement === null) {
 				this.pleinEcran = false
@@ -306,6 +312,11 @@ export default {
 				this.pleinEcran = true
 			}
 		}.bind(this))
+		window.addEventListener('resize', this.verifierDimensions)
+		window.addEventListener('beforeunload', function (event) {
+			event.preventDefault()
+			event.returnValue = ''
+		})
 	},
 	methods: {
 		definirFond () {
@@ -346,6 +357,9 @@ export default {
 			case 'video':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 27, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(13.5), z: z })
 				break
+			case 'lien':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 28, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(14), z: z })
+				break
 			case 'iframe':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11), z: z })
 				break
@@ -374,7 +388,7 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22.2, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11.1), z: z })
 				break
 			case 'horloge':
-				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 42, x: largeur - this.$convertirRem(19), y: hauteur - this.$convertirRem(21), z: z })
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 42, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(21), z: z })
 				break
 			case 'calendrier':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 34, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(17), z: z })

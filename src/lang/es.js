@@ -164,5 +164,7 @@ export default {
 	erreurSonometre: 'Error al intentar recuperar el flujo de entrada del micrófono.',
 	erreurTailleFichier: 'El tamaño máximo aceptado es de 1 MB. Para los ficheros de mayor tamaño, se recomienda utilizar el formato PDF.',
 	nouveauTitre: 'Título de esta ventana:',
-	calendrier: 'Calendario'
+	calendrier: 'Calendario',
+	lien: 'Enlace',
+	titreLien: 'Título del enlace'
 }

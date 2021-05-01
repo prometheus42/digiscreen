@@ -164,5 +164,7 @@ export default {
 	erreurSonometre: 'Error while attempting to retrieve the microphone input stream.',
 	erreurTailleFichier: 'The maximum size accepted is 1 MB. For larger files, it is recommended to use the PDF format.',
 	nouveauTitre: 'Title of this panel:',
-	calendrier: 'Calendar'
+	calendrier: 'Calendar',
+	lien: 'Link',
+	titreLien: 'Title of the link'
 }
