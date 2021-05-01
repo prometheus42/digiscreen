@@ -37,8 +37,8 @@ export default {
 			if (Object.keys(this.dimensions).length === 0) {
 				this.dimensions = { w: this.w, h: this.h, x: this.x, y: this.y, z: this.z, minw: this.minw, minh: this.minh }
 			}
-			this.h = this.$convertirRem(3)
-			this.minh = this.$convertirRem(3)
+			this.h = 3
+			this.minh = 3
 		},
 		normaliser () {
 			if (this.statut === 'max') {
