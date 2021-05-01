@@ -164,9 +164,11 @@ export default {
 				this.donnees.y = this.y
 				this.w = 53
 				this.h = 46
-				this.minw = 53
-				this.minh = 46
 				this.positionner()
+				this.$nextTick(function () {
+					this.minw = 53
+					this.minh = 46
+				}.bind(this))
 			}.bind(this))
 		},
 		creer () {
