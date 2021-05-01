@@ -1,7 +1,17 @@
 {
   "name": "digiscreen",
-  "version": "1.0.0",
-  "private": true,
+  "version": "0.1.0",
+  "homepage": "https://ladigitale.dev/digiscreen/",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/ladigitale/digiscreen.git"
+  },
+  "author": {
+    "name": "Emmanuel ZIMMERT",
+    "email": "ez@ladigitale.dev",
+    "url": "https://ladigitale.dev"
+  },
+  "license": "GNU GPLv3",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
