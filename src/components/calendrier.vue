@@ -12,7 +12,7 @@
 			<div class="conteneur actif panneau-calendrier">
 				<div class="contenu inactif">
 					<div class="calendrier">
-                        <calendar is-expanded show-weeknumbers :locale="$root.$i18n.locale" :attributes="[{key: 'jour', highlight: 'teal', dates: new Date()}]" />
+                        <calendar color="teal" is-expanded show-weeknumbers :locale="$root.$i18n.locale" :attributes="[{key: 'jour', highlight: 'teal', dates: new Date()}]" />
                     </div>
 				</div>
 			</div>
