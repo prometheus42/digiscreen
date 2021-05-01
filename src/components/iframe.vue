@@ -112,10 +112,6 @@ export default {
 			this.$nextTick(function () {
 				document.querySelector('#' + this.id + ' input').focus()
 			}.bind(this))
-		} else if (this.mode === 'recherche') {
-			this.$nextTick(function () {
-				this.rechercher(this.page)
-			}.bind(this))
 		}
 	},
 	methods: {
