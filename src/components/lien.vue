@@ -11,17 +11,23 @@
 				</div>
 			</header>
 			<div class="conteneur actif panneau-lien" v-if="mode === 'edition'">
-				<div class="contenu inactif">
+				<div class="contenu inactif" v-show="!chargementIcone">
 					<label>{{ $t('lien') }}</label>
 					<input type="search" class="lien" :value="lien" @input="lien = $event.target.value" @keydown.enter="generer">
                     <label>{{ $t('titreLien') }}</label>
                     <input type="search" class="titre-lien" :value="titreLien" @input="titreLien = $event.target.value" @keydown.enter="generer">
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
+				<div class="contenu inactif" v-show="chargementIcone">
+					<div class="conteneur-chargement">
+						<div class="chargement" />
+					</div>
+				</div>
 			</div>
 			<div class="conteneur actif panneau-lien" v-else>
 				<label v-if="titreLien !== ''">{{ titreLien }}</label>
-				<a :href="lien" target="_blank" rel="noreferrer"><i class="material-icons">open_in_new</i></a>
+				<a class="icone" :href="lien" target="_blank" rel="noreferrer" v-if="icone === 'defaut'"><i class="material-icons">open_in_new</i></a>
+				<a class="favicon" :href="lien" target="_blank" rel="noreferrer" v-else><img :src="icone" :width="60" :height="60" :alt="titreLien"></a>
 			</div>
 		</vue-drag-resize>
 	</transition>
@@ -63,13 +69,15 @@ export default {
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0 },
 			lien: '',
-			titreLien: ''
+			titreLien: '',
+			icone: 'defaut',
+			chargementIcone: false
 		}
 	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { lien: this.lien, titreLien: this.titreLien }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { lien: this.lien, titreLien: this.titreLien, icone: this.icone }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -98,6 +106,9 @@ export default {
 		if (this.panneau.contenu !== '') {
 			this.lien = this.panneau.contenu.lien
 			this.titreLien = this.panneau.contenu.titreLien
+			if (this.panneau.contenu.icone) {
+				this.icone = this.panneau.contenu.icone
+			}
 		}
 		this.positionner()
 	},
@@ -112,12 +123,50 @@ export default {
 	methods: {
 		generer () {
 			if (this.$verifierURL(this.lien) === true) {
-				this.mode = 'lecture'
-				this.w = 22
-				this.h = 18
-				if (this.titreLien !== '') {
-					this.titre = this.titreLien
-				}
+				this.chargementIcone = true
+				let domaine = new URL(this.lien)
+				domaine = domaine.hostname
+				const xhr = new XMLHttpRequest()
+				xhr.onload = function () {
+					if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+						const donnees = JSON.parse(xhr.responseText)
+						if (donnees.hasOwnProperty('icons')) {
+							donnees.icons.reverse()
+							for (let i = 0; i < donnees.icons.length; i++) {
+								if (i === 0 && donnees.icons[i].src.includes('.png') === true) {
+									this.icone = donnees.icons[i].src
+									break
+								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '96x96') {
+									this.icone = donnees.icons[i].src
+									break
+								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '64x64') {
+									this.icone = donnees.icons[i].src
+									break
+								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '48x48') {
+									this.icone = donnees.icons[i].src
+									break
+								} else if (donnees.icons[i].src.includes('.png') === true) {
+									this.icone = donnees.icons[i].src
+									break
+								} else {
+									this.icone = 'defaut'
+								}
+							}
+						}
+						this.mode = 'lecture'
+						this.w = 22
+						this.h = 18
+						if (this.titreLien !== '') {
+							this.titre = this.titreLien
+						} else {
+							this.titre = this.$t('lien')
+						}
+						this.positionner()
+					}
+					this.chargementIcone = false
+				}.bind(this)
+				xhr.open('GET', 'https://favicongrabber.com/api/grab/' + domaine, true)
+				xhr.send()
 			}
 		},
 		editer () {
@@ -137,11 +186,36 @@ export default {
 	text-align: center;
 }
 
+.panneau .panneau-lien .conteneur-chargement {
+	font-size: 0;
+	line-height: 1;
+	text-align: center;
+}
+
+.panneau .panneau-lien .chargement {
+	display: inline-block;
+	border: 7px solid #ddd;
+	border-top: 7px solid #00ced1;
+	border-radius: 50%;
+	width: 45px;
+	height: 45px;
+	animation: rotation 0.7s linear infinite;
+}
+
+@keyframes rotation {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
 .panneau .panneau-lien input.lien {
 	margin-bottom: 2rem;
 }
 
-.panneau .panneau-lien a {
+.panneau .panneau-lien a.icone {
 	font-size: 7.2rem;
+}
+
+.panneau .panneau-lien a.favicon {
+	font-size: 0;
 }
 </style>
