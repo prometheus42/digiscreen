@@ -301,6 +301,12 @@ export default {
 		document.querySelector('#chargement').addEventListener('animationend', function () {
 			this.chargement = false
 		}.bind(this))
+		const langue = navigator.language
+		const langues = ['fr', 'en', 'it', 'es', 'nl']
+		if (langues.includes(langue.substring(0, 2)) === true) {
+			this.$root.$i18n.locale = langue
+			this.langue = langue
+		}
 		this.recupererVoix()
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
 			window.speechSynthesis.onvoiceschanged = this.recupererVoix
