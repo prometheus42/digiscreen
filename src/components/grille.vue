@@ -3,7 +3,7 @@
 		<div class="modale">
 			<header>
 				<span class="titre">{{ $t('grille') }}</span>
-				<span class="fermer" role="button" @click="$parent.fermerModale"><i class="material-icons">close</i></span>
+				<span class="fermer" role="button" tabindex="0" @click="$parent.fermerModale"><i class="material-icons">close</i></span>
 			</header>
 			<div class="conteneur modale-grille">
 				<div class="contenu">
@@ -20,13 +20,13 @@
 					<div class="fond">
 						<label>{{ $t('couleurFond') }}</label>
 						<div class="couleurs">
-							<span class="blanc" :class="{'selectionne': couleur === 'blanc'}" role="button" @click="couleur = 'blanc'" />
-							<span class="gris" :class="{'selectionne': couleur === 'gris'}" @click="couleur = 'gris'" />
-							<span class="vert" :class="{'selectionne': couleur === 'vert'}" role="button" @click="couleur = 'vert'" />
-							<span class="bleu" :class="{'selectionne': couleur === 'bleu'}" role="button" @click="couleur = 'bleu'" />
-							<span class="jaune" :class="{'selectionne': couleur === 'jaune'}" role="button" @click="couleur = 'jaune'" />
-							<span class="rouge" :class="{'selectionne': couleur === 'rouge'}" role="button" @click="couleur = 'rouge'" />
-							<span class="transparent" :class="{'selectionne': couleur === 'transparent'}" role="button" @click="couleur = 'transparent'" />
+							<span class="blanc" :class="{'selectionne': couleur === 'blanc'}" role="button" tabindex="0" @click="couleur = 'blanc'" />
+							<span class="gris" :class="{'selectionne': couleur === 'gris'}" role="button" tabindex="0" @click="couleur = 'gris'" />
+							<span class="vert" :class="{'selectionne': couleur === 'vert'}" role="button" tabindex="0" @click="couleur = 'vert'" />
+							<span class="bleu" :class="{'selectionne': couleur === 'bleu'}" role="button" tabindex="0" @click="couleur = 'bleu'" />
+							<span class="jaune" :class="{'selectionne': couleur === 'jaune'}" role="button" tabindex="0" @click="couleur = 'jaune'" />
+							<span class="rouge" :class="{'selectionne': couleur === 'rouge'}" role="button" tabindex="0" @click="couleur = 'rouge'" />
+							<span class="transparent" :class="{'selectionne': couleur === 'transparent'}" role="button" tabindex="0" @click="couleur = 'transparent'" />
 						</div>
 					</div>
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>

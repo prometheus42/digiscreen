@@ -4,17 +4,17 @@
 			<header class="actif">
 				<div class="titre actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
-					<span class="zoomer" role="button" @click="zoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
-					<span class="dezoomer" role="button" @click="dezoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
-					<span class="recadrer" role="button" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
+					<span class="zoomer" role="button" tabindex="0" @click="zoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
+					<span class="dezoomer" role="button" tabindex="0" @click="dezoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
+					<span class="recadrer" role="button" tabindex="0" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
 				</div>
 				<div class="actions-panneau inactif">
-					<span class="editer" role="button" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
-					<span class="afficher" role="button" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
-					<span class="afficher" role="button" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
-					<span class="afficher" role="button" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
-					<span class="afficher" role="button" @click="normaliser" v-else-if="mode === 'lecture' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
-					<span class="fermer" role="button" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
+					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="mode === 'lecture' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
+					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
 			<div class="conteneur actif panneau-nuage">
@@ -28,8 +28,8 @@
 								<input type="number" :value="mot[1]" @input="mots[index][1] = $event.target.value" :min="10" :max="100">
 							</div>
 						</div>
-						<span class="bouton-secondaire" role="button" :title="$t('ajouterMot')" @click="ajouterMot"><i class="material-icons">add_circle_outline</i></span>
-						<span class="bouton-secondaire" role="button" :title="$t('ajouterListe')" @click="afficherListe"><i class="material-icons">list_alt</i></span>
+						<span class="bouton-secondaire" role="button" tabindex="0" :title="$t('ajouterMot')" @click="ajouterMot"><i class="material-icons">add_circle_outline</i></span>
+						<span class="bouton-secondaire" role="button" tabindex="0" :title="$t('ajouterListe')" @click="afficherListe"><i class="material-icons">list_alt</i></span>
 					</div>
 					<div class="colonne droite">
 						<label>{{ $t('apercu') }}</label>

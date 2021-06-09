@@ -4,17 +4,17 @@
 			<header class="actif">
 				<div class="titre actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
-					<span class="zoomer" role="button" @click="zoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
-					<span class="dezoomer" role="button" @click="dezoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
-					<span class="recadrer" role="button" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
+					<span class="zoomer" role="button" tabindex="0" @click="zoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
+					<span class="dezoomer" role="button" tabindex="0" @click="dezoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
+					<span class="recadrer" role="button" tabindex="0" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
 				</div>
 				<div class="actions-panneau inactif">
-					<span class="editer" role="button" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
-					<span class="afficher" role="button" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
-					<span class="afficher" role="button" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
-					<span class="afficher" role="button" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
-					<span class="afficher" role="button" @click="normaliser" v-else-if="mode === 'lecture' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
-					<span class="fermer" role="button" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
+					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="mode === 'lecture' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
+					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
 			<div class="conteneur actif panneau-image">
@@ -22,11 +22,11 @@
 					<label v-if="pixabayAPIKey !== ''">{{ $t('lienImageRecherche') }}</label>
 					<div class="rechercher" v-if="pixabayAPIKey !== ''">
 						<input type="search" :value="image" @input="image = $event.target.value" @keydown.enter="generer">
-						<span role="button" :title="$t('rechercher')" class="bouton-secondaire" @click="generer"><i class="material-icons">search</i></span>
+						<span role="button" tabindex="0" :title="$t('rechercher')" class="bouton-secondaire" @click="generer"><i class="material-icons">search</i></span>
 					</div>
 					<div class="separateur" v-if="pixabayAPIKey !== ''"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
-					<label class="bouton" role="button" for="selectionner-image">{{ $t('selectionnerImage') }}</label>
+					<label class="bouton" role="button" tabindex="0" for="selectionner-image">{{ $t('selectionnerImage') }}</label>
 					<input id="selectionner-image" type="file" @change="televerserImage" style="display: none" accept=".jpg, .jpeg, .png, .gif">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementImage">
@@ -39,7 +39,7 @@
 					<div class="recherche">
 						<div class="rechercher">
 							<input type="search" :value="requete" @input="requete = $event.target.value" @keydown.enter="rechercher(1)">
-							<span role="button" :title="$t('rechercher')" class="bouton-secondaire" @click="rechercher(1)"><i class="material-icons">search</i></span>
+							<span role="button" tabindex="0" :title="$t('rechercher')" class="bouton-secondaire" @click="rechercher(1)"><i class="material-icons">search</i></span>
 						</div>
 						<div class="resultats" v-if="Object.keys(resultats).length > 0">
 							<div class="item" :data-w="resultat.previewWidth" :data-h="resultat.previewHeight" v-for="(resultat, index) in resultats.hits" @click="selectionnerImage(resultat.largeImageURL)" :key="'image_' + index">
@@ -47,8 +47,8 @@
 							</div>
 						</div>
 						<div class="navigation" v-if="Object.keys(resultats).length > 0 && (page > 1 || page < (resultats.total / 12))">
-							<span :class="{'invisible': page < 2}" @click="modifierPage('precedente')">{{ $t('pagePrecedente') }}</span>
-							<span :class="{'invisible': page >= (resultats.total / 12)}" @click="modifierPage('suivante')">{{ $t('pageSuivante') }}</span>
+							<span role="button" tabindex="0" :class="{'invisible': page < 2}" @click="modifierPage('precedente')">{{ $t('pagePrecedente') }}</span>
+							<span role="button" tabindex="0" :class="{'invisible': page >= (resultats.total / 12)}" @click="modifierPage('suivante')">{{ $t('pageSuivante') }}</span>
 						</div>
 					</div>
 				</div>

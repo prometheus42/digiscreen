@@ -3,7 +3,7 @@
 		<div class="modale">
 			<header>
 				<span class="titre">{{ $t('aProposDigiscreen') }}</span>
-				<span class="fermer" role="button" @click="$parent.fermerModale"><i class="material-icons">close</i></span>
+				<span class="fermer" role="button" tabindex="0" @click="$parent.fermerModale"><i class="material-icons">close</i></span>
 			</header>
 			<div class="conteneur">
 				<div class="contenu">

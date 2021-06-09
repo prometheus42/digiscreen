@@ -3,7 +3,7 @@
 		<div class="menu" :class="{'ouvert': ouvert}">
 			<header>
 				<span class="titre">{{ $t('options') }}</span>
-				<span class="fermer" role="button" @click="$parent.fermerMenu"><i class="material-icons">close</i></span>
+				<span class="fermer" role="button" tabindex="0" @click="$parent.fermerMenu"><i class="material-icons">close</i></span>
 			</header>
 			<div class="conteneur">
 				<div class="contenu">
@@ -51,7 +51,7 @@
 					<div class="recherche" v-if="pixabayAPIKey !== ''">
 						<div class="rechercher">
 							<input type="text" :value="requete" @input="requete = $event.target.value" @keyup="verifierRequete" @keydown.enter="valider" :placeholder="$t('lienImageRecherche')">
-							<span role="button" :title="$t('rechercher')" class="bouton-secondaire" @click="valider"><i class="material-icons">search</i></span>
+							<span role="button" tabindex="0" :title="$t('rechercher')" class="bouton-secondaire" @click="valider"><i class="material-icons">search</i></span>
 						</div>
 						<div class="resultats" v-if="Object.keys(resultats).length > 0">
 							<div class="item" :data-w="image.previewWidth" :data-h="image.previewHeight" v-for="(image, index) in resultats.hits" @click="modifierFond(image.largeImageURL)" :key="'image_' + index">
@@ -66,10 +66,10 @@
 					<label>{{ $t('pages') }}</label>
 					<div class="pages">
 						<span :class="{'selectionne': $parent.page === index}" @click="afficherPage(index)" v-for="index in $parent.pages.length" :key="'page_' + index">{{ index }}</span>
-						<span role="button" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
+						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
 					</div>
 					<label>{{ $t('exporter') }}</label>
-					<span role="button" class="bouton" tabindex="0" @click="exporter">{{ $t('exporterEcran') }}</span>
+					<span role="button" tabindex="0" class="bouton" @click="exporter">{{ $t('exporterEcran') }}</span>
 					<label>{{ $t('importer') }}</label>
 					<label for="televerser" class="bouton">{{ $t('importerEcran') }}</label>
 					<input type="file" id="televerser" name="televerser" style="display: none;" accept=".dgb, .dgs" @change="importer">
