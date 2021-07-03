@@ -82,6 +82,9 @@ export default {
 		},
 		finRedimensionnement: function () {
 			this.positionner()
+		},
+		hauteurPage: function () {
+			this.positionner()
 		}
 	},
 	created () {
@@ -129,29 +132,11 @@ export default {
 				const xhr = new XMLHttpRequest()
 				xhr.onload = function () {
 					if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-						const donnees = JSON.parse(xhr.responseText)
-						if (donnees.hasOwnProperty('icons')) {
-							donnees.icons.reverse()
-							for (let i = 0; i < donnees.icons.length; i++) {
-								if (i === 0 && donnees.icons[i].src.includes('.png') === true) {
-									this.icone = donnees.icons[i].src
-									break
-								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '96x96') {
-									this.icone = donnees.icons[i].src
-									break
-								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '64x64') {
-									this.icone = donnees.icons[i].src
-									break
-								} else if (donnees.icons[i].sizes && donnees.icons[i].sizes === '48x48') {
-									this.icone = donnees.icons[i].src
-									break
-								} else if (donnees.icons[i].src.includes('.png') === true) {
-									this.icone = donnees.icons[i].src
-									break
-								} else {
-									this.icone = 'defaut'
-								}
-							}
+						const donnees = xhr.responseText
+						if (donnees !== '') {
+							this.icone = 'https://ladigitale.dev/favicons' + donnees.substring(1)
+						} else {
+							this.icone = 'defaut'
 						}
 						this.mode = 'lecture'
 						this.w = 22
@@ -165,8 +150,9 @@ export default {
 					}
 					this.chargementIcone = false
 				}.bind(this)
-				xhr.open('GET', 'https://favicongrabber.com/api/grab/' + domaine, true)
-				xhr.send()
+				xhr.open('POST', 'https://ladigitale.dev/favicons/recuperer_icone.php', true)
+				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+				xhr.send('lien=' + domaine);
 			}
 		},
 		editer () {
