@@ -91,6 +91,9 @@ export default {
 		},
 		finRedimensionnement: function () {
 			this.positionner()
+		},
+		hauteurPage: function () {
+			this.positionner()
 		}
 	},
 	created () {

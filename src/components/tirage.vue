@@ -12,19 +12,19 @@
 					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
-			<div class="conteneur actif">
-				<div class="contenu inactif panneau-tirage" v-if="mode === 'edition'">
+			<div class="conteneur panneau-tirage actif">
+				<div class="contenu inactif" v-if="mode === 'edition'">
 					<label>{{ $t('texteTirage') }}</label>
 					<span class="consigne" v-html="$t('consigneTirage')" />
 					<textarea class="tirage" :value="texte" @input="texte = $event.target.value" :placeholder="$t('exempleListe')"></textarea>
 					<label>{{ $t('supprimerItemTirage') }}</label>
 					<div class="choix">
 						<span class="oui">
-							<input type="radio" :id="'choix_oui_' + id" name="choix" value="oui" :checked="suppression === 'oui'" @change="suppression = $event.target.value">
+							<input type="radio" :id="'choix_oui_' + id" :name="'choix_oui_' + id" value="oui" :checked="suppression === 'oui'" @change="suppression = $event.target.value">
 							<label :for="'choix_oui_' + id">{{ $t('oui') }}</label>
 						</span>
 						<span class="non">
-							<input type="radio" :id="'choix_non_' + id" name="choix" value="non" :checked="suppression === 'non'" @change="suppression = $event.target.value">
+							<input type="radio" :id="'choix_non_' + id" :name="'choix_oui_' + id" value="non" :checked="suppression === 'non'" @change="suppression = $event.target.value">
 							<label :for="'choix_non_' + id">{{ $t('non') }}</label>
 						</span>
 					</div>
@@ -90,6 +90,9 @@ export default {
 			}
 		},
 		finRedimensionnement: function () {
+			this.positionner()
+		},
+		hauteurPage: function () {
 			this.positionner()
 		}
 	},
@@ -197,24 +200,24 @@ export default {
 </script>
 
 <style>
-.panneau .conteneur textarea.tirage {
+.panneau .panneau-tirage textarea.tirage {
 	height: 15rem;
 	max-height: 15rem;
 	margin-bottom: 2rem;
 }
 
-.panneau .conteneur .oui {
+.panneau .panneau-tirage .oui {
 	margin-right: 2.5rem;
 }
 
-.panneau .conteneur .choix label {
+.panneau .panneau-tirage .choix label {
 	display: inline-block;
     width: auto;
     margin-left: 1rem;
 	margin-bottom: 0;
 }
 
-.panneau .conteneur div.tirage {
+.panneau .panneau-tirage div.tirage {
     display: flex;
     justify-content: center;
 	flex-wrap: wrap;
@@ -223,7 +226,7 @@ export default {
 	margin-bottom: 2rem;
 }
 
-.panneau .conteneur div.tirage span {
+.panneau .panneau-tirage div.tirage span {
     font-size: 2rem;
 	color: orange;
 }

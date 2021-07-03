@@ -218,9 +218,8 @@ main {
   	animation-iteration-count: 1;
 }
 
-/*******************************************/
 /* Pages
-/*******************************************/
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 #pages {
 	position: absolute;
 	top: 0;
@@ -259,9 +258,8 @@ main {
 	background: #222;
 }
 
-/*******************************************/
 /* Grille
-/*******************************************/
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 #grille {
 	display: grid;
     grid-gap: 2px;
@@ -327,9 +325,8 @@ main {
 	background: rgba(0, 0, 0, 0.5);
 }
 
-/*******************************************/
-/* Barre d'outils
-/*******************************************/
+/* Modules
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 nav {
 	position: absolute;
 	bottom: 0;
@@ -337,17 +334,23 @@ nav {
 	right: 0;
 	display: flex;
 	justify-content: center;
-	padding: 1rem 0;
+	align-items: center;
+	height: 7.5rem;
+	padding: 0 1rem;
 	background: rgba(0, 29, 29, 0.6);
 	border-top: 2px solid #001d1d;
 	z-index: 10;
-	overflow-x: auto;
-	-ms-overflow-style: none;
+	overflow: auto;
 	scrollbar-width: none;
+	transition: bottom 0.2s ease-in-out;
 }
 
 nav::-webkit-scrollbar {
 	display: none;
+}
+
+nav.masque {
+	bottom: -7.5rem;
 }
 
 nav div {
@@ -406,6 +409,27 @@ nav .separateur {
 	cursor: default;
 }
 
+.nav {
+	position: absolute;
+	bottom: calc(1.75rem - 2px);
+	right: 1rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 4rem;
+	height: 4rem;
+	font-size: 2.4rem;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.3);
+	border-radius: 50%;
+	user-select: none;
+	cursor: pointer;
+	z-index: 10001;
+}
+
+/* Transition
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
 .fondu-enter-active,
 .fondu-leave-active {
 	transition-property: opacity;
@@ -422,9 +446,8 @@ nav .separateur {
 	transition-duration: 0.1s;
 }
 
-/*******************************************/
-/* Panneaux et modales
-/*******************************************/
+/* Panneaux, modales et menu
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 .panneau {
 	background: #fff;
 	box-shadow: 0 1.4rem 2.8rem rgba(0, 0, 0, 0.25), 0 1rem 1rem rgba(0, 0, 0, 0.22);
@@ -976,6 +999,8 @@ nav .separateur {
     }
 }
 
+/* Chargement
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 .chargement {
     display: inline-block;
     position: relative;
@@ -1056,33 +1081,17 @@ nav .separateur {
     }
 }
 
-/*******************************************/
 /* Media queries
-/*******************************************/
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media screen and (max-width: 1279px) {
+	nav {
+		justify-content: flex-start;
+		padding: 0 6rem 0 1rem;
+	}
+}
+
 @media screen and (max-width: 1366px) {
 	html {
 		font-size: 56.25%;
-	}
-
-	nav div {
-		margin: 0 0.4rem;
-		flex: 0 0 3.7rem;
-	}
-	
-	nav div:first-child {
-		margin-left: 1rem;
-	}
-
-	nav div:last-child {
-		margin-right: 0;
-	}
-
-	nav .titre {
-		width: 3.7rem;
-	}
-
-	nav::after {
-		content: '';
-  		flex: 0 0 1rem;
 	}
 }

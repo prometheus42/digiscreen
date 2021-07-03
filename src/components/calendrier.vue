@@ -66,6 +66,9 @@ export default {
 		},
 		finRedimensionnement: function () {
 			this.positionner()
+		},
+		hauteurPage: function () {
+			this.positionner()
 		}
 	},
 	created () {
@@ -93,6 +96,10 @@ export default {
 </script>
 
 <style>
+.panneau .panneau-calendrier {
+	overflow: hidden!important;
+}
+
 .panneau .panneau-calendrier .vc-container {
 	border: none;
 	color: #001d1d;

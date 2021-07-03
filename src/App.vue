@@ -10,11 +10,11 @@
 		<div id="import" :class="{'termine': importTermine}" v-if="importDonnees">
 			<div class="chargement"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 		</div>
-		<annotation :panneaux="panneaux" :annotations="annotations" :largeur="largeur" :hauteur="hauteur" @fermer="arreterAnnoter" v-if="annotation" />
+		<annotation :panneaux="panneaux" :annotations="annotations" :largeur="largeur" :hauteur="hauteur" :nav="nav" @fermer="arreterAnnoter" v-if="annotation" />
 		<div id="grille" :class="grille.couleur + ' grille-' + grille.colonnes" v-if="Object.keys(grille).length > 0">
 			<span v-for="element in (grille.colonnes * grille.lignes)" :key="'element_' + element" />
 		</div>
-		<nav v-if="!alerte" :data-html2canvas-ignore="true">
+		<nav v-if="!alerte" :class="{'masque': !nav}" :data-html2canvas-ignore="true">
 			<div @click="creerPanneau('codeqr')" v-if="modules.includes('codeqr')" :title="$t('codeqr')">
 				<span class="icone"><i class="material-icons">qr_code</i></span>
 				<span class="titre">{{ $t('codeqr') }}</span>
@@ -99,9 +99,13 @@
 				<span class="icone"><i class="material-icons">hearing</i></span>
 				<span class="titre">{{ $t('volume') }}</span>
 			</div>
-			<div @click="$lancerConfettis()" v-if="modules.includes('bravo')" :title="$t('confettis')">
+			<div @click="creerPanneau('retroaction')" v-if="modules.includes('retroaction') && !retroaction" :title="$t('retroaction')">
 				<span class="icone"><i class="material-icons">thumb_up</i></span>
-				<span class="titre">{{ $t('bravo') }}</span>
+				<span class="titre">{{ $t('retroaction') }}</span>
+			</div>
+			<div @click="fermerPanneau('panneau-retroaction')" class="actif" v-else-if="modules.includes('retroaction') && retroaction" :title="$t('retroaction')">
+				<span class="icone"><i class="material-icons">thumb_up</i></span>
+				<span class="titre">{{ $t('retroaction') }}</span>
 			</div>
 			<div @click="ouvrirModale('grille')" v-if="modules.includes('grille') && Object.keys(grille).length === 0" :title="$t('grille')">
 				<span class="icone"><i class="material-icons">view_module</i></span>
@@ -143,6 +147,8 @@
 				<span class="titre">{{ $t('aPropos') }}</span>
 			</div>
 		</nav>
+		<span class="nav" v-if="nav" @click="nav = false"><i class="material-icons">expand_more</i></span>
+		<span class="nav" v-else @click="nav = true"><i class="material-icons">expand_less</i></span>
 		<template v-for="panneau in panneauxPage">
 			<PCodeqr :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-if="panneau.type === 'codeqr'" :key="panneau.id" />
 			<PTexte :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'texte'" :key="panneau.id" />
@@ -164,6 +170,7 @@
 			<PRebours :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'rebours'" :key="panneau.id" />
 			<PHorloge :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'horloge'" :key="panneau.id" />
 			<PCalendrier :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'calendrier'" :key="panneau.id" />
+			<PRetroaction :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'retroaction'" :key="panneau.id" />
 			<PSonometre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'sonometre'" :key="panneau.id" />
 		</template>
 		<MGrille v-if="modale === 'grille'" />
@@ -198,6 +205,7 @@ import PChrono from '@/components/chrono.vue'
 import PRebours from '@/components/rebours.vue'
 import PHorloge from '@/components/horloge.vue'
 import PCalendrier from '@/components/calendrier.vue'
+import PRetroaction from '@/components/retroaction.vue'
 import PSonometre from '@/components/sonometre.vue'
 import MGrille from '@/components/grille.vue'
 import MInfo from '@/components/info.vue'
@@ -230,6 +238,7 @@ export default {
 		PRebours,
 		PHorloge,
 		PCalendrier,
+		PRetroaction,
 		PSonometre,
 		MGrille,
 		MInfo,
@@ -244,7 +253,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'bravo', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -253,12 +262,17 @@ export default {
 			zIndex: 100,
 			modale: '',
 			menu: false,
+			nav: true,
 			exportDonnees: false,
 			importDonnees: false,
 			importTermine: false,
+			retroaction: false,
 			annotation: false,
 			horloge: '',
-			finRedimensionnement: false
+			finRedimensionnement: false,
+			defilement: false,
+			depart: 0,
+			distance: 0
 		}
 	},
 	computed: {
@@ -294,10 +308,18 @@ export default {
 				return element.page === this.page
 			}.bind(this))
 			this.panneauxPage = panneaux
+		},
+		nav: function (nav) {
+			if (nav) {
+				this.hauteur = document.body.clientHeight - this.$convertirRem(7.5)
+			} else {
+				this.hauteur = document.body.clientHeight
+			}
 		}
 	},
 	mounted () {
 		this.verifierDimensions()
+		this.activerDefilementHorizontal()
 		document.querySelector('#chargement').addEventListener('animationend', function () {
 			this.chargement = false
 		}.bind(this))
@@ -311,6 +333,23 @@ export default {
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
 			window.speechSynthesis.onvoiceschanged = this.recupererVoix
 		}
+		document.addEventListener('keydown', function (event) {
+			if (event.ctrlKey && event.key === 'k') {
+				this.capturer()
+			} else if (event.ctrlKey && event.key === 'm' && !this.menu) {
+				this.ouvrirMenu()
+			} else if (event.ctrlKey && event.key === 'm' && this.menu) {
+				this.fermerMenu()
+			} else if (event.ctrlKey && event.key === 'i') {
+				this.ouvrirModale('info')
+			} else if (event.ctrlKey && event.key === 'e' && !this.pleinEcran) {
+				this.entrerPleinEcran()
+			} else if (event.ctrlKey && event.key === 'e' && this.pleinEcran) {
+				this.sortirPleinEcran()
+			} else if (event.ctrlKey && (event.key === '*' || event.key === 'l')) {
+				this.nav = !this.nav
+			}
+		}.bind(this))
 		fscreen.addEventListener('fullscreenchange', function () {
 			if (fscreen.fullscreenElement === null) {
 				this.pleinEcran = false
@@ -399,6 +438,10 @@ export default {
 			case 'calendrier':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 34, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(17), z: z })
 				break
+			case 'retroaction':
+				this.panneaux.push({ page: this.page, id: 'panneau-retroaction', type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 36, h: 31, x: largeur - this.$convertirRem(18), y: hauteur - this.$convertirRem(15.5), z: z })
+				this.retroaction = true
+				break
 			case 'sonometre':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 24, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(12), z: z })
 				break
@@ -426,6 +469,9 @@ export default {
 					this.panneaux.splice(index, 1)
 				}
 			}.bind(this))
+			if (id === 'panneau-retroaction') {
+				this.retroaction = false
+			}
 		},
 		ouvrirModale (modale) {
 			this.modale = modale
@@ -479,6 +525,9 @@ export default {
 					this.panneaux = donnees.panneaux
 					this.langue = donnees.langue
 					this.$root.$i18n.locale = donnees.langue
+					if (donnees.hasOwnProperty('nav')) {
+						this.nav = donnees.nav
+					}
 					this.zIndex = donnees.zIndex
 					this.importTermine = true
 					if (Object.keys(this.pages[0].annotations).length > 0) {
@@ -506,6 +555,7 @@ export default {
 				donnees.modules = this.modules
 				donnees.panneaux = this.panneaux
 				donnees.langue = this.langue
+				donnees.nav = this.nav
 				donnees.zIndex = this.zIndex
 				donnees = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(donnees))
 				saveAs(donnees, fichier + '.dgs')
@@ -536,7 +586,11 @@ export default {
 			const largeur = window.innerWidth
 			this.$nextTick(function () {
 				this.largeur = document.body.clientWidth
-				this.hauteur = document.body.clientHeight - this.$convertirRem(7.5)
+				if (this.nav) {
+					this.hauteur = document.body.clientHeight - this.$convertirRem(7.5)
+				} else {
+					this.hauteur = document.body.clientHeight
+				}
 			}.bind(this))
 			if (largeur < 1024) {
 				this.alerte = true
@@ -553,6 +607,30 @@ export default {
 			this.horloge = setTimeout(function () {
 				this.finRedimensionnement = true
 			}.bind(this), 250)
+		},
+		activerDefilementHorizontal () {
+			const nav = document.querySelector('nav')
+			nav.addEventListener('mousedown', this.defilementHorizontalDebut)
+			nav.addEventListener('mouseleave', this.defilementHorizontalFin)
+			nav.addEventListener('mouseup', this.defilementHorizontalFin)
+			nav.addEventListener('mousemove', this.defilementHorizontalEnCours)
+		},
+		defilementHorizontalDebut (event) {
+			const nav = document.querySelector('nav')
+			this.defilement = true
+			this.depart = event.pageX - nav.offsetLeft
+			this.distance = nav.scrollLeft
+		},
+		defilementHorizontalFin () {
+			this.defilement = false
+		},
+		defilementHorizontalEnCours (event) {
+			if (!this.defilement) { return }
+			event.preventDefault()
+			const nav = document.querySelector('nav')
+			const x = event.pageX - nav.offsetLeft
+			const delta = (x - this.depart) * 1.5
+			nav.scrollLeft = this.distance - delta
 		}
 	}
 }

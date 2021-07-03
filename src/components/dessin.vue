@@ -120,6 +120,9 @@ export default {
 				this.dimensionsCanva.h = this.$convertirRem(this.h) - this.$convertirRem(3)
 			}
 			this.positionner()
+		},
+		hauteurPage: function () {
+			this.positionner()
 		}
 	},
 	created () {

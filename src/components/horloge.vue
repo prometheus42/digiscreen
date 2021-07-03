@@ -77,6 +77,9 @@ export default {
 		finRedimensionnement: function () {
 			this.positionner()
 			this.redimensionnerHorloge()
+		},
+		hauteurPage: function () {
+			this.positionner()
 		}
 	},
 	created () {

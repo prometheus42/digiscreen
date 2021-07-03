@@ -17,12 +17,12 @@
 					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
-			<div class="conteneur actif">
-				<div class="contenu inactif panneau-texte edition" v-if="mode === 'edition'">
+			<div class="conteneur panneau-texte actif">
+				<div class="contenu inactif edition" v-if="mode === 'edition'">
 					<div class="editeur" :style="{'font-size': $convertirRem(taille) + 'px'}" />
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
-				<div class="contenu inactif panneau-texte" v-else>
+				<div class="contenu inactif" v-else>
 					<div class="texte" :style="{'font-size': $convertirRem(taille) + 'px'}" v-html="texte" />
 				</div>
 			</div>
@@ -80,6 +80,9 @@ export default {
 			}
 		},
 		finRedimensionnement: function () {
+			this.positionner()
+		},
+		hauteurPage: function () {
 			this.positionner()
 		}
 	},
@@ -236,12 +239,12 @@ export default {
 </script>
 
 <style>
-.panneau .panneau-texte.edition {
+.panneau .panneau-texte .edition {
 	width: 100%;
 	height: 100%;
 }
 
-.panneau .conteneur .texte {
+.panneau .panneau-texte .texte {
 	font-weight: 400;
 	line-height: 1.4;
 	user-select: none;

@@ -17,11 +17,11 @@
 					<label>{{ $t('typeRemiseOrdre') }}</label>
 					<div class="choix">
 						<span class="horizontale">
-							<input type="radio" :id="'horizontale_' + id" name="type" value="horizontale" :checked="type === 'horizontale'" @change="type = $event.target.value">
+							<input type="radio" :id="'horizontale_' + id" :name="'horizontale_' + id" value="horizontale" :checked="type === 'horizontale'" @change="type = $event.target.value">
 							<label :for="'horizontale_' + id">{{ $t('horizontale') }}</label>
 						</span>
 						<span class="verticale">
-							<input type="radio" :id="'verticale_' + id" name="type" value="verticale" :checked="type === 'verticale'" @change="type = $event.target.value">
+							<input type="radio" :id="'verticale_' + id" :name="'horizontale_' + id" value="verticale" :checked="type === 'verticale'" @change="type = $event.target.value">
 							<label :for="'verticale_' + id">{{ $t('verticale') }}</label>
 						</span>
 					</div>
@@ -108,6 +108,9 @@ export default {
 			}
 		},
 		finRedimensionnement: function () {
+			this.positionner()
+		},
+		hauteurPage: function () {
 			this.positionner()
 		}
 	},

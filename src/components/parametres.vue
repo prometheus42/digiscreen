@@ -223,9 +223,9 @@
 							</label>
 						</div>
 						<div class="module">
-							<span>{{ $t('confettis') }}</span>
+							<span>{{ $t('retroaction') }}</span>
 							<label class="interrupteur">
-								<input type="checkbox" value="bravo" :checked="$parent.modules.includes('bravo')" @change="modifierModule">
+								<input type="checkbox" value="retroaction" :checked="$parent.modules.includes('retroaction')" @change="modifierModule">
 								<span class="curseur" />
 							</label>
 						</div>
