@@ -6,14 +6,19 @@
 				<span class="message">{{ $t('alerte') }}</span>
 			</div>
 		</div>
+
 		<div id="chargement" v-if="chargement">Digiscreen by La Digitale</div>
+
 		<div id="import" :class="{'termine': importTermine}" v-if="importDonnees">
 			<div class="chargement"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 		</div>
+
 		<annotation :panneaux="panneaux" :annotations="annotations" :largeur="largeur" :hauteur="hauteur" :nav="nav" @fermer="arreterAnnoter" v-if="annotation" />
+
 		<div id="grille" :class="grille.couleur + ' grille-' + grille.colonnes" v-if="Object.keys(grille).length > 0">
 			<span v-for="element in (grille.colonnes * grille.lignes)" :key="'element_' + element" />
 		</div>
+
 		<nav v-if="!alerte" :class="{'masque': !nav}" :data-html2canvas-ignore="true">
 			<div @click="creerPanneau('codeqr')" v-if="modules.includes('codeqr')" :title="$t('codeqr')">
 				<span class="icone"><i class="material-icons">qr_code</i></span>
@@ -147,8 +152,10 @@
 				<span class="titre">{{ $t('aPropos') }}</span>
 			</div>
 		</nav>
+
 		<span class="nav" v-if="nav" @click="nav = false"><i class="material-icons">expand_more</i></span>
 		<span class="nav" v-else @click="nav = true"><i class="material-icons">expand_less</i></span>
+
 		<template v-for="panneau in panneauxPage">
 			<PCodeqr :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-if="panneau.type === 'codeqr'" :key="panneau.id" />
 			<PTexte :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'texte'" :key="panneau.id" />
@@ -173,9 +180,11 @@
 			<PRetroaction :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'retroaction'" :key="panneau.id" />
 			<PSonometre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'sonometre'" :key="panneau.id" />
 		</template>
+
 		<MGrille v-if="modale === 'grille'" />
 		<MInfo v-else-if="modale === 'info'" />
 		<MParametres v-if="menu" />
+
 		<div id="pages" :class="{'noir': Object.keys(pages[page - 1].grille).length > 0 && (pages[page - 1].grille.couleur === 'blanc' || pages[page - 1].grille.couleur === 'gris')}" v-if="pages.length > 1">
 			<div>
 				<span :class="{'selectionne': page === index}" @click="afficherPage(index)" v-for="index in pages.length" :key="'page_' + index" />
