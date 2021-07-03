@@ -1,6 +1,6 @@
 <template>
 	<transition-group name="fondu">
-		<div id="annotation" :class="{'curseur': this.outilDeplacer}" key="canva">
+		<div id="annotation" :class="{'curseur': this.outilDeplacer, 'avec-nav': nav}" key="canva">
 			<v-stage ref="stage" :config="{width: dimensionsCanva.w, height: dimensionsCanva.h}" @mousedown="selectionnerDebut" @touchstart="selectionnerDebut" @mousemove="selectionnerMouvement" @touchmove="selectionnerMouvement" @mouseup="selectionnerFin" @touchend="selectionnerFin">
 				<v-layer ref="objets">
 					<v-rect v-for="(itemRectangle, indexRectangle) in rectangles" :config="itemRectangle" :key="'rectangle_' + indexRectangle" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" />
@@ -104,6 +104,28 @@
 			<span class="option bleu" :class="{'actif': outilDessiner && couleurStylo === '#04fdff'}" :title="$t('bleu')" @click="modifierCouleur('#04fdff')" v-if="nom !== 'selection'">
 				<span class="couleur bleu" />
 			</span>
+			<span class="separateur" v-if="outilDessiner" />
+			<span class="option label-epaisseur" v-if="outilDessiner">
+				<span><i class="material-icons">line_weight</i></span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 2}" @click="modifierEpaisseur(2)" v-if="outilDessiner">
+				<span>2</span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 5}" @click="modifierEpaisseur(5)" v-if="outilDessiner">
+				<span>5</span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 10}" @click="modifierEpaisseur(10)" v-if="outilDessiner">
+				<span>10</span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 20}" @click="modifierEpaisseur(20)" v-if="outilDessiner">
+				<span>20</span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 40}" @click="modifierEpaisseur(40)" v-if="outilDessiner">
+				<span>40</span>
+			</span>
+			<span class="option epaisseur" :class="{'actif': epaisseurStylo === 80}" @click="modifierEpaisseur(80)" v-if="outilDessiner">
+				<span>80</span>
+			</span>
 			<span class="separateur" v-if="outilSelectionner && nom !== 'selection'" />
 			<span class="option" :title="$t('supprimer')" @click="supprimer('objet')" v-if="outilSelectionner && nom !== 'selection'">
 				<img src="~@/assets/img/supprimer.png" :alt="$t('supprimer')">
@@ -153,7 +175,8 @@ export default {
 		panneaux: Array,
 		annotations: Object,
 		largeur: Number,
-		hauteur: Number
+		hauteur: Number,
+		nav: Boolean
 	},
 	data () {
 		return {
@@ -190,6 +213,7 @@ export default {
 			hauteurSelection: 0,
 			positionStylo: [],
 			couleurStylo: '#000000',
+			epaisseurStylo: 2,
 			outil: '',
 			creation: false,
 			positionObjetX: 0,
@@ -204,12 +228,16 @@ export default {
 			this.definirOutilPrincipal('deplacer')
 		},
 		largeur: function () {
-			const rect = document.querySelector('#annotation').getBoundingClientRect()
-			this.dimensionsCanva.w = rect.width
+			this.$nextTick(function () {
+				const rect = document.querySelector('#annotation').getBoundingClientRect()
+				this.dimensionsCanva.w = rect.width
+			}.bind(this))
 		},
 		hauteur: function () {
-			const rect = document.querySelector('#annotation').getBoundingClientRect()
-			this.dimensionsCanva.h = rect.height
+			this.$nextTick(function () {
+				const rect = document.querySelector('#annotation').getBoundingClientRect()
+				this.dimensionsCanva.h = rect.height
+			}.bind(this))
 		},
 		outilSelectionner: function (valeur) {
 			if (valeur === true) {
@@ -613,7 +641,7 @@ export default {
 				this.dessin = true
 				this.positionStylo = stage.getPointerPosition()
 				this.id++
-				this.dessins.push({ name: 'dess' + this.id, objet: 'dessin', points: [this.positionStylo.x, this.positionStylo.y], globalCompositeOperation: 'source-over', stroke: this.couleurStylo, strokeWidth: 2, hitStrokeWidth: 25, draggable: false, verrouille: false })
+				this.dessins.push({ name: 'dess' + this.id, objet: 'dessin', points: [this.positionStylo.x, this.positionStylo.y], globalCompositeOperation: 'source-over', stroke: this.couleurStylo, strokeWidth: this.epaisseurStylo, hitStrokeWidth: 25, lineJoin: 'round', draggable: false, verrouille: false })
 				this.nom = 'dess' + this.id
 				this.objet = 'dessin'
 				this.$nextTick(function () {
@@ -865,6 +893,9 @@ export default {
 				this.couleurStylo = couleur
 			}
 			this.enregistrer()
+		},
+		modifierEpaisseur (epaisseur) {
+			this.epaisseurStylo = epaisseur
 		},
 		definirAncres () {
 			let ancres = []
@@ -1137,7 +1168,7 @@ export default {
 	top: 0;
 	left: 0;
 	right: 0;
-	bottom: 7.4rem;
+	bottom: 0;
 	background: transparent;
 	z-index: 10000;
 }
@@ -1145,6 +1176,10 @@ export default {
 #annotation.curseur {
 	pointer-events: none;
 	z-index: 99;
+}
+
+#annotation.avec-nav {
+	bottom: 7.5rem;
 }
 
 #outils-annotation {
@@ -1222,6 +1257,22 @@ export default {
 	margin: 0 5px;
 	border-radius: 4px;
     cursor: pointer;
+}
+
+#options .option.label-epaisseur {
+	font-size: 24px;
+	width: auto;
+	cursor: default;
+}
+
+#options .option.epaisseur {
+	font-size: 12px;
+	border: 1px solid #ddd;
+	line-height: 1;
+}
+
+#options .option.epaisseur.actif {
+	border: 1px solid #000;
 }
 
 #options .option .couleur {
