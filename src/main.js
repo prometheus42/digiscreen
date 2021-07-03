@@ -43,11 +43,11 @@ Vue.prototype.$lireAudio = function (audio) {
 
 Vue.prototype.$lancerConfettis = function () {
 	// eslint-disable-next-line
-	confetti({ angle: 300, spread: 55, particleCount: 200, origin: { x: 0, y: -0.2 }, zIndex: 10000 })
+	confetti({ angle: 300, spread: 55, particleCount: 150, origin: { x: 0, y: -0.2 }, zIndex: 10010 })
 	// eslint-disable-next-line
-	confetti({ angle: 240, spread: 55, particleCount: 200, origin: { x: 1, y: -0.2 }, zIndex: 10000 })
+	confetti({ angle: 240, spread: 55, particleCount: 150, origin: { x: 1, y: -0.2 }, zIndex: 10010 })
 	// eslint-disable-next-line
-	confetti({ angle: 270, spread: 70, particleCount: 200, origin: { x: 0.5, y: -0.2 }, zIndex: 10000 })
+	confetti({ angle: 270, spread: 70, particleCount: 150, origin: { x: 0.5, y: -0.2 }, zIndex: 10010 })
 }
 
 new Vue({
