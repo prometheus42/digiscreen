@@ -108,7 +108,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.panzoom.getPan(), zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.definirCoordonnees, zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		zoom: function (zoom) {
@@ -187,7 +187,7 @@ export default {
 					minScale: 0.5,
 					panOnlyWhenZoomed: true
 				})
-				if (this.panneau.contenu.coordonnees) {
+				if (this.panneau.contenu.hasOwnProperty('coordonnees') && this.panneau.contenu.coordonnees !== '') {
 					const coordonnees = this.panneau.contenu.coordonnees
 					this.panzoom.zoom(this.zoom)
 					setTimeout(function () { this.panzoom.pan(coordonnees.x, coordonnees.y) }.bind(this))
@@ -334,6 +334,13 @@ export default {
 						}
 					}.bind(this)
 				}.bind(this)
+			}
+		},
+		definirCoordonnees () {
+			if (this.panzoom !== '') {
+				return this.panzoom.getPan()
+			} else {
+				return ''
 			}
 		},
 		zoomer () {
