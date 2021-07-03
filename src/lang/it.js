@@ -17,7 +17,7 @@ export default {
 	groupes: 'Gruppi',
 	chrono: 'Crono',
 	rebours: 'Alla rovescia', 
-	bravo: 'Bravo',
+	retroaction: 'Feedback',
 	grille: 'Griglia',
 	capture: 'Cattura',
 	annoter: 'Annota',
@@ -134,7 +134,6 @@ export default {
 	tirer: 'Sorteggia',
 	contenuIntegre: 'Contenuto inserito',
 	lienContenuLigne: 'Link a un sito, un documento  o un contenuto interattivo',
-	confettis: 'Confetti',
 	monTexte: 'Il mio testo...',
 	selectionner: 'Seleziona',
 	dessiner: 'Disegna',
@@ -166,5 +165,6 @@ export default {
 	nouveauTitre: 'Titolo di questa finestra:',
 	calendrier: 'Calendario',
 	lien: 'Link',
-	titreLien: 'Titolo del link'
+	titreLien: 'Titolo del link',
+	activerEffetsSonores: 'Attivare gli effetti sonori?'
 }

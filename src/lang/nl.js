@@ -17,7 +17,7 @@ export default {
 	groupes: 'Groepen',
 	chrono: 'Timer',
 	rebours: 'Tel af',
-	bravo: 'Bravo',
+	retroaction: 'Feedback',
 	grille: 'Tabel',
 	capture: 'Knip',
 	annoter: 'Annoteer',
@@ -134,7 +134,6 @@ export default {
 	tirer: 'Trekking',
 	contenuIntegre: 'Embed',
 	lienContenuLigne: 'Link naar een site, een online doc of interactieve inhoud',
-	confettis: 'Confetti',
 	monTexte: 'Mijn tekst...',
 	selectionner: 'Selecteer',
 	dessiner: 'Vrij tekenen',
@@ -166,5 +165,6 @@ export default {
 	nouveauTitre: 'Titel van dit paneel:',
 	calendrier: 'Kalender',
 	lien: 'Link',
-	titreLien: 'Titel van de link'
+	titreLien: 'Titel van de link',
+	activerEffetsSonores: 'Geluidseffecten activeren?'
 }

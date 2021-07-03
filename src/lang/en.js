@@ -17,7 +17,7 @@ export default {
 	groupes: 'Groups',
 	chrono: 'Timer',
 	rebours: 'C/D',
-	bravo: 'Kudos',
+	retroaction: 'Feedback',
 	grille: 'Grid',
 	capture: 'Capture',
 	annoter: 'Annotate',
@@ -134,7 +134,6 @@ export default {
 	tirer: 'Draw',
 	contenuIntegre: 'Embedded content',
 	lienContenuLigne: 'Link to a site, document or interactive content',
-	confettis: 'Confettis',
 	monTexte: 'My text...',
 	selectionner: 'Select',
 	dessiner: 'Free draw',
@@ -166,5 +165,6 @@ export default {
 	nouveauTitre: 'Title of this panel:',
 	calendrier: 'Calendar',
 	lien: 'Link',
-	titreLien: 'Title of the link'
+	titreLien: 'Title of the link',
+	activerEffetsSonores: 'Activate sound effects?'
 }

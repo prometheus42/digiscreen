@@ -17,7 +17,7 @@ export default {
 	groupes: 'Groupes',
 	chrono: 'Chrono',
 	rebours: 'Rebours',
-	bravo: 'Bravo',
+	retroaction: 'Rétroaction',
 	grille: 'Grille',
 	capture: 'Capture',
 	annoter: 'Annoter',
@@ -134,7 +134,6 @@ export default {
 	tirer: 'Tirer',
 	contenuIntegre: 'Contenu intégré',
 	lienContenuLigne: 'Lien vers un site, un document ou un contenu interactif',
-	confettis: 'Confettis',
 	monTexte: 'Mon texte...',
 	selectionner: 'Sélectionner',
 	dessiner: 'Dessiner',
@@ -166,5 +165,6 @@ export default {
 	nouveauTitre: 'Titre de ce panneau :',
 	calendrier: 'Calendrier',
 	lien: 'Lien',
-	titreLien: 'Titre du lien'
+	titreLien: 'Titre du lien',
+	activerEffetsSonores: 'Activer les effets sonores ?'
 }
