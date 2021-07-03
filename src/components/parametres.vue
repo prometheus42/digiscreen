@@ -58,14 +58,16 @@
 								<img :src="image.previewURL">
 							</div>
 						</div>
-						<div class="navigation" v-if="Object.keys(resultats).length > 0 && (page > 1 || page < (resultats.total / 15))">
-							<span :class="{'invisible': page < 2}" @click="modifierPage('precedente')">{{ $t('pagePrecedente') }}</span>
-							<span :class="{'invisible': page >= (resultats.total / 15)}" @click="modifierPage('suivante')">{{ $t('pageSuivante') }}</span>
+						<div class="navigation" v-if="Object.keys(resultats).length > 0 && (pageResultats > 1 || pageResultats < (resultats.total / 15))">
+							<span :class="{'invisible': pageResultats < 2}" @click="modifierPageResultats('precedente')">{{ $t('pagePrecedente') }}</span>
+							<span :class="{'invisible': pageResultats >= (resultats.total / 15)}" @click="modifierPageResultats('suivante')">{{ $t('pageSuivante') }}</span>
 						</div>
 					</div>
 					<label>{{ $t('pages') }}</label>
 					<div class="pages">
-						<span :class="{'selectionne': $parent.page === index}" @click="afficherPage(index)" v-for="index in $parent.pages.length" :key="'page_' + index">{{ index }}</span>
+						<draggable v-model="$parent.pages" @sort="verifierPages">
+							<span class="page" :class="{'selectionne': $parent.page === indexPage + 1}" @click="afficherPage(indexPage + 1)" v-for="(page, indexPage) in $parent.pages" :key="'page_' + indexPage">{{ indexPage + 1 }}</span>
+						</draggable>
 						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
 					</div>
 					<label>{{ $t('exporter') }}</label>
@@ -244,8 +246,13 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
 	name: 'MParametres',
+	components: {
+		draggable
+	},
 	data () {
 		return {
 			ouvert: false,
@@ -253,11 +260,11 @@ export default {
 			pixabayAPIKey: '',
 			requete: '',
 			resultats: {},
-			page: 1
+			pageResultats: 1
 		}
 	},
 	watch: {
-		page: function (page) {
+		pageResultats: function (page) {
 			this.rechercher(page)
 		}
 	},
@@ -313,23 +320,23 @@ export default {
 					}
 				}.bind(this)
 				if (page === 1) {
-					this.page = page
+					this.pageResultats = page
 				}
 				xhr.open('GET', 'https://pixabay.com/api/?key=' + this.pixabayAPIKey + '&q=' + requete + '&image_type=photo&lang=fr&orientation=horizontal&safesearch=true&per_page=15&page=' + page, true)
 				xhr.send()
 			}
 		},
-		modifierPage (type) {
-			if (type === 'suivante' && this.page < (this.resultats.total / 15)) {
-				this.page++
-			} else if (type === 'precedente' && this.page > 1) {
-				this.page--
+		modifierPageResultats (type) {
+			if (type === 'suivante' && this.pageResultats < (this.resultats.total / 15)) {
+				this.pageResultats++
+			} else if (type === 'precedente' && this.pageResultats > 1) {
+				this.pageResultats--
 			}
 		},
 		verifierRequete () {
 			if (this.requete === '') {
 				this.resultats = {}
-				this.page = 1
+				this.pageResultats = 1
 			}
 		},
 		ajouterPage () {
@@ -362,6 +369,37 @@ export default {
 		},
 		afficherPage (page) {
 			this.$parent.page = page
+		},
+		verifierPages (event) {
+			this.$parent.panneauxPage = []
+			if (this.$parent.page === event.oldIndex + 1) {
+				this.$parent.page = event.newIndex + 1
+			}
+			this.$nextTick(function () {
+				const panneaux = this.$parent.panneaux
+				if (event.newIndex < event.oldIndex) {
+					panneaux.forEach(function (panneau, indexPanneau) {
+						if (panneau.page === event.oldIndex + 1) {
+							panneaux[indexPanneau].page = event.newIndex + 1
+						} else if (panneau.page >= event.newIndex + 1 && panneau.page <= event.oldIndex + 1) {
+							panneaux[indexPanneau].page = panneau.page + 1
+						}
+					})
+				} else {
+					panneaux.forEach(function (panneau, indexPanneau) {
+						if (panneau.page === event.oldIndex + 1) {
+							panneaux[indexPanneau].page = event.newIndex + 1
+						} else if (panneau.page >= event.oldIndex + 1 && panneau.page <= event.newIndex + 1) {
+							panneaux[indexPanneau].page = panneau.page - 1
+						}
+					})
+				}
+				this.$parent.panneaux = panneaux
+				const panneauxPages = panneaux.filter(function (element) {
+					return element.page === this.$parent.page
+				}.bind(this))
+				this.$parent.panneauxPage = panneauxPages
+			}.bind(this))
 		},
 		importer (event) {
 			this.$parent.importer(event)
@@ -425,6 +463,20 @@ export default {
 	background: #444;
 	color: #fff;
 	border: 1px solid #222;
+}
+
+.menu .pages {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.menu .pages .bouton-secondaire {
+	height: 4.5rem!important;
+}
+
+.menu .pages .bouton-secondaire i {
+	line-height: 4.5rem!important;
 }
 
 .menu .fond {
@@ -492,7 +544,6 @@ export default {
 	padding: 0;
 }
 
-.menu .pages span:last-child,
 .menu .fond span:last-child,
 .menu .langue span:last-child {
 	margin-right: 0;

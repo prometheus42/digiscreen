@@ -33,6 +33,7 @@
     "vue-drag-resize": "1.4.2",
     "vue-i18n": "^8.24.5",
     "vue-konva": "^2.1.7",
+    "vuedraggable": "^2.24.3",
     "vuewordcloud": "^18.7.12"
   },
   "devDependencies": {
