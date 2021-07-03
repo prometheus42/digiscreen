@@ -2,18 +2,13 @@
 	<transition name="fondu">
 		<vue-drag-resize :id="id" contentClass="panneau" :class="{'deplacement': deplacement, 'max': statut === 'max', 'min': statut === 'min'}" :isDraggable="true" :isResizable="redimensionnement" dragHandle=".actif" dragCancel=".inactif" :w="$convertirRem(w)" :h="$convertirRem(h)" :minw="$convertirRem(minw)" :minh="$convertirRem(minh)" :parentW="largeurPage" :parentH="hauteurPage" :x="x" :y="y" :z="z" :sticks="['tl', 'bl', 'br']" :parentLimitation="true" @dragging="deplacer" @dragstop="redimensionner" @resizestop="redimensionner" @clicked="afficher" v-show="!chargement">
 			<header class="actif">
-				<div class="titre actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
-				<div class="actions-panneau inactif">
-					<span class="zoomer" role="button" tabindex="0" @click="zoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">add</i></span>
-					<span class="dezoomer" role="button" tabindex="0" @click="dezoomer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">remove</i></span>
-					<span class="recadrer" role="button" tabindex="0" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
-				</div>
+				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
 					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
-					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
-					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="mode === 'lecture' && statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="statut === ''"><i class="material-icons">fullscreen</i></span>
+					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'max'"><i class="material-icons">fullscreen_exit</i></span>
 					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
@@ -25,7 +20,7 @@
 						<div class="mots">
 							<div class="mot" v-for="(mot, index) in mots" :key="'mot_' + index">
 								<input type="search" :value="mot[0]" @input="mots[index][0] = $event.target.value" :maxlength="30">
-								<input type="number" :value="mot[1]" @input="mots[index][1] = $event.target.value" :min="10" :max="100">
+								<input type="number" :value="mot[1]" @input="mots[index][1] = $event.target.value" :min="1" :max="100">
 							</div>
 						</div>
 						<span class="bouton-secondaire" role="button" tabindex="0" :title="$t('ajouterMot')" @click="ajouterMot"><i class="material-icons">add_circle_outline</i></span>
@@ -34,7 +29,18 @@
 					<div class="colonne droite">
 						<label>{{ $t('apercu') }}</label>
 						<div class="nuage">
-							<canvas :id="'canvas_' + id" class="canvas" />
+							<div class="conteneur-chargement-nuage" v-if="chargementNuage">
+								<div class="chargement-nuage">
+									<div class="spinner"><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /></div>
+								</div>
+							</div>
+							<vue-word-cloud :animation-duration="200" animation-easing="ease-in-out" :animation-overlap="1" color="#00ced1" :font-family="'Baloo Bhaijaan'" :load-font="chargerPolice" :spacing="1/2" :words="nuage" @update:progress="modifierProgression">
+								<template slot-scope="{text}">
+									<div :title="text" style="cursor: default;">
+										{{ text }}
+									</div>
+								</template>
+							</vue-word-cloud>
 						</div>
 						<div class="actions">
 							<span class="bouton" role="button" tabindex="0" @click="visualiser">{{ $t('apercu') }}</span>
@@ -52,7 +58,20 @@
 						</div>
 					</transition>
 				</div>
-				<img :src="nuage" alt="Nuage" v-else />
+				<div class="nuage lecture" v-else>
+					<div class="conteneur-chargement-nuage" v-if="chargementNuage">
+						<div class="chargement-nuage">
+							<div class="spinner"><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /></div>
+						</div>
+					</div>
+					<vue-word-cloud :animation-duration="200" animation-easing="ease-in-out" :animation-overlap="1" color="#00ced1" :font-family="'Baloo Bhaijaan'" :load-font="chargerPolice" :spacing="1/2" :words="nuage" @update:progress="modifierProgression">
+						<template slot-scope="{text}">
+							<div :title="text" style="cursor: default;">
+								{{ text }}
+							</div>
+						</template>
+					</vue-word-cloud>
+				</div>
 			</div>
 		</vue-drag-resize>
 	</transition>
@@ -60,14 +79,15 @@
 
 <script>
 import VueDragResize from 'vue-drag-resize'
-import WordCloud from 'wordcloud'
-import Panzoom from '@panzoom/panzoom'
+import FontFaceObserver from 'fontfaceobserver'
+import VueWordCloud from 'vuewordcloud'
 import Panneau from '@/panneau'
 
 export default {
 	name: 'PNuage',
 	components: {
-		VueDragResize
+		VueDragResize,
+		[VueWordCloud.name]: VueWordCloud
 	},
 	props: {
 		panneau: Object,
@@ -95,39 +115,39 @@ export default {
 			minh: 15,
 			statut: '',
 			dimensions: {},
-			donnees: { w: 0, h: 0, x: 0, y: 0, zoom: 0 },
-			mots: [['', 15], ['', 15], ['', 15], ['', 15], ['', 15], ['', 15], ['', 15], ['', 15], ['', 15], ['', 15]],
-			nuage: '',
+			donnees: { w: 0, h: 0, x: 0, y: 0 },
+			mots: [['', 1], ['', 1], ['', 1], ['', 1], ['', 1], ['', 1], ['', 1], ['', 1], ['', 1], ['', 1]],
+			nuage: [],
 			modale: false,
 			liste: '',
 			apercu: false,
-			panzoom: '',
-			zoom: 1
+			chargementNuage: false,
+			progression: ''
 		}
 	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { mots: this.mots, nuage: this.nuage, coordonnees: this.panzoom.getPan(), zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { mots: this.mots, nuage: this.nuage }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
-		zoom: function (zoom) {
-			if (this.panzoom !== '' && zoom === 1) {
-				this.panzoom.reset()
-			} if (this.panzoom !== '' && zoom !== 1) {
-				this.panzoom.zoom(zoom, { animated: true })
-			}
-		},
-		finRedimensionnement: function (valeur) {
-			if (valeur === true && this.mode === 'edition') {
-				this.$nextTick(function () {
-					const canvas = document.querySelector('#canvas_' + this.id)
-					const rect = document.querySelector('#' + this.id + ' .nuage').getBoundingClientRect()
-					canvas.width = (rect.width * 2) - 4
-					canvas.height = (rect.height * 2) - 4
-				}.bind(this))
-			}
+		finRedimensionnement: function () {
 			this.positionner()
+		},
+		hauteurPage: function () {
+			this.positionner()
+		},
+		progression: function (progression) {
+			if (this.nuage.length > 0 && (progression === '' || progression === null)) {
+				this.chargementNuage = true
+				setTimeout(function () {
+					this.chargementNuage = false
+				}.bind(this), 200)
+			} else {
+				setTimeout(function () {
+					this.chargementNuage = false
+				}.bind(this), 200)
+			}
 		}
 	},
 	created () {
@@ -154,7 +174,10 @@ export default {
 		if (this.panneau.contenu !== '') {
 			this.mots = this.panneau.contenu.mots
 			this.nuage = this.panneau.contenu.nuage
-			this.zoom = this.panneau.contenu.zoom
+			if (!Array.isArray(this.nuage)) {
+				this.nuage = []
+				this.visualiser()
+			}
 		}
 		this.positionner()
 	},
@@ -165,30 +188,9 @@ export default {
 				if (this.statut !== 'min') {
 					document.querySelector('#' + this.id + ' input').focus()
 				}
-				const canvas = document.querySelector('#canvas_' + this.id)
-				const rect = document.querySelector('#' + this.id + ' .nuage').getBoundingClientRect()
-				canvas.width = (rect.width * 2) - 4
-				canvas.height = (rect.height * 2) - 4
-				canvas.style.transform = 'scale(0.5)'
-				canvas.style.transformOrigin = 'top left'
 			}.bind(this))
 		} else if (this.mode === 'lecture') {
 			this.redimensionnement = true
-			this.$nextTick(function () {
-				const element = document.querySelector('#' + this.id + ' .conteneur img')
-				this.panzoom = Panzoom(element, {
-					maxScale: 15,
-					minScale: 0.5,
-					panOnlyWhenZoomed: true
-				})
-				if (this.panneau.contenu.coordonnees) {
-					const coordonnees = this.panneau.contenu.coordonnees
-					this.panzoom.zoom(this.zoom)
-					setTimeout(function () { this.panzoom.pan(coordonnees.x, coordonnees.y) }.bind(this))
-				}
-				element.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
-				element.addEventListener('panzoomchange', this.modifierZoom)
-			}.bind(this))
 		}
 	},
 	methods: {
@@ -207,48 +209,24 @@ export default {
 					this.x = this.donnees.x
 					this.y = this.donnees.y
 				}
-				if (this.donnees.zoom > 0) {
-					this.zoom = this.donnees.zoom
-				} else {
-					this.zoom = 1.5
-				}
 				this.positionner()
-				const canvas = document.querySelector('#canvas_' + this.id)
-				this.nuage = canvas.toDataURL('image/png')
-				this.$nextTick(function () {
-					const element = document.querySelector('#' + this.id + ' .conteneur img')
-					this.panzoom = Panzoom(element, {
-						maxScale: 15,
-						minScale: 0.5,
-						panOnlyWhenZoomed: true
-					})
-					this.panzoom.zoom(this.zoom)
-					element.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
-					element.addEventListener('panzoomchange', this.modifierZoom)
-				}.bind(this))
 			}
 		},
 		visualiser () {
 			const mots = this.mots.filter(function (item) {
 				return item[0] !== ''
 			})
-			const fonts = ['Abril Fatface', 'Baloo Bhaijaan']
-			const font = fonts[Math.floor(Math.random() * fonts.length)]
+			const fontes = ['Abril Fatface', 'Baloo Bhaijaan']
+			const fonte = fontes[Math.floor(Math.random() * fontes.length)]
+			const couleurs = ['#ffd077', '#3bc4c7', '#3a9eea', '#ff4e69', '#461e47']
 			if (mots.length > 0) {
-				WordCloud(document.querySelector('#canvas_' + this.id), {
-					list: mots,
-					gridSize: 30,
-					weightFactor: 4,
-					fontFamily: font,
-					color: function () {
-						const couleurs = ['#00c3c6', '#dd083b', '#1abc9c', '#9b59b6', '#3498db', '#f1c40f', '#e67e22', '#30336b', '#40739e', '#20bf6b', '#485460', '#ea8685', '#17c0eb', '#fda7df']
-						return couleurs[Math.floor(Math.random() * couleurs.length)]
-					},
-					backgroundColor: '#ffffff',
-					drawOutOfBound: false,
-					shrinkToFit: true
-				})
 				this.apercu = true
+				const nuage = []
+				this.mots.forEach(function (mot) {
+					const couleur = couleurs[Math.floor(Math.random() * couleurs.length)]
+					nuage.push({ text: mot[0], weight: mot[1], number: 1, rotation: 0, fontFamily: fonte, color: couleur})
+				})
+				this.nuage = nuage
 			} else {
 				this.apercu = false
 			}
@@ -256,13 +234,6 @@ export default {
 		editer () {
 			this.mode = 'edition'
 			this.redimensionnement = false
-			const element = document.querySelector('#' + this.id + ' .conteneur img')
-			element.parentElement.removeEventListener('wheel', this.panzoom.zoomWithWheel)
-			element.removeEventListener('panzoomchange', this.modifierZoom)
-			this.panzoom.destroy()
-			this.panzoom = ''
-			this.donnees.zoom = this.zoom
-			this.zoom = 1
 			if (this.statut !== '') {
 				this.normaliser()
 			}
@@ -273,18 +244,15 @@ export default {
 			this.w = 80
 			this.h = 59.5
 			this.positionner()
-			this.$nextTick(function () {
-				const canvas = document.querySelector('#canvas_' + this.id)
-				const rect = document.querySelector('#' + this.id + ' .nuage').getBoundingClientRect()
-				canvas.width = (rect.width * 2) - 4
-				canvas.height = (rect.height * 2) - 4
-				canvas.style.transform = 'scale(0.5)'
-				canvas.style.transformOrigin = 'top left'
-				this.visualiser()
-			}.bind(this))
+		},
+		modifierProgression (progression) {
+			this.progression = progression
+		},
+		chargerPolice (police, style, poids, texte) {
+			return (new FontFaceObserver(police, { style: style, weight: poids })).load(texte)
 		},
 		ajouterMot () {
-			this.mots.push(['', 15])
+			this.mots.push(['', 1])
 			this.$nextTick(function () {
 				const element = document.querySelector('#' + this.id + ' .mots')
 				element.scrollTop = element.scrollHeight
@@ -299,12 +267,12 @@ export default {
 						const mots = this.mots.filter(function (item) {
 							return item[0] !== ''
 						})
-						mots.push([mot, 15])
+						mots.push([mot, 1])
 						this.mots = mots
 						if (this.mots.length < 11) {
 							const total = 10 - this.mots.length
 							for (let i = 0; i < total; i++) {
-								this.mots.push(['', 15])
+								this.mots.push(['', 1])
 							}
 						}
 						this.$nextTick(function () {
@@ -406,13 +374,8 @@ export default {
 	margin-top: 1rem;
 }
 
-.panneau .conteneur .canvas {
-    display: block;
-    position: relative;
-    overflow: hidden;
-}
-
 .panneau .conteneur .colonne.droite .nuage {
+	position: relative;
 	width: calc(100% - 1rem);
 	margin-left: 1rem;
     height: 44.5rem;
@@ -448,9 +411,122 @@ export default {
 	height: 18rem;
 }
 
-.panneau .panneau-nuage img {
-    max-width: 100%;
-    max-height: 100%;
-    align-self: center;
+.panneau .panneau-nuage .nuage.lecture {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.panneau .panneau-nuage .conteneur-chargement-nuage {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255, 255, 255, 0.75);
+	z-index: 1000;
+}
+
+.panneau .panneau-nuage .chargement-nuage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.panneau .panneau-nuage .spinner {
+	display: inline-block;
+	position: relative;
+	width: 80px;
+	height: 80px;
+}
+
+.panneau .panneau-nuage .spinner div {
+	transform-origin: 40px 40px;
+	animation: spin 1.2s linear infinite;
+}
+
+.panneau .panneau-nuage .spinner div:after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 3px;
+	left: 37px;
+	width: 5px;
+    height: 25px;
+	border-radius: 20%;
+	background: #00ced1;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(1) {
+	transform: rotate(0deg);
+	animation-delay: -1.1s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(2) {
+	transform: rotate(30deg);
+	animation-delay: -1s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(3) {
+	transform: rotate(60deg);
+	animation-delay: -0.9s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(4) {
+	transform: rotate(90deg);
+	animation-delay: -0.8s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(5) {
+	transform: rotate(120deg);
+	animation-delay: -0.7s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(6) {
+	transform: rotate(150deg);
+	animation-delay: -0.6s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(7) {
+	transform: rotate(180deg);
+	animation-delay: -0.5s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(8) {
+	transform: rotate(210deg);
+	animation-delay: -0.4s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(9) {
+	transform: rotate(240deg);
+	animation-delay: -0.3s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(10) {
+	transform: rotate(270deg);
+	animation-delay: -0.2s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(11) {
+	transform: rotate(300deg);
+	animation-delay: -0.1s;
+}
+
+.panneau .panneau-nuage .spinner div:nth-child(12) {
+	transform: rotate(330deg);
+	animation-delay: 0s;
+}
+
+@keyframes spin {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 </style>
