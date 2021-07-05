@@ -152,7 +152,7 @@ export default {
 				}.bind(this)
 				xhr.open('POST', 'https://ladigitale.dev/favicons/recuperer_icone.php', true)
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-				xhr.send('lien=' + domaine);
+				xhr.send('lien=' + domaine)
 			}
 		},
 		editer () {

@@ -26,8 +26,8 @@
 					</div>
 					<div class="separateur" v-if="pixabayAPIKey !== ''"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
-					<label class="bouton" role="button" tabindex="0" for="selectionner-image">{{ $t('selectionnerImage') }}</label>
-					<input id="selectionner-image" type="file" @change="televerserImage" style="display: none" accept=".jpg, .jpeg, .png, .gif">
+					<label class="bouton" role="button" tabindex="0" :for="'selectionner-image-' + id">{{ $t('selectionnerImage') }}</label>
+					<input :id="'selectionner-image-' + id" type="file" @change="televerserImage" style="display: none" accept=".jpg, .jpeg, .png, .gif">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementImage">
 					<div class="conteneur-chargement">

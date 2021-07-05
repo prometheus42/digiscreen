@@ -19,8 +19,8 @@
 					</div>
 					<div class="separateur"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
-					<label class="bouton" role="button" tabindex="0" for="selectionner-audio">{{ $t('selectionnerAudio') }}</label>
-					<input id="selectionner-audio" type="file" @change="televerserAudio" style="display: none" accept=".mp3, .wav, .m4a, .ogg">
+					<label class="bouton" role="button" tabindex="0" :for="'selectionner-audio-' + id">{{ $t('selectionnerAudio') }}</label>
+					<input :id="'selectionner-audio-' + id" type="file" @change="televerserAudio" style="display: none" accept=".mp3, .wav, .m4a, .ogg">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementAudio">
 					<div class="conteneur-chargement">

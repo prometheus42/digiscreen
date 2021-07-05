@@ -21,8 +21,8 @@
 					</div>
 					<div class="separateur"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
-					<label class="bouton" role="button" tabindex="0" for="selectionner-video">{{ $t('selectionnerVideo') }}</label>
-					<input id="selectionner-video" type="file" @change="televerserVideo" style="display: none" accept=".mp4, .m4v">
+					<label class="bouton" role="button" tabindex="0" :for="'selectionner-video-' + id">{{ $t('selectionnerVideo') }}</label>
+					<input :id="'selectionner-video-' + id" type="file" @change="televerserVideo" style="display: none" accept=".mp4, .m4v">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementVideo">
 					<div class="conteneur-chargement">

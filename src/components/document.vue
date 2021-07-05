@@ -14,8 +14,8 @@
 			<div class="conteneur actif panneau-document" v-if="mode === 'edition'">
 				<div class="contenu inactif" v-if="!chargementDocument">
 					<label>{{ $t('documentAppareil') }}</label>
-					<label class="bouton" role="button" tabindex="0" for="selectionner-document">{{ $t('selectionnerDocument') }}</label>
-					<input id="selectionner-document" type="file" @change="televerserDocument" style="display: none" accept=".pdf, .ods, .odt, .odp">
+					<label class="bouton" role="button" tabindex="0" :for="'selectionner-document-' + id">{{ $t('selectionnerDocument') }}</label>
+					<input :id="'selectionner-document-' + id" type="file" @change="televerserDocument" style="display: none" accept=".pdf, .ods, .odt, .odp">
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="conteneur-chargement">
@@ -36,7 +36,7 @@ import VueDragResize from 'vue-drag-resize'
 import Panneau from '@/panneau'
 
 export default {
-	name: 'PImage',
+	name: 'PDocument',
 	components: {
 		VueDragResize
 	},
