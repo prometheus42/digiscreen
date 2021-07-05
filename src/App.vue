@@ -76,6 +76,10 @@
 				<span class="icone"><i class="material-icons">shuffle</i></span>
 				<span class="titre">{{ $t('tirage') }}</span>
 			</div>
+			<div @click="creerPanneau('plateau')" v-if="modules.includes('plateau')" :title="$t('plateau')">
+				<span class="icone"><i class="material-icons">grid_on</i></span>
+				<span class="titre">{{ $t('plateau') }}</span>
+			</div>
 			<div @click="creerPanneau('des')" v-if="modules.includes('des')" :title="$t('des')">
 				<span class="icone"><i class="material-icons">casino</i></span>
 				<span class="titre">{{ $t('des') }}</span>
@@ -171,6 +175,7 @@
 			<POrdre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'ordre'" :key="panneau.id" />
 			<PTrous :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'trous'" :key="panneau.id" />
 			<PTirage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'tirage'" :key="panneau.id" />
+			<PPlateau :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'plateau'" :key="panneau.id" />
 			<PDes :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'des'" :key="panneau.id" />
 			<PGroupes :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'groupes'" :key="panneau.id" />
 			<PChrono :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'chrono'" :key="panneau.id" />
@@ -208,6 +213,7 @@ import PNuage from '@/components/nuage.vue'
 import POrdre from '@/components/ordre.vue'
 import PTrous from '@/components/trous.vue'
 import PTirage from '@/components/tirage.vue'
+import PPlateau from '@/components/plateau.vue'
 import PDes from '@/components/des.vue'
 import PGroupes from '@/components/groupes.vue'
 import PChrono from '@/components/chrono.vue'
@@ -241,6 +247,7 @@ export default {
 		POrdre,
 		PTrous,
 		PTirage,
+		PPlateau,
 		PDes,
 		PGroupes,
 		PChrono,
@@ -262,7 +269,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'plateau', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -428,6 +435,9 @@ export default {
 				break
 			case 'tirage':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 46, h: 40, x: largeur - this.$convertirRem(23), y: hauteur - this.$convertirRem(20), z: z })
+				break
+			case 'plateau':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 50, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(25), z: z })
 				break
 			case 'des':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11), z: z })

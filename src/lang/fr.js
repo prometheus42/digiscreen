@@ -166,5 +166,8 @@ export default {
 	calendrier: 'Calendrier',
 	lien: 'Lien',
 	titreLien: 'Titre du lien',
-	activerEffetsSonores: 'Activer les effets sonores ?'
+	activerEffetsSonores: 'Activer les effets sonores ?',
+	plateau: 'Plateau',
+	plateauJeu: 'Plateau de jeu',
+	nombrePions: 'Nombre de pions'
 }

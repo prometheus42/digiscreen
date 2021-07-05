@@ -166,5 +166,8 @@ export default {
 	calendrier: 'Kalender',
 	lien: 'Link',
 	titreLien: 'Titel van de link',
-	activerEffetsSonores: 'Geluidseffecten activeren?'
+	activerEffetsSonores: 'Geluidseffecten activeren?',
+	plateau: 'Bord',
+	plateauJeu: 'Spelbord',
+	nombrePions: 'Aantal stuks'
 }

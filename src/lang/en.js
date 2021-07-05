@@ -166,5 +166,8 @@ export default {
 	calendrier: 'Calendar',
 	lien: 'Link',
 	titreLien: 'Title of the link',
-	activerEffetsSonores: 'Activate sound effects?'
+	activerEffetsSonores: 'Activate sound effects?',
+	plateau: 'Board',
+	plateauJeu: 'Game board',
+	nombrePions: 'Number of pawns'
 }

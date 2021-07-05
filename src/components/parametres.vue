@@ -74,7 +74,7 @@
 					<span role="button" tabindex="0" class="bouton" @click="exporter">{{ $t('exporterEcran') }}</span>
 					<label>{{ $t('importer') }}</label>
 					<label for="televerser" class="bouton">{{ $t('importerEcran') }}</label>
-					<input type="file" id="televerser" name="televerser" style="display: none;" accept=".dgb, .dgs" @change="importer">
+					<input id="televerser" type="file" style="display: none;" accept=".dgb, .dgs" @change="importer">
 					<label>{{ $t('modules') }}</label>
 					<div class="modules">
 						<div class="module">
@@ -172,6 +172,13 @@
 							<span>{{ $t('tirageSort') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="tirage" :checked="$parent.modules.includes('tirage')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
+							<span>{{ $t('plateauJeu') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="plateau" :checked="$parent.modules.includes('plateau')" @change="modifierModule">
 								<span class="curseur" />
 							</label>
 						</div>
