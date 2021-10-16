@@ -12,14 +12,14 @@
 					<v-text v-for="(itemTexte, indexTexte) in textes" :config="itemTexte" :key="'texte_' + indexTexte" @dragstart="selectionnerObjet" @dblclick="modifierTexte" @dbltap="modifierTexte" @dragend="deplacerFin" @transform="redimensionnerTexte" @transformend="redimensionnerFin" />
 					<v-line v-for="(itemDessin, indexDessin) in dessins" :config="itemDessin" :key="'dessin_' + indexDessin" @dragstart="selectionnerObjet" @dragend="deplacerFin" />
 					<v-rect :config="{name: 'selection', fill: 'rgba(1, 206, 209, 0.2)', visible: selection, x: positionSelectionX, y: positionSelectionY, width: largeurSelection, height: hauteurSelection}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-rect :config="{name: 'objet-rectangle', fill: 'transparent', visible: creation && outil === 'rectangle', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet, stroke: 'red', strokeWidth: 3, dash: [7, 5]}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-rect :config="{name: 'objet-rectangle', fill: '#ccc', visible: creation && outil === 'rectangle-plein', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-ellipse :config="{name: 'objet-cercle', fill: 'transparent', visible: creation && outil === 'cercle', x: positionObjetX + (largeurObjet / 2), y: positionObjetY + (hauteurObjet / 2), width: largeurObjet, height: hauteurObjet, stroke: 'red', strokeWidth: 3, dash: [7, 5]}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-ellipse :config="{name: 'objet-cercle', fill: '#ccc', visible: creation && outil === 'cercle-plein', x: positionObjetX + (largeurObjet / 2), y: positionObjetY + (hauteurObjet / 2), width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-rect :config="{name: 'objet-surlignage', fill: 'yellow', opacity: 0.5, visible: creation && outil === 'surlignage', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-line :config="{name: 'objet-ligne', fill: 'red', visible: creation && outil === 'ligne', x: 0, y: 0, points: [positionX1, positionY1, positionX2, positionY2], fill: 'red', stroke: 'red', strokeWidth: 3}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-arrow :config="{name: 'objet-fleche', fill: 'red', visible: creation && outil === 'fleche', x: 0, y: 0, points: [positionX1, positionY1, positionX2, positionY2], pointerLength: 15, pointerWidth: 12, fill: 'red', stroke: 'red', strokeWidth: 3}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-transformer ref="transformer" :config="{anchorStroke: 'red', anchorFill: 'yellow', anchorSize: 10, anchorCornerRadius: 10, borderStroke: definirCouleurBordure(), borderDash: [3, 3], borderStrokeWidth: 1, enabledAnchors: definirAncres(), padding: 7.5, rotateEnabled: false, keepRatio: true, boundBoxFunc: definirLimites}" />
+					<v-rect :config="{name: 'objet-rectangle', fill: 'transparent', visible: creation && outil === 'rectangle', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet, stroke: '#ff0000', strokeWidth: 3, dash: [7, 5]}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-rect :config="{name: 'objet-rectangle', fill: '#cccccc', visible: creation && outil === 'rectangle-plein', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-ellipse :config="{name: 'objet-cercle', fill: 'transparent', visible: creation && outil === 'cercle', x: positionObjetX + (largeurObjet / 2), y: positionObjetY + (hauteurObjet / 2), width: largeurObjet, height: hauteurObjet, stroke: '#ff0000', strokeWidth: 3, dash: [7, 5]}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-ellipse :config="{name: 'objet-cercle', fill: '#cccccc', visible: creation && outil === 'cercle-plein', x: positionObjetX + (largeurObjet / 2), y: positionObjetY + (hauteurObjet / 2), width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-rect :config="{name: 'objet-surlignage', fill: '#ffff00', opacity: 0.5, visible: creation && outil === 'surlignage', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-line :config="{name: 'objet-ligne', fill: '#ff0000', visible: creation && outil === 'ligne', x: 0, y: 0, points: [positionX1, positionY1, positionX2, positionY2], fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-arrow :config="{name: 'objet-fleche', fill: '#ff0000', visible: creation && outil === 'fleche', x: 0, y: 0, points: [positionX1, positionY1, positionX2, positionY2], pointerLength: 15, pointerWidth: 12, fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
+					<v-transformer ref="transformer" :config="{anchorStroke: '#ff0000', anchorFill: '#ffff00', anchorSize: 10, anchorCornerRadius: 10, borderStroke: definirCouleurBordure(), borderDash: [3, 3], borderStrokeWidth: 1, enabledAnchors: definirAncres(), padding: 7.5, rotateEnabled: false, keepRatio: true, boundBoxFunc: definirLimites}" />
 				</v-layer>
 			</v-stage>
 		</div>
@@ -103,6 +103,10 @@
 			</span>
 			<span class="option bleu" :class="{'actif': outilDessiner && couleurStylo === '#04fdff'}" :title="$t('bleu')" @click="modifierCouleur('#04fdff')" v-if="nom !== 'selection'">
 				<span class="couleur bleu" />
+			</span>
+			<span class="option icone" v-if="nom !== 'selection'" @click="definirCouleur">
+				<label for="couleur-annotation"><i class="material-icons">colorize</i></label>
+				<input type="color" id="couleur-annotation" :value="couleurSelecteur" :title="$t('selectionnerCouleur')">
 			</span>
 			<span class="separateur" v-if="outilDessiner" />
 			<span class="option label-epaisseur" v-if="outilDessiner">
@@ -213,6 +217,7 @@ export default {
 			hauteurSelection: 0,
 			positionStylo: [],
 			couleurStylo: '#000000',
+			couleurSelecteur: '#000000',
 			epaisseurStylo: 2,
 			outil: '',
 			creation: false,
@@ -254,6 +259,10 @@ export default {
 		outilDessiner: function (valeur) {
 			if (valeur === true) {
 				this.desactiverDeplacement()
+				this.couleurStylo = '#000000'
+				this.couleurSelecteur = '#000000'
+			} else {
+				this.couleurSelecteur = '#000000'
 			}
 			this.positionStylo = []
 			this.reinitialiserSelection()
@@ -285,6 +294,9 @@ export default {
 		window.addEventListener('keydown', this.supprimerClavier, false)
 	},
 	beforeDestroy () {
+		if (document.querySelector('#couleur-annotation')) {
+			document.querySelector('#couleur-annotation').removeEventListener('change', this.modifierCouleurSelecteur)
+		}
 		window.removeEventListener('keydown', this.supprimerClavier, false)
 	},
 	methods: {
@@ -294,10 +306,13 @@ export default {
 			this.outilDessiner = false
 			if (type === 'selectionner') {
 				this.outilSelectionner = true
+				this.desactiverSelecteur()
 			} else if (type === 'deplacer') {
 				this.outilDeplacer = true
+				this.desactiverSelecteur()
 			} else if (type === 'dessiner') {
 				this.outilDessiner = true
+				this.activerSelecteur()
 			}
 		},
 		selectionnerOutil (type) {
@@ -320,51 +335,51 @@ export default {
 			this.id++
 			switch (type) {
 			case 'rectangle':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: 'red', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
+				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'rectangle'
 				break
 			case 'rectangle-plein':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle-plein', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#ccc', opacity: 1, draggable: true, verrouille: false })
+				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle-plein', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'rectangle-plein'
 				break
 			case 'cercle':
-				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: 'red', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
+				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'circ' + this.id
 				this.objet = 'cercle'
 				break
 			case 'cercle-plein':
-				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle-plein', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#ccc', opacity: 1, draggable: true, verrouille: false })
+				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle-plein', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'circ' + this.id
 				this.objet = 'cercle-plein'
 				break
 			case 'etoile':
-				this.etoiles.push({ name: 'star' + this.id, objet: 'etoile', x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, width: this.$convertirRem(12), height: this.$convertirRem(12), fill: 'yellow', stroke: 'black', strokeWidth: 3, strokeScaleEnabled: false, numPoints: 5, innerRadius: 20, outerRadius: 45, opacity: 1, draggable: true, verrouille: false })
+				this.etoiles.push({ name: 'star' + this.id, objet: 'etoile', x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, width: this.$convertirRem(12), height: this.$convertirRem(12), fill: '#ffff00', stroke: 'black', strokeWidth: 3, strokeScaleEnabled: false, numPoints: 5, innerRadius: 20, outerRadius: 45, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'star' + this.id
 				this.objet = 'etoile'
 				break
 			case 'surlignage':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'surlignage', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'yellow', opacity: 0.5, draggable: true, verrouille: false })
+				this.rectangles.push({ name: 'rect' + this.id, objet: 'surlignage', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#ffff00', opacity: 0.5, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'surlignage'
 				break
 			case 'ligne':
-				this.lignes.push({ name: 'line' + this.id, objet: 'ligne', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], fill: 'red', stroke: 'red', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
-				this.ancres.push({ name: 'ancr_line' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: 'yellow', stroke: 'red', strokeWidth: 2, visible: true, draggable: true })
-				this.ancres.push({ name: 'ancr_line' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: 'yellow', stroke: 'red', strokeWidth: 2, visible: true, draggable: true })
+				this.lignes.push({ name: 'line' + this.id, objet: 'ligne', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
+				this.ancres.push({ name: 'ancr_line' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.ancres.push({ name: 'ancr_line' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
 				this.nom = 'line' + this.id
 				this.objet = 'ligne'
 				break
 			case 'fleche':
-				this.fleches.push({ name: 'flec' + this.id, objet: 'fleche', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], pointerLength: 15, pointerWidth: 12, fill: 'red', stroke: 'red', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
-				this.ancres.push({ name: 'ancr_flec' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: 'yellow', stroke: 'red', strokeWidth: 2, visible: true, draggable: true })
-				this.ancres.push({ name: 'ancr_flec' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: 'yellow', stroke: 'red', strokeWidth: 2, visible: true, draggable: true })
+				this.fleches.push({ name: 'flec' + this.id, objet: 'fleche', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], pointerLength: 15, pointerWidth: 12, fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
+				this.ancres.push({ name: 'ancr_flec' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.ancres.push({ name: 'ancr_flec' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
 				this.nom = 'flec' + this.id
 				this.objet = 'fleche'
 				break
 			case 'texte':
-				this.textes.push({ name: 'text' + this.id, objet: 'texte', text: this.texte, fontSize: 30, lineHeight: 1.25, verticalAlign: 'middle', padding: 10, x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, fill: 'red', opacity: 1, wrap: 'word', draggable: true, verrouille: false })
+				this.textes.push({ name: 'text' + this.id, objet: 'texte', text: this.texte, fontSize: 30, lineHeight: 1.25, verticalAlign: 'middle', padding: 10, x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, fill: '#ff0000', opacity: 1, wrap: 'word', draggable: true, verrouille: false })
 				this.nom = 'text' + this.id
 				this.objet = 'texte'
 				break
@@ -618,6 +633,7 @@ export default {
 					}
 					this.selection = true
 					this.nom = ''
+					this.objet = ''
 					this.ancres.forEach(function (ancre, index) {
 						this.ancres[index].visible = false
 					}.bind(this))
@@ -625,15 +641,20 @@ export default {
 				} else {
 					this.creation = true
 					this.nom = ''
+					this.objet = ''
 					this.ancres.forEach(function (ancre, index) {
 						this.ancres[index].visible = false
 					}.bind(this))
 					if (this.outil === 'etoile') {
 						this.dessinerForme('etoile')
 						this.creation = false
+						this.activerSelecteur()
 					} else if (this.outil === 'texte') {
 						this.modale = true
 						this.creation = false
+						setTimeout(function () {
+							document.querySelector('#annotation-texte textarea').focus()
+						}, 10)
 					}
 					this.transformer()
 				}
@@ -714,6 +735,7 @@ export default {
 						}
 						transformer.nodes(selection)
 						transformer.getLayer().batchDraw()
+						this.desactiverSelecteur()
 					} else if (selection.length === 1) {
 						const nom = selection[0].getAttrs().name
 						this.selectionner(nom)
@@ -722,12 +744,14 @@ export default {
 						this.nom = ''
 						this.objet = ''
 						this.objetVerrouille = false
+						this.desactiverSelecteur()
 					}
 				} else if (this.outil !== '' && this.outil !== 'etoile' && this.outil !== 'texte' && this.largeurObjet > 0 && this.hauteurObjet > 0) {
 					if (!this.creation) {
 						return
 					}
 					this.dessinerForme(this.outil)
+					this.activerSelecteur()
 				}
 			} else if (this.outilDessiner) {
 				this.dessin = false
@@ -785,10 +809,15 @@ export default {
 				} else {
 					this.objetVerrouille = false
 				}
+				if (!this.outilDessiner) {
+					this.definirCouleurSelecteur(this.objet, item)
+				}
+				this.activerSelecteur()
 			} else {
 				this.nom = ''
 				this.objet = ''
 				this.objetVerrouille = false
+				this.desactiverSelecteur()
 			}
 			if (type === 'flec' || type === 'line') {
 				ancre1 = this.ancres.find(r => r.name === 'ancr_' + nom + '_1')
@@ -822,10 +851,14 @@ export default {
 			this.reinitialiserOutils()
 			this.fermerModale()
 			this.selection = false
+			this.activerSelecteur()
 		},
 		modifierTexte (event) {
 			this.texte = event.target.text()
 			this.modale = true
+			setTimeout(function () {
+				document.querySelector('#annotation-texte textarea').focus()
+			}, 10)
 		},
 		enregistrerTexte () {
 			const forme = this.textes.find((r) => r.name === this.nom)
@@ -836,6 +869,40 @@ export default {
 		fermerModale () {
 			this.texte = ''
 			this.modale = false
+		},
+		definirCouleurSelecteur (objet, item) {
+			switch (objet) {
+			case 'rectangle':
+			case 'cercle':
+			case 'ligne':
+			case 'fleche':
+			case 'dessin':
+				if (['#000000', '#ffffff', '#ff0000', '#ffff00', '#00ff00', '#04fdff', '#cccccc'].includes(item.stroke) === false) {
+					this.couleurSelecteur = item.stroke
+				}
+				break
+			case 'rectangle-plein':
+			case 'cercle-plein':
+			case 'etoile':
+			case 'surlignage':
+			case 'texte':
+				if (['#000000', '#ffffff', '#ff0000', '#ffff00', '#00ff00', '#04fdff', '#cccccc'].includes(item.fill) === false) {
+					this.couleurSelecteur = item.fill
+				}
+				break
+			}
+		},
+		definirCouleur () {
+			const couleur = document.querySelector('#couleur-annotation').value
+			if (this.outilDessiner && this.couleurSelecteur !== '#000000') {
+				this.couleurStylo = couleur
+			} else if (!this.outilDessiner && this.couleurSelecteur !== '#000000') {
+				this.modifierCouleur(couleur)
+			}
+		},
+		modifierCouleurSelecteur (event) {
+			this.couleurSelecteur = event.target.value
+			this.modifierCouleur(event.target.value)
 		},
 		modifierCouleur (couleur) {
 			if (this.outilSelectionner) {
@@ -1157,6 +1224,20 @@ export default {
 			this.dessins.forEach(function (item) {
 				item.draggable = false
 			})
+		},
+		activerSelecteur () {
+			this.$nextTick(function () {
+				if (document.querySelector('#couleur-annotation')) {
+					document.querySelector('#couleur-annotation').addEventListener('change', this.modifierCouleurSelecteur)
+				}
+			}.bind(this))
+		},
+		desactiverSelecteur () {
+			this.$nextTick(function () {
+				if (document.querySelector('#couleur-annotation')) {
+					document.querySelector('#couleur-annotation').removeEventListener('change', this.modifierCouleurSelecteur)
+				}
+			}.bind(this))
 		}
 	}
 }
@@ -1301,7 +1382,7 @@ export default {
 
 #options .option.rouge.actif,
 #options .option .couleur.rouge {
-	background: red;
+	background: #ff0000;
 }
 
 #options .option.jaune.actif,
@@ -1344,5 +1425,35 @@ export default {
 #confirmation .modale .conteneur p {
 	text-align: center;
 	margin-bottom: 0;
+}
+
+#options .option.icone {
+	width: auto;
+}
+
+#options .option.icone label {
+	font-size: 24px;
+}
+
+#options .option.icone input[type="color"] {
+	width: 20px;
+	height: 20px;
+	border: none;
+	margin-left: 5px;
+	cursor: pointer;
+}
+
+#options .option.icone input[type="color"]::-moz-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+#options .option.icone input[type="color"]::-webkit-color-swatch {
+	border: 1px solid #ddd;
+	border-radius: 50%;
+}
+
+#options .option.icone input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
 }
 </style>
