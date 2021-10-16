@@ -139,22 +139,24 @@ export default {
 				liste = this.$melanger(liste)
 				const nombrePersonnes = parseInt(this.personnes)
 				if (liste.length > 0 && nombrePersonnes > 0) {
-					const nombreGroupes = Math.ceil(liste.length / nombrePersonnes)
-					for (let i = 0; i < nombreGroupes; i++) {
+					let nombreGroupes = Math.ceil(liste.length / nombrePersonnes)
+					let indexPersonne = 0
+					while (nombreGroupes > 0) {
 						const groupe = []
-						for (let j = 0; j < liste.length; j++) {
-							let personneDansGroupe = false
-							for (let k = 0; k < this.groupes.length; k++) {
-								if (this.groupes[k].includes(liste[j])) {
-									personneDansGroupe = true
-									break
-								}
+						let i
+						if (nombreGroupes < 1) {
+							while (indexPersonne < liste.length) {
+								groupe[groupe.length] = liste[indexPersonne]
+								indexPersonne++
 							}
-							if (personneDansGroupe === false && groupe.length !== nombrePersonnes) {
-								groupe.push(liste[j])
+						} else {
+							for (i = nombrePersonnes; i > 0 ; i--) {
+								groupe[groupe.length] = liste[indexPersonne]
+								indexPersonne++
 							}
 						}
-						this.groupes.push(groupe)
+						this.groupes[this.groupes.length] = groupe
+						nombreGroupes--
 					}
 				}
 				if (this.donnees.w > 0 && this.donnees.h > 0) {
