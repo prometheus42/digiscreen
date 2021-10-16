@@ -519,7 +519,6 @@ export default {
 		arreterAnnoter () {
 			this.annotation = false
 			this.pages[this.page - 1].annotation = false
-			this.$forceUpdate()
 			// this.pages[this.page - 1].annotations = {}
 		},
 		entrerPleinEcran () {
