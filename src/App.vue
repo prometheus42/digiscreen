@@ -267,7 +267,7 @@ export default {
 			alerte: false,
 			largeur: 0,
 			hauteur: 0,
-			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {} }],
+			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {}, annotation: false }],
 			page: 1,
 			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'plateau', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
 			panneaux: [],
@@ -312,8 +312,8 @@ export default {
 				})
 				this.panneauxPage = panneaux
 				this.exportDonnees = false
-				if (Object.keys(this.annotations).length > 0) {
-					this.annotation = true
+				if (this.pages[page - 1].hasOwnProperty('annotation')) {
+					this.annotation = this.pages[page - 1].annotation
 				} else {
 					this.annotation = false
 				}
@@ -514,10 +514,13 @@ export default {
 		},
 		annoter () {
 			this.annotation = true
+			this.pages[this.page - 1].annotation = true
 		},
 		arreterAnnoter () {
 			this.annotation = false
-			this.pages[this.page - 1].annotations = {}
+			this.pages[this.page - 1].annotation = false
+			this.$forceUpdate()
+			// this.pages[this.page - 1].annotations = {}
 		},
 		entrerPleinEcran () {
 			fscreen.requestFullscreen(document.body)

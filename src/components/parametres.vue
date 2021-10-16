@@ -371,7 +371,7 @@ export default {
 					fond = './static/img/aurore.jpg'
 					break
 				}
-				this.$parent.pages.push({ fond: fond, grille: {}, annotations: {} })
+				this.$parent.pages.push({ fond: fond, grille: {}, annotations: {}, annotation: false })
 			}
 		},
 		afficherPage (page) {
