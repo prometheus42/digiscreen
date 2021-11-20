@@ -503,7 +503,7 @@ export default {
 			this.enregistrer()
 		},
 		supprimerClavier (event) {
-			if (event.key === 'Backspace' || event.key === 'Delete') {
+			if ((event.key === 'Backspace' || event.key === 'Delete') && !this.modale) {
 				if (this.nom !== 'selection') {
 					this.supprimer('objet')
 				} else if (this.nom === 'selection') {
