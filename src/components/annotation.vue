@@ -3,14 +3,16 @@
 		<div id="annotation" :class="{'curseur': this.outilDeplacer, 'avec-nav': nav}" key="canva">
 			<v-stage ref="stage" :config="{width: dimensionsCanva.w, height: dimensionsCanva.h}" @mousedown="selectionnerDebut" @touchstart="selectionnerDebut" @mousemove="selectionnerMouvement" @touchmove="selectionnerMouvement" @mouseup="selectionnerFin" @touchend="selectionnerFin">
 				<v-layer ref="objets">
-					<v-rect v-for="(itemRectangle, indexRectangle) in rectangles" :config="itemRectangle" :key="'rectangle_' + indexRectangle" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-ellipse v-for="(itemCercle, indexCercle) in cercles" :config="itemCercle" :key="'cercle_' + indexCercle" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-star v-for="(itemEtoile, indexEtoile) in etoiles" :config="itemEtoile" :key="'etoile_' + indexEtoile" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" />
-					<v-line v-for="(itemLigne, indexLigne) in lignes" :config="itemLigne" :key="'ligne_' + indexLigne" @dragstart="selectionnerObjet" @dragmove="deplacerForme" @dragend="enregistrer" />
-					<v-arrow v-for="(itemFleche, indexFleche) in fleches" :config="itemFleche" :key="'fleche_' + indexFleche" @dragstart="selectionnerObjet" @dragmove="deplacerForme" @dragend="enregistrer" />
-					<v-circle v-for="(itemAncre, indexAncre) in ancres" :config="itemAncre" :key="'ancre_' + indexAncre" @dragstart="selectionnerObjet" @dragmove="deplacerAncre" @dragend="enregistrer" />
-					<v-text v-for="(itemTexte, indexTexte) in textes" :config="itemTexte" :key="'texte_' + indexTexte" @dragstart="selectionnerObjet" @dblclick="modifierTexte" @dbltap="modifierTexte" @dragend="deplacerFin" @transform="redimensionnerTexte" @transformend="redimensionnerFin" />
-					<v-line v-for="(itemDessin, indexDessin) in dessins" :config="itemDessin" :key="'dessin_' + indexDessin" @dragstart="selectionnerObjet" @dragend="deplacerFin" />
+					<template v-for="(item, indexItem) in items">
+						<v-rect :config="item" v-if="item.objet === 'rectangle' || item.objet === 'rectangle-plein' || item.objet === 'surlignage'" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" :key="'rectangle_' + indexItem" />
+						<v-ellipse :config="item" v-else-if="item.objet === 'cercle' || item.objet === 'cercle-plein'" @dragend="deplacerFin" @transformend="redimensionnerFin" :key="'cercle_' + indexItem" @dragstart="selectionnerObjet" />
+						<v-star :config="item" v-else-if="item.objet === 'etoile'" @dragstart="selectionnerObjet" @dragend="deplacerFin" @transformend="redimensionnerFin" :key="'etoile_' + indexItem" />
+						<v-line :config="item" v-else-if="item.objet === 'ligne'" @dragstart="selectionnerObjet" @dragmove="deplacerForme" @dragend="enregistrer" :key="'ligne_' + indexItem" />
+						<v-arrow :config="item" v-else-if="item.objet === 'fleche'" @dragstart="selectionnerObjet" @dragmove="deplacerForme" @dragend="enregistrer" :key="'fleche_' + indexItem" />
+						<v-circle :config="item" v-else-if="item.objet === 'ancre'" @dragstart="selectionnerObjet" @dragmove="deplacerAncre" @dragend="enregistrer" :key="'ancre_' + indexItem" />
+						<v-text :config="item" v-else-if="item.objet === 'texte'" @dragstart="selectionnerObjet" @dragend="deplacerFin" @dblclick="modifierTexte" @dbltap="modifierTexte" @transform="redimensionnerTexte" @transformend="redimensionnerFin" :key="'texte_' + indexItem" />
+						<v-line :config="item" v-else-if="item.objet === 'dessin'" @dragstart="selectionnerObjet" @dragend="deplacerFin" :key="'dessin_' + indexItem" />
+					</template>
 					<v-rect :config="{name: 'selection', fill: 'rgba(1, 206, 209, 0.2)', visible: selection, x: positionSelectionX, y: positionSelectionY, width: largeurSelection, height: hauteurSelection}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
 					<v-rect :config="{name: 'objet-rectangle', fill: 'transparent', visible: creation && outil === 'rectangle', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet, stroke: '#ff0000', strokeWidth: 3, dash: [7, 5]}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
 					<v-rect :config="{name: 'objet-rectangle', fill: '#cccccc', visible: creation && outil === 'rectangle-plein', x: positionObjetX, y: positionObjetY, width: largeurObjet, height: hauteurObjet}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
@@ -85,6 +87,12 @@
 			<span class="option" :title="$t('deverrouiller')" @click="deverrouiller" v-else-if="outilSelectionner && objetVerrouille">
 				<img src="~@/assets/img/deverrouiller.png" :alt="$t('deverrouiller')">
 			</span>
+			<span class="option" :title="$t('mettreDevant')" @click="mettreDevant" v-if="outilSelectionner && objet !== 'selection'">
+				<img src="~@/assets/img/devant.png" :alt="$t('mettreDevant')">
+			</span>
+			<span class="option" :title="$t('mettreDerriere')" @click="mettreDerriere" v-if="outilSelectionner && objet !== 'selection'">
+				<img src="~@/assets/img/derriere.png" :alt="$t('mettreDerriere')">
+			</span>
 			<span class="separateur" v-if="outilSelectionner" />
 			<span class="option noir" :class="{'actif': outilDessiner && couleurStylo === '#000000'}" :title="$t('noir')" @click="modifierCouleur('#000000')" v-if="nom !== 'selection'">
 				<span class="couleur noir" />
@@ -131,6 +139,16 @@
 				<span>80</span>
 			</span>
 			<span class="separateur" v-if="outilSelectionner && nom !== 'selection'" />
+			<span class="option label-taille" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'">
+				<span><i class="material-icons">format_size</i></span>
+			</span>
+			<span class="option taille" :title="$t('reduireTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="reduireTailleTexte">
+				<span>-</span>
+			</span>
+			<span class="option taille" :title="$t('augmenterTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="augmenterTailleTexte">
+				<span>+</span>
+			</span>
+			<span class="separateur" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" />
 			<span class="option" :title="$t('supprimer')" @click="supprimer('objet')" v-if="outilSelectionner && nom !== 'selection'">
 				<img src="~@/assets/img/supprimer.png" :alt="$t('supprimer')">
 			</span>
@@ -160,7 +178,7 @@
 					<div class="contenu">
 						<p>{{ $t('reinitialiserAnnotations') }}</p>
 						<div class="actions">
-							<span class="bouton" role="button" tabindex="0" @click="fermerConfirmation">{{ $t('annuler') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="confirmation = false">{{ $t('annuler') }}</span>
 							<span class="bouton" role="button" tabindex="0" @click="reinitialiser">{{ $t('valider') }}</span>
 						</div>
 					</div>
@@ -195,15 +213,8 @@ export default {
 			outilSelectionner: true,
 			outilDeplacer: false,
 			outilDessiner: false,
-			rectangles: [],
-			cercles: [],
-			etoiles: [],
-			lignes: [],
-			fleches: [],
-			ancres: [],
-			textes: [],
+			items: [],
 			dessin: false,
-			dessins: [],
 			historique: [],
 			positionHistorique: -1,
 			selection: false,
@@ -278,14 +289,12 @@ export default {
 	mounted () {
 		if (Object.keys(this.annotations).length > 0) {
 			this.id = this.annotations.id
-			this.rectangles = this.annotations.rectangles
-			this.cercles = this.annotations.cercles
-			this.etoiles = this.annotations.etoiles
-			this.lignes = this.annotations.lignes
-			this.fleches = this.annotations.fleches
-			this.ancres = this.annotations.ancres
-			this.textes = this.annotations.textes
-			this.dessins = this.annotations.dessins
+			if (this.annotations.hasOwnProperty('rectangles')) {
+				const items = this.annotations.rectangles.concat(this.annotations.cercles, this.annotations.etoiles, this.annotations.lignes, this.annotations.fleches, this.annotations.ancres, this.annotations.textes, this.annotations.dessins)
+				this.items = items
+			} else {
+				this.items = this.annotations.items
+			}
 			this.activerDeplacement()
 		}
 		const rect = document.querySelector('#annotation').getBoundingClientRect()
@@ -335,51 +344,51 @@ export default {
 			this.id++
 			switch (type) {
 			case 'rectangle':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
+				this.items.push({ name: 'rect' + this.id, objet: 'rectangle', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'rectangle'
 				break
 			case 'rectangle-plein':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'rectangle-plein', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
+				this.items.push({ name: 'rect' + this.id, objet: 'rectangle-plein', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'rectangle-plein'
 				break
 			case 'cercle':
-				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
+				this.items.push({ name: 'circ' + this.id, objet: 'cercle', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: 'transparent', stroke: '#ff0000', strokeWidth: 3, strokeScaleEnabled: false, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'circ' + this.id
 				this.objet = 'cercle'
 				break
 			case 'cercle-plein':
-				this.cercles.push({ name: 'circ' + this.id, objet: 'cercle-plein', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
+				this.items.push({ name: 'circ' + this.id, objet: 'cercle-plein', x: this.positionObjetX + (this.largeurObjet / 2), y: this.positionObjetY + (this.hauteurObjet / 2), scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#cccccc', opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'circ' + this.id
 				this.objet = 'cercle-plein'
 				break
 			case 'etoile':
-				this.etoiles.push({ name: 'star' + this.id, objet: 'etoile', x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, width: this.$convertirRem(12), height: this.$convertirRem(12), fill: '#ffff00', stroke: 'black', strokeWidth: 3, strokeScaleEnabled: false, numPoints: 5, innerRadius: 20, outerRadius: 45, opacity: 1, draggable: true, verrouille: false })
+				this.items.push({ name: 'star' + this.id, objet: 'etoile', x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, width: this.$convertirRem(12), height: this.$convertirRem(12), fill: '#ffff00', stroke: 'black', strokeWidth: 3, strokeScaleEnabled: false, numPoints: 5, innerRadius: 20, outerRadius: 45, opacity: 1, draggable: true, verrouille: false })
 				this.nom = 'star' + this.id
 				this.objet = 'etoile'
 				break
 			case 'surlignage':
-				this.rectangles.push({ name: 'rect' + this.id, objet: 'surlignage', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#ffff00', opacity: 0.5, draggable: true, verrouille: false })
+				this.items.push({ name: 'rect' + this.id, objet: 'surlignage', x: this.positionObjetX, y: this.positionObjetY, scaleX: 1, scaleY: 1, width: this.largeurObjet, height: this.hauteurObjet, fill: '#ffff00', opacity: 0.5, draggable: true, verrouille: false })
 				this.nom = 'rect' + this.id
 				this.objet = 'surlignage'
 				break
 			case 'ligne':
-				this.lignes.push({ name: 'line' + this.id, objet: 'ligne', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
-				this.ancres.push({ name: 'ancr_line' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
-				this.ancres.push({ name: 'ancr_line' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.items.push({ name: 'line' + this.id, objet: 'ligne', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
+				this.items.push({ name: 'ancr_line' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.items.push({ name: 'ancr_line' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
 				this.nom = 'line' + this.id
 				this.objet = 'ligne'
 				break
 			case 'fleche':
-				this.fleches.push({ name: 'flec' + this.id, objet: 'fleche', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], pointerLength: 15, pointerWidth: 12, fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
-				this.ancres.push({ name: 'ancr_flec' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
-				this.ancres.push({ name: 'ancr_flec' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.items.push({ name: 'flec' + this.id, objet: 'fleche', x: 0, y: 0, scaleX: 1, scaleY: 1, points: [this.positionX1, this.positionY1, this.positionX2, this.positionY2], pointerLength: 15, pointerWidth: 12, fill: '#ff0000', stroke: '#ff0000', strokeWidth: 3, hitStrokeWidth: 50, draggable: true, verrouille: false })
+				this.items.push({ name: 'ancr_flec' + this.id + '_1', objet: 'ancre', x: this.positionX1, y: this.positionY1, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
+				this.items.push({ name: 'ancr_flec' + this.id + '_2', objet: 'ancre', x: this.positionX2, y: this.positionY2, radius: 10, width: 10, height: 10, fill: '#ffff00', stroke: '#ff0000', strokeWidth: 2, visible: true, draggable: true })
 				this.nom = 'flec' + this.id
 				this.objet = 'fleche'
 				break
 			case 'texte':
-				this.textes.push({ name: 'text' + this.id, objet: 'texte', text: this.texte, fontSize: 30, lineHeight: 1.25, verticalAlign: 'middle', padding: 10, x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, fill: '#ff0000', opacity: 1, wrap: 'word', draggable: true, verrouille: false })
+				this.items.push({ name: 'text' + this.id, objet: 'texte', text: this.texte, fontSize: 30, lineHeight: 1.25, verticalAlign: 'middle', padding: 10, x: this.positionX1, y: this.positionY1, scaleX: 1, scaleY: 1, fill: '#ff0000', opacity: 1, wrap: 'word', draggable: true, verrouille: false })
 				this.nom = 'text' + this.id
 				this.objet = 'texte'
 				break
@@ -392,7 +401,7 @@ export default {
 		verrouiller () {
 			let item
 			if (this.objet !== 'selection') {
-				item = this.recupererItem(this.nom)
+				item = this.items.find(r => r.name === this.nom)
 				if (item) {
 					item.draggable = false
 					item.verrouille = true
@@ -400,7 +409,7 @@ export default {
 			} else {
 				const objets = this.$refs.transformer.getNode().nodes()
 				for (let i = 0; i < objets.length; i++) {
-					item = this.recupererItem(objets[i].getAttrs().name)
+					item = this.items.find(r => r.name === objets[i].getAttrs().name)
 					if (item) {
 						item.draggable = false
 						item.verrouille = true
@@ -408,8 +417,10 @@ export default {
 				}
 			}
 			this.objetVerrouille = true
-			this.ancres.forEach(function (ancre, index) {
-				this.ancres[index].visible = false
+			this.items.forEach(function (item, index) {
+				if (item.objet === 'ancre') {
+					this.items[index].visible = false
+				}
 			}.bind(this))
 			if (this.objet !== 'selection') {
 				this.transformer()
@@ -422,7 +433,7 @@ export default {
 		deverrouiller () {
 			let item
 			if (this.objet !== 'selection') {
-				item = this.recupererItem(this.nom)
+				item = this.items.find(r => r.name === this.nom)
 				if (item) {
 					item.draggable = true
 					item.verrouille = false
@@ -430,7 +441,7 @@ export default {
 			} else {
 				const objets = this.$refs.transformer.getNode().nodes()
 				for (let i = 0; i < objets.length; i++) {
-					item = this.recupererItem(objets[i].getAttrs().name)
+					item = this.items.find(r => r.name === objets[i].getAttrs().name)
 					if (item) {
 						item.draggable = true
 						item.verrouille = false
@@ -442,8 +453,8 @@ export default {
 			this.objetVerrouille = false
 			const type = this.nom.substring(0, 4)
 			if (type === 'flec' || type === 'line') {
-				const ancre1 = this.ancres.find(r => r.name === 'ancr_' + this.nom + '_1')
-				const ancre2 = this.ancres.find(r => r.name === 'ancr_' + this.nom + '_2')
+				const ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+				const ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
 				ancre1.visible = true
 				ancre2.visible = true
 			}
@@ -455,36 +466,48 @@ export default {
 			}
 			this.enregistrer()
 		},
+		mettreDevant () {
+			this.items.forEach(function (item, index) {
+				if (item.name === this.nom && index < this.items.length) {
+					this.items.splice(index, 1)
+					this.items.splice(index + 1, 0, item)
+				}
+			}.bind(this))
+			this.enregistrer()
+			this.$nextTick(function () {
+				this.transformer()
+			}.bind(this))
+		},
+		mettreDerriere () {
+			this.items.forEach(function (item, index) {
+				if (item.name === this.nom && index > 0) {
+					this.items.splice(index, 1)
+					this.items.splice(index - 1, 0, item)
+				}
+			}.bind(this))
+			this.enregistrer()
+			this.$nextTick(function () {
+				this.transformer()
+			}.bind(this))
+		},
 		supprimer (mode) {
 			const type = this.nom.substring(0, 4)
 			switch (type) {
 			case 'rect':
-				this.rectangles = this.rectangles.filter((r) => r.name !== this.nom)
+			case 'circ':
+			case 'star':
+			case 'text':
+			case 'dess':
+				this.items = this.items.filter(r => r.name !== this.nom)
 				break
-			case 'circ': 
-				this.cercles = this.cercles.filter((r) => r.name !== this.nom)
-				break
-			case 'star': 
-				this.etoiles = this.etoiles.filter((r) => r.name !== this.nom)
-				break
-			case 'line': 
-				this.lignes = this.lignes.filter((r) => r.name !== this.nom)
-				this.ancres = this.ancres.filter((r) => !r.name.includes(this.nom))
-				break
-			case 'flec': 
-				this.fleches = this.fleches.filter((r) => r.name !== this.nom)
-				this.ancres = this.ancres.filter((r) => !r.name.includes(this.nom))
+			case 'line':
+			case 'flec':
+				this.items = this.items.filter(r => r.name !== this.nom)
+				this.items = this.items.filter(r => !r.name.includes(this.nom))
 				break
 			case 'ancr':
-				this.fleches = this.fleches.filter((r) => r.name !== this.nom.split('_')[1])
-				this.lignes = this.lignes.filter((r) => r.name !== this.nom.split('_')[1])
-				this.ancres = this.ancres.filter((r) => !r.name.includes(this.nom.split('_')[1]))
-				break
-			case 'text': 
-				this.textes = this.textes.filter((r) => r.name !== this.nom)
-				break
-			case 'dess':
-				this.dessins = this.dessins.filter(r => r.name !== this.nom)
+				this.items = this.items.filter(r => r.name !== this.nom.split('_')[1])
+				this.items = this.items.filter(r => !r.name.includes(this.nom.split('_')[1]))
 				break
 			}
 			this.nom = ''
@@ -514,62 +537,21 @@ export default {
 		afficherReinitialiser () {
 			this.confirmation = true
 		},
-		fermerConfirmation () {
-			this.confirmation = false
-		},
 		reinitialiser () {
 			this.definirOutilPrincipal('selectionner')
 			this.id = 0
 			this.nom = ''
 			this.objet = ''
 			this.objetVerrouille = false
-			this.rectangles = []
-			this.cercles = []
-			this.etoiles = []
-			this.lignes = []
-			this.fleches = []
-			this.ancres = []
-			this.textes = []
-			this.dessins = []
+			this.items = []
 			this.transformer()
-			this.fermerConfirmation()
 			this.enregistrer()
-		},
-		recupererItem (nom) {
-			const type = nom.substring(0, 4)
-			let item
-			switch (type) {
-			case 'rect':
-				item = this.rectangles.find(r => r.name === nom)
-				break
-			case 'circ':
-				item = this.cercles.find(r => r.name === nom)
-				break
-			case 'star':
-				item = this.etoiles.find(r => r.name === nom)
-				break
-			case 'line':
-				item = this.lignes.find(r => r.name === nom)
-				break
-			case 'flec':
-				item = this.fleches.find(r => r.name === nom)
-				break
-			case 'ancr':
-				item = this.ancres.find(r => r.name === nom)
-				break
-			case 'text':
-				item = this.textes.find(r => r.name === nom)
-				break
-			case 'dess':
-				item = this.dessins.find(r => r.name === nom)
-				break
-			}
-			return item
+			this.confirmation = false
 		},
 		deplacerFin (event) {
 			let item
 			if (this.objet !== 'selection') {
-				item = this.recupererItem(this.nom)
+				item = this.items.find(r => r.name === this.nom)
 				if (item) {
 					item.x = event.target.x()
 					item.y = event.target.y()
@@ -577,7 +559,7 @@ export default {
 			} else {
 				const objets = this.$refs.transformer.getNode().nodes()
 				for (let i = 0; i < objets.length; i++) {
-					item = this.recupererItem(objets[i].getAttrs().name)
+					item = this.items.find(r => r.name === objets[i].getAttrs().name)
 					if (item) {
 						item.x = objets[i].getAttrs().x
 						item.y = objets[i].getAttrs().y
@@ -597,7 +579,7 @@ export default {
 			}
 		},
 		redimensionnerFin (event) {
-			const item = this.recupererItem(this.nom)
+			const item = this.items.find(r => r.name === this.nom)
 			if (item) {
 				item.x = event.target.x()
 				item.y = event.target.y()
@@ -634,16 +616,20 @@ export default {
 					this.selection = true
 					this.nom = ''
 					this.objet = ''
-					this.ancres.forEach(function (ancre, index) {
-						this.ancres[index].visible = false
+					this.items.forEach(function (item, index) {
+						if (item.objet === 'ancre') {
+							this.items[index].visible = false
+						}
 					}.bind(this))
 					this.transformer()
 				} else {
 					this.creation = true
 					this.nom = ''
 					this.objet = ''
-					this.ancres.forEach(function (ancre, index) {
-						this.ancres[index].visible = false
+					this.items.forEach(function (item, index) {
+						if (item.objet === 'ancre') {
+							this.items[index].visible = false
+						}
 					}.bind(this))
 					if (this.outil === 'etoile') {
 						this.dessinerForme('etoile')
@@ -662,7 +648,7 @@ export default {
 				this.dessin = true
 				this.positionStylo = stage.getPointerPosition()
 				this.id++
-				this.dessins.push({ name: 'dess' + this.id, objet: 'dessin', points: [this.positionStylo.x, this.positionStylo.y], globalCompositeOperation: 'source-over', stroke: this.couleurStylo, strokeWidth: this.epaisseurStylo, hitStrokeWidth: 25, lineJoin: 'round', draggable: false, verrouille: false })
+				this.items.push({ name: 'dess' + this.id, objet: 'dessin', points: [this.positionStylo.x, this.positionStylo.y], globalCompositeOperation: 'source-over', stroke: this.couleurStylo, strokeWidth: this.epaisseurStylo, hitStrokeWidth: 25, lineJoin: 'round', draggable: false, verrouille: false })
 				this.nom = 'dess' + this.id
 				this.objet = 'dessin'
 				this.$nextTick(function () {
@@ -700,7 +686,7 @@ export default {
 					return
 				}
 				this.positionStylo = stage.getPointerPosition()
-				const item = this.dessins.find(r => r.name === this.nom)
+				const item = this.items.find(r => r.name === this.nom)
 				const points = item.points.concat([this.positionStylo.x, this.positionStylo.y])
 				item.points = points
 				this.$refs.objets.getNode().getLayer().batchDraw()
@@ -721,7 +707,7 @@ export default {
 					const stage = transformer.getStage()
 					const objets = stage.find((item) => {
 						return item.getAttrs().objet && item.getAttrs().name.substring(0, 4) !== 'ancr'
-					}).toArray()
+					})
 					const rect = stage.findOne('.selection').getClientRect()
 					const selection = objets.filter(item => Konva.Util.haveIntersection(rect, item.getClientRect()))
 					if (selection.length > 1) {
@@ -775,8 +761,10 @@ export default {
 			this.nom = ''
 			this.objet = ''
 			this.objetVerrouille = false
-			this.ancres.forEach(function (ancre, index) {
-				this.ancres[index].visible = false
+			this.items.forEach(function (item, index) {
+				if (item.object === 'ancre') {
+					this.items[index].visible = false
+				}
 			}.bind(this))
 			this.transformer()
 		},
@@ -800,7 +788,7 @@ export default {
 		selectionner (nom) {
 			let ancre1, ancre2
 			const type = nom.substring(0, 4)
-			const item = this.recupererItem(nom)
+			const item = this.items.find(r => r.name === nom)
 			if (item) {
 				this.nom = nom
 				this.objet = item.objet
@@ -820,8 +808,8 @@ export default {
 				this.desactiverSelecteur()
 			}
 			if (type === 'flec' || type === 'line') {
-				ancre1 = this.ancres.find(r => r.name === 'ancr_' + nom + '_1')
-				ancre2 = this.ancres.find(r => r.name === 'ancr_' + nom + '_2')
+				ancre1 = this.items.find(r => r.name === 'ancr_' + nom + '_1')
+				ancre2 = this.items.find(r => r.name === 'ancr_' + nom + '_2')
 				if (!item.verrouille) {
 					ancre1.visible = true
 					ancre2.visible = true
@@ -830,8 +818,10 @@ export default {
 					ancre2.visible = false
 				}
 			} else if (type !== 'ancr') {
-				this.ancres.forEach(function (ancre, index) {
-					this.ancres[index].visible = false
+				this.items.forEach(function (item, index) {
+					if (item.objet === 'ancre') {
+						this.items[index].visible = false
+					}
 				}.bind(this))
 			}
 		},
@@ -861,7 +851,7 @@ export default {
 			}, 10)
 		},
 		enregistrerTexte () {
-			const forme = this.textes.find((r) => r.name === this.nom)
+			const forme = this.items.find((r) => r.name === this.nom)
 			forme.text = this.texte
 			this.fermerModale()
 			this.enregistrer()
@@ -869,6 +859,20 @@ export default {
 		fermerModale () {
 			this.texte = ''
 			this.modale = false
+		},
+		reduireTailleTexte () {
+			const item = this.items.find(r => r.name === this.nom)
+			let taille = item.fontSize
+			taille = taille - 2
+			item.fontSize = taille
+			this.enregistrer()
+		},
+		augmenterTailleTexte () {
+			const item = this.items.find(r => r.name === this.nom)
+			let taille = item.fontSize
+			taille = taille + 2
+			item.fontSize = taille
+			this.enregistrer()
 		},
 		definirCouleurSelecteur (objet, item) {
 			switch (objet) {
@@ -906,54 +910,28 @@ export default {
 		},
 		modifierCouleur (couleur) {
 			if (this.outilSelectionner) {
-				let item
+				let item = this.items.find(r => r.name === this.nom)
+				if (this.objet === 'ancre') {
+					item = this.items.find(r => r.name === this.nom.split('_')[1])
+				}
 				switch (this.objet) {
 				case 'rectangle':
-					item = this.rectangles.find(r => r.name === this.nom)
+				case 'cercle':
+				case 'dessin':
 					item.stroke = couleur
 					break
 				case 'rectangle-plein':
-					item = this.rectangles.find(r => r.name === this.nom)
-					item.fill = couleur
-					break
-				case 'cercle':
-					item = this.cercles.find(r => r.name === this.nom)
-					item.stroke = couleur
-					break
 				case 'cercle-plein':
-					item = this.cercles.find(r => r.name === this.nom)
-					item.fill = couleur
-					break
 				case 'etoile':
-					item = this.etoiles.find(r => r.name === this.nom)
-					item.fill = couleur
-					break
 				case 'surlignage':
-					item = this.rectangles.find(r => r.name === this.nom)
+				case 'texte':
 					item.fill = couleur
 					break
 				case 'ligne':
-					item = this.lignes.find(r => r.name === this.nom)
-					item.stroke = couleur
-					item.fill = couleur
-					break
 				case 'fleche':
-					item = this.fleches.find(r => r.name === this.nom)
-					item.stroke = couleur
-					item.fill = couleur
-					break
 				case 'ancre':
-					item = this.fleches.find(r => r.name === this.nom.split('_')[1])
 					item.stroke = couleur
 					item.fill = couleur
-					break
-				case 'texte':
-					item = this.textes.find(r => r.name === this.nom)
-					item.fill = couleur
-					break
-				case 'dessin':
-					item = this.dessins.find(r => r.name === this.nom)
-					item.stroke = couleur
 					break
 				}
 			} else if (this.outilDessiner) {
@@ -1005,19 +983,15 @@ export default {
 		deplacerForme (event) {
 			let item, ancre1, ancre2
 			if (this.objet !== 'selection') {
-				if (this.nom.substring(0, 4) === 'flec') {
-					item = this.fleches.find(r => r.name === this.nom)
-				} else {
-					item = this.lignes.find(r => r.name === this.nom)
-				}
+				item = this.items.find(r => r.name === this.nom)
 				if (item) {
 					item.points = event.target.points()
 					item.x = event.target.x()
 					item.y = event.target.y()
 					item.scaleX = event.target.scaleX()
 					item.scaleY = event.target.scaleY()
-					ancre1 = this.ancres.find(r => r.name === 'ancr_' + this.nom + '_1')
-					ancre2 = this.ancres.find(r => r.name === 'ancr_' + this.nom + '_2')
+					ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+					ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
 					ancre1.x = event.target.points()[0] + event.target.x()
 					ancre1.y = event.target.points()[1] + event.target.y()
 					ancre1.scaleX = event.target.scaleX()
@@ -1030,10 +1004,8 @@ export default {
 			} else {
 				const objets = this.$refs.transformer.getNode().nodes()
 				for (let i = 0; i < objets.length; i++) {
-					if (objets[i].getAttrs().name.substring(0, 4) === 'flec') {
-						item = this.fleches.find(r => r.name === objets[i].getAttrs().name)
-					} else if (objets[i].getAttrs().name.substring(0, 4) === 'line') {
-						item = this.lignes.find(r => r.name === objets[i].getAttrs().name)
+					if (objets[i].getAttrs().name.substring(0, 4) === 'flec' || objets[i].getAttrs().name.substring(0, 4) === 'line') {
+						item = this.items.find(r => r.name === objets[i].getAttrs().name)
 					}
 					if (item) {
 						item.points = objets[i].getAttrs().points
@@ -1041,8 +1013,8 @@ export default {
 						item.y = objets[i].getAttrs().y
 						item.scaleX = objets[i].getAttrs().scaleX
 						item.scaleY = objets[i].getAttrs().scaleY
-						ancre1 = this.ancres.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
-						ancre2 = this.ancres.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
+						ancre1 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
+						ancre2 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
 						ancre1.x = objets[i].getAttrs().points[0] + objets[i].getAttrs().x
 						ancre1.y = objets[i].getAttrs().points[1] + objets[i].getAttrs().y
 						ancre1.scaleX = objets[i].getAttrs().scaleX
@@ -1061,14 +1033,10 @@ export default {
 			if (this.objet !== 'selection') {
 				nom = this.nom.split('_')
 				index = parseInt(nom[2])
-				if (nom[1].substring(0, 4) === 'flec') {
-					item = this.fleches.find(r => r.name === nom[1])
-				} else {
-					item = this.lignes.find(r => r.name === nom[1])
-				}
+				item = this.items.find(r => r.name === nom[1])
 				if (item) {
 					if (index === 1) {
-						ancre = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_2')
+						ancre = this.items.find(r => r.name === 'ancr_' + nom[1] + '_2')
 						points = [
 							event.target.x() - item.x,
 							event.target.y() - item.y,
@@ -1076,7 +1044,7 @@ export default {
 							ancre.y - item.y
 						]
 					} else {
-						ancre = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_1')
+						ancre = this.items.find(r => r.name === 'ancr_' + nom[1] + '_1')
 						points = [
 							ancre.x - item.x,
 							ancre.y - item.y,
@@ -1085,7 +1053,7 @@ export default {
 						]
 					}
 					item.points = points
-					ancreActive = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_' + index)
+					ancreActive = this.items.find(r => r.name === 'ancr_' + nom[1] + '_' + index)
 					ancreActive.x = event.target.x()
 					ancreActive.y = event.target.y()
 					ancreActive.scaleX = event.target.scaleX()
@@ -1096,14 +1064,12 @@ export default {
 				for (let i = 0; i < objets.length; i++) {
 					nom = objets[i].getAttrs().name.split('_')
 					index = parseInt(nom[2])
-					if (nom[1].substring(0, 4) === 'flec') {
-						item = this.fleches.find(r => r.name === nom[1])
-					} else if (nom[1].substring(0, 4) === 'line') {
-						item = this.lignes.find(r => r.name === nom[1])
+					if (nom[1].substring(0, 4) === 'flec' || nom[1].substring(0, 4) === 'line') {
+						item = this.items.find(r => r.name === nom[1])
 					}
 					if (item) {
 						if (index === 1) {
-							ancre = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_2')
+							ancre = this.items.find(r => r.name === 'ancr_' + nom[1] + '_2')
 							points = [
 								objets[i].getAttrs().x - item.x,
 								objets[i].getAttrs().y - item.y,
@@ -1111,7 +1077,7 @@ export default {
 								ancre.y - item.y
 							]
 						} else {
-							ancre = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_1')
+							ancre = this.items.find(r => r.name === 'ancr_' + nom[1] + '_1')
 							points = [
 								ancre.x - item.x,
 								ancre.y - item.y,
@@ -1120,7 +1086,7 @@ export default {
 							]
 						}
 						item.points = points
-						ancreActive = this.ancres.find(r => r.name === 'ancr_' + nom[1] + '_' + index)
+						ancreActive = this.items.find(r => r.name === 'ancr_' + nom[1] + '_' + index)
 						ancreActive.x = objets[i].getAttrs().x
 						ancreActive.y = objets[i].getAttrs().y
 						ancreActive.scaleX = objets[i].getAttrs().scaleX
@@ -1130,8 +1096,8 @@ export default {
 			}
 		},
 		enregistrer () {
-			this.$parent.pages[this.$parent.page - 1].annotations = { id: this.id, rectangles: this.rectangles, cercles: this.cercles, etoiles: this.etoiles, lignes: this.lignes, fleches: this.fleches, ancres: this.ancres, textes: this.textes, dessins: this.dessins }
-			const donnees = { rectangles: JSON.parse(JSON.stringify(this.rectangles)), cercles: JSON.parse(JSON.stringify(this.cercles)), etoiles: JSON.parse(JSON.stringify(this.etoiles)), lignes: JSON.parse(JSON.stringify(this.lignes)), fleches: JSON.parse(JSON.stringify(this.fleches)), ancres: JSON.parse(JSON.stringify(this.ancres)), textes: JSON.parse(JSON.stringify(this.textes)), dessins: JSON.parse(JSON.stringify(this.dessins)) }
+			this.$parent.pages[this.$parent.page - 1].annotations = { id: this.id, items: this.items }
+			const donnees = JSON.parse(JSON.stringify(this.items))
 			if (!this.historique.includes(donnees)) {
 				this.historique.push(donnees)
 				this.positionHistorique += 1
@@ -1143,14 +1109,7 @@ export default {
 			}
 			this.positionHistorique -= 1
 			const donnees = this.historique[this.positionHistorique]
-			this.rectangles = donnees.rectangles
-			this.cercles = donnees.cercles
-			this.etoiles = donnees.etoiles
-			this.lignes = donnees.lignes
-			this.fleches = donnees.fleches
-			this.ancres = donnees.ancres
-			this.textes = donnees.textes
-			this.dessins = donnees.dessins
+			this.items = donnees
 			this.$nextTick(function () {
 				this.reinitialiserSelection()
 			}.bind(this))
@@ -1161,67 +1120,18 @@ export default {
 			}
 			this.positionHistorique += 1
 			const donnees = this.historique[this.positionHistorique]
-			this.rectangles = donnees.rectangles
-			this.cercles = donnees.cercles
-			this.etoiles = donnees.etoiles
-			this.lignes = donnees.lignes
-			this.fleches = donnees.fleches
-			this.ancres = donnees.ancres
-			this.textes = donnees.textes
-			this.dessins = donnees.dessins
+			this.items = donnees
 			this.$nextTick(function () {
 				this.reinitialiserSelection()
 			}.bind(this))
 		},
 		activerDeplacement () {
-			this.rectangles.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.cercles.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.etoiles.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.lignes.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.fleches.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.ancres.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.textes.forEach(function (item) {
-				item.verrouille ? item.draggable = false : item.draggable = true
-			})
-			this.dessins.forEach(function (item) {
+			this.items.forEach(function (item) {
 				item.verrouille ? item.draggable = false : item.draggable = true
 			})
 		},
 		desactiverDeplacement () {
-			this.rectangles.forEach(function (item) {
-				item.draggable = false
-			})
-			this.cercles.forEach(function (item) {
-				item.draggable = false
-			})
-			this.etoiles.forEach(function (item) {
-				item.draggable = false
-			})
-			this.lignes.forEach(function (item) {
-				item.draggable = false
-			})
-			this.fleches.forEach(function (item) {
-				item.draggable = false
-			})
-			this.ancres.forEach(function (item) {
-				item.draggable = false
-			})
-			this.textes.forEach(function (item) {
-				item.draggable = false
-			})
-			this.dessins.forEach(function (item) {
+			this.items.forEach(function (item) {
 				item.draggable = false
 			})
 		},
@@ -1340,16 +1250,29 @@ export default {
     cursor: pointer;
 }
 
+#options .option.label-taille,
 #options .option.label-epaisseur {
 	font-size: 24px;
 	width: auto;
 	cursor: default;
 }
 
+#options .option.taille,
 #options .option.epaisseur {
-	font-size: 12px;
-	border: 1px solid #ddd;
 	line-height: 1;
+}
+
+#options .option.taille {
+	font-size: 24px;
+}
+
+#options .option.taille span:active {
+	opacity: 0.5;
+}
+
+#options .option.epaisseur {
+	border: 1px solid #ddd;
+	font-size: 12px;
 }
 
 #options .option.epaisseur.actif {
@@ -1387,7 +1310,7 @@ export default {
 
 #options .option.jaune.actif,
 #options .option .couleur.jaune {
-	background: yellow;
+	background: #ffff00;
 }
 
 #options .option.vert.actif,
