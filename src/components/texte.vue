@@ -114,6 +114,10 @@ export default {
 		} else if (this.panneau.contenu !== '') {
 			this.texte = this.panneau.contenu
 		}
+		if (this.mode === 'lecture') {
+			this.minw = 20
+			this.minh = 8
+		}
 		this.positionner()
 	},
 	mounted () {
