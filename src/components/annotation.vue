@@ -300,13 +300,13 @@ export default {
 		const rect = document.querySelector('#annotation').getBoundingClientRect()
 		this.dimensionsCanva.w = rect.width
 		this.dimensionsCanva.h = rect.height
-		window.addEventListener('keydown', this.supprimerClavier, false)
+		window.addEventListener('keydown', this.gererClavier, false)
 	},
 	beforeDestroy () {
 		if (document.querySelector('#couleur-annotation')) {
 			document.querySelector('#couleur-annotation').removeEventListener('change', this.modifierCouleurSelecteur)
 		}
-		window.removeEventListener('keydown', this.supprimerClavier, false)
+		window.removeEventListener('keydown', this.gererClavier, false)
 	},
 	methods: {
 		definirOutilPrincipal (type) {
@@ -525,12 +525,90 @@ export default {
 			}
 			this.enregistrer()
 		},
-		supprimerClavier (event) {
-			if ((event.key === 'Backspace' || event.key === 'Delete') && !this.modale) {
-				if (this.nom !== 'selection') {
+		gererClavier (event) {
+			if ((event.key === 'Backspace' || event.key === 'Delete') && this.modale !== 'texte') {
+				if (this.objet !== 'selection') {
 					this.supprimer('objet')
-				} else if (this.nom === 'selection') {
+				} else if (this.objet === 'selection') {
 					this.supprimerSelection()
+				}
+			} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+				let item, type, ancre1, ancre2
+				if (this.objet !== 'selection') {
+					item = this.items.find(r => r.name === this.nom)
+					type = this.nom.substring(0, 4)
+					if (item && event.key === 'ArrowDown') {
+						item.y = item.y + 2
+						if (type === 'flec' || type === 'line') {
+							ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+							ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
+							ancre1.y = ancre1.y + 2
+							ancre2.y = ancre2.y + 2
+						}
+					} else if (item && event.key === 'ArrowUp') {
+						item.y = item.y - 2
+						if (type === 'flec' || type === 'line') {
+							ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+							ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
+							ancre1.y = ancre1.y - 2
+							ancre2.y = ancre2.y - 2
+						}
+					} else if (item && event.key === 'ArrowLeft') {
+						item.x = item.x - 2
+						if (type === 'flec' || type === 'line') {
+							ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+							ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
+							ancre1.x = ancre1.x - 2
+							ancre2.x = ancre2.x - 2
+						}
+					} else if (item && event.key === 'ArrowRight') {
+						item.x = item.x + 2
+						if (type === 'flec' || type === 'line') {
+							ancre1 = this.items.find(r => r.name === 'ancr_' + this.nom + '_1')
+							ancre2 = this.items.find(r => r.name === 'ancr_' + this.nom + '_2')
+							ancre1.x = ancre1.x + 2
+							ancre2.x = ancre2.x + 2
+						}
+					}
+				} else {
+					const objets = this.$refs.transformer.getNode().nodes()
+					for (let i = 0; i < objets.length; i++) {
+						item = this.items.find(r => r.name === objets[i].getAttrs().name)
+						type = objets[i].getAttrs().name.substring(0, 4)
+						if (item && event.key === 'ArrowDown') {
+							item.y = item.y + 2
+							if (type === 'flec' || type === 'line') {
+								ancre1 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
+								ancre2 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
+								ancre1.y = ancre1.y + 2
+								ancre2.y = ancre2.y + 2
+							}
+						} else if (item && event.key === 'ArrowUp') {
+							item.y = item.y - 2
+							if (type === 'flec' || type === 'line') {
+								ancre1 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
+								ancre2 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
+								ancre1.y = ancre1.y - 2
+								ancre2.y = ancre2.y - 2
+							}
+						} else if (item && event.key === 'ArrowLeft') {
+							item.x = item.x - 2
+							if (type === 'flec' || type === 'line') {
+								ancre1 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
+								ancre2 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
+								ancre1.x = ancre1.x - 2
+								ancre2.x = ancre2.x - 2
+							}
+						} else if (item && event.key === 'ArrowRight') {
+							item.x = item.x + 2
+							if (type === 'flec' || type === 'line') {
+								ancre1 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_1')
+								ancre2 = this.items.find(r => r.name === 'ancr_' + objets[i].getAttrs().name + '_2')
+								ancre1.x = ancre1.x + 2
+								ancre2.x = ancre2.x + 2
+							}
+						}
+					}
 				}
 			}
 		},
