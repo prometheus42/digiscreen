@@ -744,19 +744,20 @@ nav .separateur {
 	line-height: 4rem;
 	padding: 0 2rem;
 	cursor: pointer;
-	color: #fff;
-	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+	color: #001d1d;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background: #00ced1;
 	border-radius: 0.5rem;
 	margin-top: 2rem;
 	letter-spacing: 1px;
 	text-indent: 1px;
 	user-select: none;
-	transition: background-color ease-in 0.1s;
+	transition: color ease-in 0.1s, background-color ease-in 0.1s;
 }
 
 .conteneur .bouton:hover {
-	background: #00acb0;
+	color: #fff;
+	background: #001d1d;
 }
 
 .modale .conteneur .actions .bouton:first-child,
@@ -805,6 +806,7 @@ nav .separateur {
 
 .panneau .conteneur .bouton.correct:hover,
 .panneau .conteneur .bouton.correct {
+	color: #fff;
     background: #00b894;
 	cursor: default;
 	width: 11rem;
