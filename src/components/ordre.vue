@@ -181,12 +181,11 @@ export default {
 				}
 				this.positionner()
 				this.items.forEach(function (item, index) {
-					if (item.replace(/ /g, '') !== '') {
-						item = item.trim()
-					} else {
-						this.items.splice(index, 1)
-					}
+					this.items[index] = item.trim()
 				}.bind(this))
+				this.items = this.items.filter(function (element) {
+					return element !== ''
+				})
 				this.itemsMelanges = this.$melanger(JSON.parse(JSON.stringify(this.items)))
 				this.$nextTick(function () {
 					this.sortable = new Sortable(document.querySelector('#' + this.id + ' .conteneur .items'), {
