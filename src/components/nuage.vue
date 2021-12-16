@@ -389,6 +389,7 @@ export default {
 
 .panneau .conteneur .colonne.droite .bouton.inactif:hover,
 .panneau .conteneur .colonne.droite .bouton.inactif {
+	color: #fff;
 	background: #ccc;
 	cursor: default;
 }
