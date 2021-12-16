@@ -886,9 +886,9 @@ export default {
 				this.desactiverSelecteur()
 			}
 			if (type === 'flec' || type === 'line') {
-				this.items[this.page].forEach(function (item, index) {
+				this.items.forEach(function (item, index) {
 					if (item.objet === 'ancre') {
-						this.items[this.page][index].visible = false
+						this.items[index].visible = false
 					}
 				}.bind(this))
 				ancre1 = this.items.find(r => r.name === 'ancr_' + nom + '_1')
