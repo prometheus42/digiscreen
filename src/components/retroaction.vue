@@ -196,6 +196,7 @@ export default {
 
 .panneau .panneau-retroaction .bouton:hover {
 	border: 2px solid #00acb0;
+	background: #00ced1;
 }
 
 .panneau .panneau-retroaction .oui {
