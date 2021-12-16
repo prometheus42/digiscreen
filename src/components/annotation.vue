@@ -840,7 +840,7 @@ export default {
 			this.objet = ''
 			this.objetVerrouille = false
 			this.items.forEach(function (item, index) {
-				if (item.object === 'ancre') {
+				if (item.objet === 'ancre') {
 					this.items[index].visible = false
 				}
 			}.bind(this))
@@ -886,6 +886,11 @@ export default {
 				this.desactiverSelecteur()
 			}
 			if (type === 'flec' || type === 'line') {
+				this.items[this.page].forEach(function (item, index) {
+					if (item.objet === 'ancre') {
+						this.items[this.page][index].visible = false
+					}
+				}.bind(this))
 				ancre1 = this.items.find(r => r.name === 'ancr_' + nom + '_1')
 				ancre2 = this.items.find(r => r.name === 'ancr_' + nom + '_2')
 				if (!item.verrouille) {
