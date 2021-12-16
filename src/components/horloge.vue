@@ -211,7 +211,7 @@ export default {
 .horloge .temps {
 	font-family: 'Orbitron', sans-serif;
 	font-size: 4rem;
-	color: #fff;
+	color: #001d1d;
 	background: #00ced1;
 	letter-spacing: 0.5rem;
     padding: 2rem;
