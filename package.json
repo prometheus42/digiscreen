@@ -1,6 +1,6 @@
 {
   "name": "digiscreen",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "homepage": "https://ladigitale.dev/digiscreen/",
   "repository": {
     "type": "git",
@@ -23,12 +23,12 @@
     "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
     "@panzoom/panzoom": "^4.4.3",
-    "core-js": "^3.19.1",
+    "core-js": "^3.20.0",
     "destyle.css": "^1.0.15",
     "file-saver": "^2.0.5",
     "fontfaceobserver": "^2.1.0",
     "fscreen": "^1.2.0",
-    "html2canvas": "^1.0.0",
+    "html2canvas": "^1.3.3",
     "konva": "^7.2.5",
     "pell": "^1.0.6",
     "sortablejs": "^1.14.0",
