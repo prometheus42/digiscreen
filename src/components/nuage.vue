@@ -261,7 +261,7 @@ export default {
 		},
 		ajouterMots () {
 			const liste = this.liste.split(',')
-			if (liste.length > 0) {
+			if (liste.length > 0 && liste[0] !== '') {
 				liste.forEach(function (mot) {
 					if (mot.trim() !== '') {
 						const mots = this.mots.filter(function (item) {
@@ -372,6 +372,11 @@ export default {
 	width: 50%;
 	text-align: center;
 	margin-top: 1rem;
+}
+
+.panneau .conteneur .colonne.gauche .bouton-secondaire:hover,
+.panneau .conteneur .colonne.gauche .bouton-secondaire:active {
+	opacity: 0.5;
 }
 
 .panneau .conteneur .colonne.droite .nuage {
