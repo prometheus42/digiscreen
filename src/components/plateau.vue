@@ -125,7 +125,7 @@ export default {
 	mounted () {
 		this.chargement = false
 		if (this.mode === 'lecture') {
-			this.redimensionnement = true
+			this.generer()
 		}
 	},
 	beforeDestroy () {
