@@ -126,7 +126,7 @@ export default {
 			this.minutes = this.panneau.contenu.minutes
 			this.secondes = this.panneau.contenu.secondes
 		}
-		if (this.mode === 'lecture') {
+		if (this.mode === 'lecture' || this.mode === 'decompte') {
 			this.generer()
 		}
 	},
