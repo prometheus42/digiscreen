@@ -527,9 +527,9 @@ export default {
 		},
 		gererClavier (event) {
 			if ((event.key === 'Backspace' || event.key === 'Delete') && this.modale !== 'texte') {
-				if (this.objet !== 'selection') {
+				if (this.nom !== '' && this.objet !== 'selection') {
 					this.supprimer('objet')
-				} else if (this.objet === 'selection') {
+				} else if (this.nom !== '' && this.objet === 'selection') {
 					this.supprimerSelection()
 				}
 			} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
