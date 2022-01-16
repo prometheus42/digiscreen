@@ -173,5 +173,6 @@ export default {
 	activerEffetsSonores: '¿Activar los efectos de sonido?',
 	plateau: 'Tablero',
 	plateauJeu: 'Tablero de juego',
-	nombrePions: 'Número de piezas'
+	nombrePions: 'Número de piezas',
+	afficherHeures: '¿Mostrar las horas?'
 }

@@ -173,5 +173,6 @@ export default {
 	activerEffetsSonores: 'Geluidseffecten activeren?',
 	plateau: 'Bord',
 	plateauJeu: 'Spelbord',
-	nombrePions: 'Aantal stuks'
+	nombrePions: 'Aantal stuks',
+	afficherHeures: 'De uren weergeven?'
 }

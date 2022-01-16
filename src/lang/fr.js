@@ -173,5 +173,6 @@ export default {
 	activerEffetsSonores: 'Activer les effets sonores ?',
 	plateau: 'Plateau',
 	plateauJeu: 'Plateau de jeu',
-	nombrePions: 'Nombre de pions'
+	nombrePions: 'Nombre de pions',
+	afficherHeures: 'Afficher les heures ?'
 }

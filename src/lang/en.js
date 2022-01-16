@@ -173,5 +173,6 @@ export default {
 	activerEffetsSonores: 'Activate sound effects?',
 	plateau: 'Board',
 	plateauJeu: 'Game board',
-	nombrePions: 'Number of pawns'
+	nombrePions: 'Number of pawns',
+	afficherHeures: 'Display the hours?'
 }

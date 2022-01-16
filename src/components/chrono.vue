@@ -12,14 +12,29 @@
 			<div class="conteneur actif panneau-chrono">
 				<div class="contenu inactif">
 					<div class="chrono">
+						<span class="heures" v-if="affichageHeures === 'oui'">{{ texteHeures }}</span>
+						<span class="separateur" v-if="affichageHeures === 'oui'">:</span>
 						<span class="minutes">{{ texteMinutes }}</span>
 						<span class="separateur">:</span>
 						<span class="secondes">{{ texteSecondes }}</span>
-						<span class="separateur">:</span>
+						<span class="separateur">.</span>
 						<span class="millisecondes">{{ texteMillisecondes }}</span>
 					</div>
 					<div class="actions">
 						<span class="bouton" role="button" tabindex="0" @click="demarrer" v-if="mode === 'stop'">{{ $t('demarrer') }}</span>
+						<div class="conteneur-affichage-heures" v-if="mode === 'stop'">
+							<label>{{ $t('afficherHeures') }}</label>
+							<div class="affichage-heures" >
+								<span class="oui">
+									<input type="radio" :id="'heures_oui_' + id" :name="'heures_oui_' + id" value="oui" :checked="affichageHeures === 'oui'" @change="modifierAffichageHeures($event.target.value)">
+									<label :for="'heures_oui_' + id">{{ $t('oui') }}</label>
+								</span>
+								<span class="non">
+									<input type="radio" :id="'heures_non_' + id" :name="'heures_oui_' + id" value="non" :checked="affichageHeures === 'non'" @change="modifierAffichageHeures($event.target.value)">
+									<label :for="'heures_non_' + id">{{ $t('non') }}</label>
+								</span>
+							</div>
+						</div>
 						<span class="bouton" role="button" tabindex="0" @click="demarrer" v-else-if="mode === 'pause'"><i class="material-icons">play_arrow</i></span>
 						<span class="bouton" role="button" tabindex="0" @click="pause" v-else-if="mode === 'lecture'"><i class="material-icons">pause</i></span>
 						<span class="bouton" role="button" tabindex="0" @click="stop" v-if="mode !== 'stop'"><i class="material-icons">autorenew</i></span>
@@ -61,24 +76,27 @@ export default {
 			y: 0,
 			z: 0,
 			minw: 48,
-			minh: 22,
+			minh: 22.2,
 			statut: '',
 			dimensions: {},
 			chrono: '',
 			millisecondesPause: 0,
 			millisecondesEcoulees: 0,
+			heures: 0,
 			minutes: 0,
 			secondes: 0,
 			millisecondes: 0,
+			texteHeures: '00',
 			texteMinutes: '00',
 			texteSecondes: '00',
-			texteMillisecondes: '000'
+			texteMillisecondes: '000',
+			affichageHeures: 'non'
 		}
 	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, statut: this.statut, dimensions: this.dimensions, contenu: '', w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, statut: this.statut, dimensions: this.dimensions, contenu: { affichageHeures: this.affichageHeures }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -103,6 +121,9 @@ export default {
 		}
 		if (this.panneau.statut === 'min') {
 			this.minimiser()
+		}
+		if (this.panneau.contenu !== '') {
+			this.affichageHeures = this.panneau.contenu.affichageHeures
 		}
 		this.positionner()
 	},
@@ -133,11 +154,18 @@ export default {
 				} else {
 					this.texteMinutes = this.minutes
 				}
-				if (this.minutes >= 59 && this.secondes >=59 && this.millisecondes > 900) {
-					this.chrono = this.arreterTempsMillisecondes(this.chrono)
+				if (this.heures < 10) {
+					this.texteHeures = '0' + this.heures
+				} else {
+					this.texteHeures = this.heures
 				}
 				this.millisecondes = this.millisecondesEcoulees
-				if (this.secondes > 59) {
+				if (this.minutes === 59 && this.secondes === 59 && this.millisecondes > 999) {
+					this.secondes = 0
+					this.minutes = 0
+					this.heures++
+				}
+				if (this.secondes === 59 && this.millisecondes > 999) {
 					this.secondes = 0
 					this.minutes++
 				}
@@ -146,7 +174,7 @@ export default {
 					this.secondes++
 					this.demarrer()
 				}
-			}.bind(this), 10)
+			}.bind(this), 1)
 			if (this.mode !== 'lecture') {
 				this.mode = 'lecture'
 			}
@@ -183,6 +211,14 @@ export default {
 			} else {
 				return 0
 			}
+		},
+		modifierAffichageHeures (affichage) {
+			this.affichageHeures = affichage
+			if (affichage === 'oui') {
+				this.w = 59
+			} else {
+				this.w = 48
+			}
 		}
 	}
 }
@@ -207,6 +243,7 @@ export default {
 	text-indent: 0.5rem;
 }
 
+.chrono .heures,
 .chrono .minutes,
 .chrono .secondes {
 	width: 11rem;
@@ -215,5 +252,27 @@ export default {
 .chrono .millisecondes {
 	width: 16.5rem;
 	text-indent: 0.5rem;
+}
+
+.panneau .panneau-chrono .actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 2rem;
+}
+
+.panneau .panneau-chrono .actions .bouton {
+	margin-top: 0;
+}
+
+.panneau .panneau-chrono .conteneur-affichage-heures .oui {
+	margin-right: 2.5rem;
+}
+
+.panneau .panneau-chrono .conteneur-affichage-heures label {
+	display: inline-block;
+    width: auto;
+    margin-left: 1rem;
+	margin-bottom: 0;
 }
 </style>
