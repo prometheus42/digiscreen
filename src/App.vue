@@ -340,7 +340,7 @@ export default {
 			this.chargement = false
 		}.bind(this))
 		const langue = navigator.language
-		const langues = ['fr', 'en', 'it', 'es', 'nl']
+		const langues = ['fr', 'en', 'it', 'es', 'nl', 'de']
 		if (langues.includes(langue.substring(0, 2)) === true) {
 			this.$root.$i18n.locale = langue
 			this.langue = langue

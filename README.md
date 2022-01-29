@@ -38,3 +38,5 @@ Traduction en italien par Paolo Mauri (https://gitlab.com/maupao) et Roberto Mar
 Traduction en espagnol par Fernando S. Delgado Trujillo (https://gitlab.com/fersdt)
 
 Traduction en néerlandais par Erik Devlies
+
+Traduction en allemand lors d'une action dans « la salle des profs » [#twitterlehrerzimmer](https://twitter.com/search?q=%23twitterlehrerzimmer) / [#twlz](https://twitter.com/search?q=%23twlz) par [@uivens](https://twitter.com/uivens) (Ulrich Ivens), [@eBildungslabor](https://twitter.com/eBildungslabor) (Nele Hirsch) et [@teachitalizer](https://twitter.com/teachitalizer) (Holger Skarba)

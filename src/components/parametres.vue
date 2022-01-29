@@ -12,8 +12,9 @@
 						<span :class="{'selectionne': $parent.langue === 'fr'}" @click="modifierLangue('fr')">FR</span>
 						<span :class="{'selectionne': $parent.langue === 'es'}" @click="modifierLangue('es')">ES</span>
 						<span :class="{'selectionne': $parent.langue === 'it'}" @click="modifierLangue('it')">IT</span>
-						<span :class="{'selectionne': $parent.langue === 'en'}" @click="modifierLangue('en')">EN</span>
+						<span :class="{'selectionne': $parent.langue === 'de'}" @click="modifierLangue('de')">DE</span>
 						<span :class="{'selectionne': $parent.langue === 'nl'}" @click="modifierLangue('nl')">NL</span>
+						<span :class="{'selectionne': $parent.langue === 'en'}" @click="modifierLangue('en')">EN</span>
 					</div>
 					<label>{{ $t('arrierePlanPage') }}</label>
 					<div class="fond">
