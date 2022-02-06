@@ -4,7 +4,7 @@
 			<header class="actif">
 				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
-					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
+					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture' && videoId !== ''"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -22,7 +22,7 @@
 					<div class="separateur"><span>{{ $t('ou') }}</span></div>
 					<label>{{ $t('fichierAppareil') }}</label>
 					<label class="bouton" role="button" tabindex="0" :for="'selectionner-video-' + id">{{ $t('selectionnerVideo') }}</label>
-					<input :id="'selectionner-video-' + id" type="file" @change="televerserVideo" style="display: none" accept=".mp4, .m4v">
+					<input :id="'selectionner-video-' + id" type="file" @change="televerserVideo" style="display: none" accept=".mp4, .m4v, .ogv">
 				</div>
 				<div class="contenu inactif" v-else-if="mode === 'edition' && chargementVideo">
 					<div class="conteneur-chargement">
@@ -75,7 +75,14 @@
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?start=' + debut + '&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-else-if="debut > 0" />
 					<iframe :src="'https://www.youtube-nocookie.com/embed/' + videoId + '?end=' + fin + '&iv_load_policy=3&modestbranding=1&rel=0&showinfo=0&version=3'" allowfullscreen frameborder="0" v-else />
 				</template>
-				<video controls :src="video" v-else></video>
+				<template v-else-if="mode === 'lecture' && videoId === '' && video.includes('https://vimeo.com')">
+					<iframe :src="'https://player.vimeo.com/video/' + video.replace('https://vimeo.com/', '')" allowfullscreen frameborder="0" />
+				</template>
+				<div class="contenu inactif videojs" v-else-if="mode === 'lecture' && videoId === '' && !video.includes('https://vimeo.com')">
+					<video class="video-js vjs-fluid" controls>
+						<source :src="video" :type="type" />
+					</video>
+				</div>
 			</div>
 		</vue-drag-resize>
 	</transition>
@@ -83,6 +90,13 @@
 
 <script>
 import VueDragResize from 'vue-drag-resize'
+import videojs from 'video.js'
+import fr from 'video.js/dist/lang/fr.json'
+import es from 'video.js/dist/lang/es.json'
+import it from 'video.js/dist/lang/it.json'
+import de from 'video.js/dist/lang/de.json'
+import nl from 'video.js/dist/lang/nl.json'
+import en from 'video.js/dist/lang/en.json'
 import Panneau from '@/panneau'
 
 export default {
@@ -119,8 +133,10 @@ export default {
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0 },
+			lecteur: '',
 			video: '',
 			dataURL: '',
+			type: 'video/mp4',
 			googleAPIKey: '',
 			videoId: '',
 			debutMinutes: '',
@@ -135,7 +151,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { video: this.video, videoId: this.videoId, dataURL: this.dataURL, debutMinutes: this.debutMinutes, debutSecondes: this.debutSecondes, finMinutes: this.finMinutes, finSecondes: this.finSecondes }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { video: this.video, videoId: this.videoId, type: this.type, dataURL: this.dataURL, debutMinutes: this.debutMinutes, debutSecondes: this.debutSecondes, finMinutes: this.finMinutes, finSecondes: this.finSecondes }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -180,6 +196,9 @@ export default {
 				this.video = this.panneau.contenu.video
 			}
 			this.videoId = this.panneau.contenu.videoId
+			if (this.panneau.contenu.hasOwnProperty('type')) {
+				this.type = this.panneau.contenu.type
+			}
 			this.debutMinutes = this.panneau.contenu.debutMinutes
 			this.debutSecondes = this.panneau.contenu.debutSecondes
 			this.finMinutes = this.panneau.contenu.finMinutes
@@ -197,34 +216,47 @@ export default {
 	},
 	mounted () {
 		this.chargement = false
-		if (this.mode === 'edition' && this.statut !== 'min') {
+		if (this.mode === 'lecture' && this.videoId === '' && !this.video.includes('https://vimeo.com')) {
+			this.$nextTick(function () {
+				this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, en } })
+			}.bind(this))
+		} else if (this.mode === 'edition' && this.statut !== 'min') {
 			this.$nextTick(function () {
 				document.querySelector('#' + this.id + ' input').focus()
 			}.bind(this))
 		}
 	},
+	beforeDestroy() {
+		if (this.lecteur !== '') {
+			this.lecteur.dispose()
+		}
+	},
 	methods: {
 		valider () {
 			if (this.$verifierURL(this.video) === true) {
-				const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-				if (this.video.match(regExp)) {
-					this.videoId = this.video.match(regExp)[2]
+				const regexYT = /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/
+				const regexYTId = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+				if (regexYT.test(this.video) && this.video.match(regexYTId)) {
+					this.videoId = this.video.match(regexYTId)[2]
 					if (this.googleAPIKey !== '') {
 						const xhr = new XMLHttpRequest()
 						xhr.onload = function () {
-							if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-								if (xhr.response && Object.keys(xhr.response).length > 0) {
-									const duree = xhr.response.items[0].contentDetails.duration
-									const temps = this.convertirTemps(duree)
-									let h = 0
-									if (temps.h > 0) {
-										h = temps.h * 60
-									}
-									this.debutMinutes = 0
-									this.debutSecondes = 0
-									this.finMinutes = temps.m + h
-									this.finSecondes = temps.s
+							if (xhr.readyState === xhr.DONE && xhr.status === 200 && xhr.response && Object.keys(xhr.response).length > 0) {
+								const duree = xhr.response.items[0].contentDetails.duration
+								const temps = this.convertirTemps(duree)
+								let h = 0
+								if (temps.h > 0) {
+									h = temps.h * 60
 								}
+								this.debutMinutes = 0
+								this.debutSecondes = 0
+								this.finMinutes = temps.m + h
+								this.finSecondes = temps.s
+							} else {
+								this.debutMinutes = 0
+								this.debutSecondes = 0
+								this.finMinutes = 0
+								this.finSecondes = 0
 							}
 						}.bind(this)
 						xhr.open('GET', 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=' + this.googleAPIKey + '&id=' + this.videoId, true)
@@ -236,13 +268,14 @@ export default {
 						this.finMinutes = 0
 						this.finSecondes = 0
 					}
+					this.mode = 'decoupage'
+					this.w = 40
+					this.h = 41
+					this.positionner()
 				} else {
-					return false
+					this.type = 'video/mp4'
+					this.generer()
 				}
-				this.mode = 'decoupage'
-				this.w = 40
-				this.h = 40
-				this.positionner()
 			}
 		},
 		decouper () {
@@ -256,7 +289,7 @@ export default {
 				this.h = this.donnees.h
 			} else {
 				this.w = 48
-				this.h = 30
+				this.h = 31.5
 			}
 			if (this.donnees.x > 0 && this.donnees.y > 0) {
 				this.x = this.donnees.x
@@ -264,32 +297,30 @@ export default {
 			}
 			if (this.videoId !== '') {
 				this.definirTemps()
+			} else if (this.videoId === '' && !this.video.includes('https://vimeo.com')) {
+				this.$nextTick(function () {
+					this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, en } }, function onPlayerReady () {
+						setTimeout(function () {
+							const hauteurLecteur = document.querySelector('#' + this.id + ' .conteneur').scrollHeight
+							this.h = Math.ceil(this.$convertirPixels(hauteurLecteur)) + 3.5
+						}.bind(this), 100)
+					}.bind(this))
+				}.bind(this))
 			}
 			this.positionner()
 		},
 		editer () {
-			if (this.videoId !== '') {
-				this.mode = 'decoupage'
-			} else {
-				this.video = ''
-				this.dataURL = ''
-				this.mode = 'edition'
-			}
+			this.mode = 'decoupage'
 			this.redimensionnement = false
 			if (this.statut !== '') {
 				this.normaliser()
 			}
-			if (this.videoId !== '') {
-				this.donnees.w = this.w
-				this.donnees.h = this.h
-				this.donnees.x = this.x
-				this.donnees.y = this.y
-				this.w = 40
-				this.h = 40
-			} else {
-				this.w = 40
-				this.h = 27
-			}
+			this.donnees.w = this.w
+			this.donnees.h = this.h
+			this.donnees.x = this.x
+			this.donnees.y = this.y
+			this.w = 40
+			this.h = 41
 			this.positionner()
 		},
 		definirTemps () {
@@ -356,6 +387,7 @@ export default {
 					this.chargementVideo = false
 					this.dataURL = e.target.result
 					this.video = window.URL.createObjectURL(fichier)
+					this.type = fichier.type
 					this.generer()
 				}.bind(this)
 			}
