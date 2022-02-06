@@ -9,7 +9,7 @@
 					<span class="recadrer" role="button" tabindex="0" @click="recadrer" v-if="mode === 'lecture' && statut !== 'min'"><i class="material-icons">center_focus_strong</i></span>
 				</div>
 				<div class="actions-panneau inactif">
-					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
+					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture' && requete !== ''"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -108,14 +108,7 @@ export default {
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.definirCoordonnees, zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
-			}
-		},
-		zoom: function (zoom) {
-			if (this.panzoom !== '' && zoom === 1) {
-				this.panzoom.reset()
-			} if (this.panzoom !== '' && zoom !== 1) {
-				this.panzoom.zoom(zoom, { animated: true })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { image: this.image, requete: this.requete, page: this.page, coordonnees: this.definirCoordonnees(), zoom: this.zoom }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		page: function (page) {
@@ -181,19 +174,21 @@ export default {
 		} else if (this.mode === 'lecture') {
 			this.redimensionnement = true
 			this.$nextTick(function () {
-				const element = document.querySelector('#image_' + this.id)
-				this.panzoom = Panzoom(element, {
+				const image = document.querySelector('#image_' + this.id)
+				this.panzoom = Panzoom(image, {
 					maxScale: 15,
 					minScale: 0.5,
 					panOnlyWhenZoomed: true
 				})
+				this.panzoom.zoom(this.zoom)
 				if (this.panneau.contenu.hasOwnProperty('coordonnees') && this.panneau.contenu.coordonnees !== '') {
 					const coordonnees = this.panneau.contenu.coordonnees
-					this.panzoom.zoom(this.zoom)
-					setTimeout(function () { this.panzoom.pan(coordonnees.x, coordonnees.y) }.bind(this))
+					setTimeout(function () {
+						this.panzoom.pan(coordonnees.x, coordonnees.y)
+					}.bind(this), 0)
 				}
-				element.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
-				element.addEventListener('panzoomchange', this.modifierZoom)
+				image.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
+				image.addEventListener('panzoomchange', this.modifierZoom)
 			}.bind(this))
 		}
 	},
@@ -221,15 +216,15 @@ export default {
 				}
 				this.positionner()
 				this.$nextTick(function () {
-					const element = document.querySelector('#image_' + this.id)
-					this.panzoom = Panzoom(element, {
+					const image = document.querySelector('#image_' + this.id)
+					this.panzoom = Panzoom(image, {
 						maxScale: 15,
 						minScale: 0.5,
 						panOnlyWhenZoomed: true
 					})
 					this.panzoom.zoom(this.zoom)
-					element.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
-					element.addEventListener('panzoomchange', this.modifierZoom)
+					image.parentElement.addEventListener('wheel', this.panzoom.zoomWithWheel)
+					image.addEventListener('panzoomchange', this.modifierZoom)
 				}.bind(this))
 			} else {
 				this.mode = 'recherche'
@@ -243,13 +238,15 @@ export default {
 		editer () {
 			this.redimensionnement = false
 			this.chargementImage = false
-			const element = document.querySelector('#image_' + this.id)
-			element.parentElement.removeEventListener('wheel', this.panzoom.zoomWithWheel)
-			element.removeEventListener('panzoomchange', this.modifierZoom)
-			this.panzoom.destroy()
-			this.panzoom = ''
 			this.donnees.zoom = this.zoom
 			this.zoom = 1
+			if (this.panzoom !== '') {
+				const image = document.querySelector('#image_' + this.id)
+				image.removeEventListener('panzoomchange', this.modifierZoom)
+				image.parentElement.removeEventListener('wheel', this.panzoom.zoomWithWheel)
+				this.panzoom.destroy()
+				this.panzoom = ''
+			}
 			if (this.statut !== '') {
 				this.normaliser()
 			}
@@ -257,16 +254,10 @@ export default {
 			this.donnees.h = this.h
 			this.donnees.x = this.x
 			this.donnees.y = this.y
-			if (this.requete === '') {
-				this.mode = 'edition'
-				this.w = 40
-				this.h = 27
-			} else {
-				this.mode = 'recherche'
-				this.w = 40
-				this.h = 35.4
-				this.rechercher(this.page)
-			}
+			this.mode = 'recherche'
+			this.w = 40
+			this.h = 35.4
+			this.rechercher(this.page)
 			if (this.image.substring(0, 10) === 'data:image') {
 				this.image = ''
 			}
@@ -346,18 +337,24 @@ export default {
 		zoomer () {
 			if (this.zoom < 15) {
 				this.zoom = this.zoom + 0.1
+				this.panzoom.zoom(this.zoom, { animated: true })
 			}
 		},
 		dezoomer () {
 			if (this.zoom > 0.5) {
 				this.zoom = this.zoom - 0.1
+				this.panzoom.zoom(this.zoom, { animated: true })
 			}
 		},
 		recadrer () {
 			this.zoom = 1
+			this.panzoom.reset()
 		},
 		modifierZoom (event) {
-			this.zoom = event.detail.scale
+			if (event.detail.scale !== this.zoom) {
+				this.zoom = event.detail.scale
+				this.panzoom.zoom(this.zoom, { animated: true })
+			}
 		}
 	}
 }
