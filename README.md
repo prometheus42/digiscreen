@@ -40,3 +40,8 @@ Traduction en espagnol par Fernando S. Delgado Trujillo (https://gitlab.com/fers
 Traduction en néerlandais par Erik Devlies
 
 Traduction en allemand lors d'une action dans « la salle des profs » [#twitterlehrerzimmer](https://twitter.com/search?q=%23twitterlehrerzimmer) / [#twlz](https://twitter.com/search?q=%23twlz) par [@uivens](https://twitter.com/uivens) (Ulrich Ivens), [@eBildungslabor](https://twitter.com/eBildungslabor) (Nele Hirsch) et [@teachitalizer](https://twitter.com/teachitalizer) (Holger Skarba)
+
+
+### Soutien
+https://opencollective.com/ladigitale
+
