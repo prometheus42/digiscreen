@@ -4,7 +4,6 @@
 			<header class="actif">
 				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
-					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -155,20 +154,6 @@ export default {
 				xhr.open('GET', 'https://noembed.com/embed?url=' + this.lien, true)
 				xhr.send()
 			}
-		},
-		editer () {
-			this.mode = 'edition'
-			this.redimensionnement = false
-			this.iframe = ''
-			if (this.statut !== '') {
-				this.normaliser()
-			}
-			this.donnees.w = this.w
-			this.donnees.h = this.h
-			this.donnees.x = this.x
-			this.donnees.y = this.y
-			this.w = 40
-			this.h = 22
 		}
 	}
 }
