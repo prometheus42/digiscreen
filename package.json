@@ -1,6 +1,6 @@
 {
   "name": "digiscreen",
-  "version": "0.4.7",
+  "version": "0.5.0",
   "homepage": "https://ladigitale.dev/digiscreen/",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "@interactjs/auto-start": "^1.10.11",
     "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
-    "@panzoom/panzoom": "^4.4.3",
+    "@panzoom/panzoom": "^4.4.4",
     "core-js": "^3.20.0",
     "destyle.css": "^1.0.15",
     "file-saver": "^2.0.5",
@@ -47,6 +47,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "video.js": "^7.17.0",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {
