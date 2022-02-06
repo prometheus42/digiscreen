@@ -20,6 +20,11 @@ Vue.prototype.$convertirRem = function (valeur) {
 	return 'undefined' != typeof valeur && valeur > 0 ? parseFloat(taille) * valeur : parseFloat(taille)
 }
 
+Vue.prototype.$convertirPixels = function (valeur) {
+	const taille = window.getComputedStyle(document.querySelector('html'), null).getPropertyValue('font-size')
+	return valeur / parseFloat(taille)
+}
+
 Vue.prototype.$verifierURL = function (url) {
 	const res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g)
 	return (res !== null)
