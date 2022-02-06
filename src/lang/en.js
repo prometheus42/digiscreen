@@ -78,7 +78,7 @@ export default {
 	voix: 'Voice',
 	ecouter: 'Listen',
 	parDefaut: 'BY DEFAULT',
-	lienVideo: 'Link to a YouTube video',
+	lienVideo: 'Link to a video (YouTube, Vimeo or .mp4 file)',
 	debut: 'Start',
 	fin: 'End',
 	min: 'Min.',

@@ -78,7 +78,7 @@ export default {
 	voix: 'Stem',
 	ecouter: 'Luister',
 	parDefaut: 'STANDAARD',
-	lienVideo: 'Link naar YouTube-video',
+	lienVideo: 'Link naar een video (YouTube, Vimeo of .mp4 file)',
 	debut: 'Start',
 	fin: 'Einde',
 	min: 'Min.',
