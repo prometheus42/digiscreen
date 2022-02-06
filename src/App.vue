@@ -342,8 +342,8 @@ export default {
 		const langue = navigator.language
 		const langues = ['fr', 'en', 'it', 'es', 'nl', 'de']
 		if (langues.includes(langue.substring(0, 2)) === true) {
-			this.$root.$i18n.locale = langue
-			this.langue = langue
+			this.$root.$i18n.locale = langue.substring(0, 2)
+			this.langue = langue.substring(0, 2)
 		}
 		this.recupererVoix()
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -659,3 +659,4 @@ export default {
 
 <style src="destyle.css/destyle.css"></style>
 <style src="@/assets/css/style.css"></style>
+<style src="video.js/dist/video-js.css"></style>
