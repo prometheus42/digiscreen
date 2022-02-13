@@ -296,6 +296,7 @@ export default {
 		modifierLangue (langue) {
 			this.$root.$i18n.locale = langue
 			this.$parent.langue = langue
+			document.getElementsByTagName('html')[0].setAttribute('lang', langue)
 		},
 		modifierFond (fond) {
 			const index = this.$parent.page - 1

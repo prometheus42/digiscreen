@@ -344,6 +344,7 @@ export default {
 		if (langues.includes(langue.substring(0, 2)) === true) {
 			this.$root.$i18n.locale = langue.substring(0, 2)
 			this.langue = langue.substring(0, 2)
+			document.getElementsByTagName('html')[0].setAttribute('lang', this.langue)
 		}
 		this.recupererVoix()
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
