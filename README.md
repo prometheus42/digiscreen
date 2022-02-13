@@ -41,6 +41,8 @@ Traduction en néerlandais par Erik Devlies
 
 Traduction en allemand lors d'une action dans « la salle des profs » [#twitterlehrerzimmer](https://twitter.com/search?q=%23twitterlehrerzimmer) / [#twlz](https://twitter.com/search?q=%23twlz) par [@uivens](https://twitter.com/uivens) (Ulrich Ivens), [@eBildungslabor](https://twitter.com/eBildungslabor) (Nele Hirsch) et [@teachitalizer](https://twitter.com/teachitalizer) (Holger Skarba)
 
+Traduction en croate par Ksenija Lekić (https://gitlab.com/Ksenija66L)
+
 
 ### Soutien
 https://opencollective.com/ladigitale
