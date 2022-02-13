@@ -174,5 +174,6 @@ export default {
 	plateau: 'Tafel',
 	plateauJeu: 'Spielbrett',
 	nombrePions: 'Anzahl der Spielfigren',
-	afficherHeures: 'Zeige die Stunden?'
+	afficherHeures: 'Zeige die Stunden?',
+	dupliquer: 'Duplizieren'
 }

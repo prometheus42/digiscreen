@@ -174,5 +174,6 @@ export default {
 	plateau: 'Board',
 	plateauJeu: 'Game board',
 	nombrePions: 'Number of pawns',
-	afficherHeures: 'Display the hours?'
+	afficherHeures: 'Display the hours?',
+	dupliquer: 'Duplicate'
 }

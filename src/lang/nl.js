@@ -174,5 +174,6 @@ export default {
 	plateau: 'Bord',
 	plateauJeu: 'Spelbord',
 	nombrePions: 'Aantal stuks',
-	afficherHeures: 'De uren weergeven?'
+	afficherHeures: 'De uren weergeven?',
+	dupliquer: 'Duplicaat'
 }

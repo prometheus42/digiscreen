@@ -174,5 +174,6 @@ export default {
 	plateau: 'Plateau',
 	plateauJeu: 'Plateau de jeu',
 	nombrePions: 'Nombre de pions',
-	afficherHeures: 'Afficher les heures ?'
+	afficherHeures: 'Afficher les heures ?',
+	dupliquer: 'Dupliquer'
 }

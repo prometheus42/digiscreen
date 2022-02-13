@@ -81,17 +81,17 @@
 		</div>
 
 		<div id="options" v-if="nom !== '' || (!outilSelectionner && !outilDeplacer)" key="options">
-			<span class="option" :title="$t('verrouiller')" @click="verrouiller" v-if="outilSelectionner && !objetVerrouille">
-				<img src="~@/assets/img/verrouiller.png" :alt="$t('verrouiller')">
+			<span class="option icone" :title="$t('verrouiller')" @click="verrouiller" v-if="outilSelectionner && !objetVerrouille">
+				<span><i class="material-icons">lock</i></span>
 			</span>
-			<span class="option" :title="$t('deverrouiller')" @click="deverrouiller" v-else-if="outilSelectionner && objetVerrouille">
-				<img src="~@/assets/img/deverrouiller.png" :alt="$t('deverrouiller')">
+			<span class="option icone orange" :title="$t('deverrouiller')" @click="deverrouiller" v-else-if="outilSelectionner && objetVerrouille">
+				<span><i class="material-icons">lock_open</i></span>
 			</span>
-			<span class="option" :title="$t('mettreDevant')" @click="mettreDevant" v-if="outilSelectionner && objet !== 'selection'">
-				<img src="~@/assets/img/devant.png" :alt="$t('mettreDevant')">
+			<span class="option icone" :title="$t('mettreDevant')" @click="mettreDevant" v-if="outilSelectionner && objet !== 'selection'">
+				<span><i class="material-icons">flip_to_front</i></span>
 			</span>
-			<span class="option" :title="$t('mettreDerriere')" @click="mettreDerriere" v-if="outilSelectionner && objet !== 'selection'">
-				<img src="~@/assets/img/derriere.png" :alt="$t('mettreDerriere')">
+			<span class="option icone" :title="$t('mettreDerriere')" @click="mettreDerriere" v-if="outilSelectionner && objet !== 'selection'">
+				<span><i class="material-icons">flip_to_back</i></span>
 			</span>
 			<span class="separateur" v-if="outilSelectionner" />
 			<span class="option noir" :class="{'actif': outilDessiner && couleurStylo === '#000000'}" :title="$t('noir')" @click="modifierCouleur('#000000')" v-if="nom !== 'selection'">
@@ -142,18 +142,21 @@
 			<span class="option label-taille" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'">
 				<span><i class="material-icons">format_size</i></span>
 			</span>
-			<span class="option taille" :title="$t('reduireTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="reduireTailleTexte">
-				<span>-</span>
+			<span class="option icone" :title="$t('reduireTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="reduireTailleTexte">
+				<span><i class="material-icons">remove</i></span>
 			</span>
-			<span class="option taille" :title="$t('augmenterTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="augmenterTailleTexte">
-				<span>+</span>
+			<span class="option icone" :title="$t('augmenterTaille')" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" @click="augmenterTailleTexte">
+				<span><i class="material-icons">add</i></span>
 			</span>
 			<span class="separateur" v-if="outilSelectionner && nom !== 'selection' && objet === 'texte'" />
-			<span class="option" :title="$t('supprimer')" @click="supprimer('objet')" v-if="outilSelectionner && nom !== 'selection'">
-				<img src="~@/assets/img/supprimer.png" :alt="$t('supprimer')">
+			<span class="option icone" :title="$t('dupliquer')" v-if="outilSelectionner && nom !== 'selection'" @click="dupliquer">
+				<span><i class="material-icons">content_copy</i></span>
 			</span>
-			<span class="option" :title="$t('supprimer')" @click="supprimerSelection" v-else-if="outilSelectionner && nom === 'selection'">
-				<img src="~@/assets/img/supprimer.png" :alt="$t('supprimer')">
+			<span class="option icone rouge" :title="$t('supprimer')" @click="supprimer" v-if="outilSelectionner && nom !== 'selection'">
+				<span><i class="material-icons">delete</i></span>
+			</span>
+			<span class="option icone rouge" :title="$t('supprimer')" @click="supprimerSelection" v-else-if="outilSelectionner && nom === 'selection'">
+				<span><i class="material-icons">delete</i></span>
 			</span>
 		</div>
 
@@ -490,45 +493,75 @@ export default {
 				this.transformer()
 			}.bind(this))
 		},
-		supprimer (mode) {
+		dupliquer () {
+			const id = (new Date()).getTime() + Math.random().toString(16).slice(10)
+			const items = []
+			let nom, objet
+			JSON.parse(JSON.stringify(this.items)).forEach(function (item) {
+				if (item.name.includes(this.nom)) {
+					items.push(item)
+				}
+			}.bind(this))
+			items.forEach(function (item) {
+				const type = item.name.substring(0, 4)
+				if (type === 'ancr') {
+					item.name = item.name.substring(0, 9) + id + item.name.substring(item.name.length - 2)
+					item.x = item.x + 20
+					item.y = item.y + 20
+				} else {
+					nom = type + id
+					objet = item.objet
+					item.name = nom
+					item.x = item.x + 20
+					item.y = item.y + 20
+				}
+				if (type === 'labl') {
+					item.tag.name = type + id
+					item.tag.text = type + id
+				}
+			})
+			this.items.forEach(function (item, index) {
+				if (item.objet === 'ancre') {
+					this.items[index].visible = false
+				}
+			}.bind(this))
+			this.$nextTick(function () {
+				this.items.push(...items)
+				this.nom = nom
+				this.objet = objet
+				this.enregistrer()
+				this.$nextTick(function () {
+					this.transformer()
+				}.bind(this))
+			}.bind(this))
+		},
+		supprimer () {
 			const type = this.nom.substring(0, 4)
-			switch (type) {
-			case 'rect':
-			case 'circ':
-			case 'star':
-			case 'text':
-			case 'dess':
-				this.items = this.items.filter(r => r.name !== this.nom)
-				break
-			case 'line':
-			case 'flec':
-				this.items = this.items.filter(r => r.name !== this.nom)
-				this.items = this.items.filter(r => !r.name.includes(this.nom))
-				break
-			case 'ancr':
-				this.items = this.items.filter(r => r.name !== this.nom.split('_')[1])
-				this.items = this.items.filter(r => !r.name.includes(this.nom.split('_')[1]))
-				break
+			const nom = this.nom
+			if (type === 'ancr') {
+				this.items = this.items.filter(r => !r.name.includes(nom.split('_')[1]))
+			} else {
+				this.items = this.items.filter(r => !r.name.includes(nom))
 			}
 			this.nom = ''
 			this.objet = ''
 			this.transformer()
-			if (mode === 'selection') {
-				this.enregistrer()
-			}
+			this.enregistrer()
 		},
 		supprimerSelection () {
 			const objets = this.$refs.transformer.getNode().nodes()
 			for (let i = 0; i < objets.length; i++) {
 				this.nom = objets[i].getAttrs().name
-				this.supprimer('selection')
+				this.supprimer()
 			}
-			this.enregistrer()
 		},
 		gererClavier (event) {
-			if ((event.key === 'Backspace' || event.key === 'Delete') && this.modale !== 'texte') {
+			if (event.ctrlKey && event.key === 'd' && this.modale !== 'texte') {
+				event.preventDefault()
+				this.dupliquer()
+			} else if ((event.key === 'Backspace' || event.key === 'Delete') && this.modale !== 'texte') {
 				if (this.nom !== '' && this.objet !== 'selection') {
-					this.supprimer('objet')
+					this.supprimer()
 				} else if (this.nom !== '' && this.objet === 'selection') {
 					this.supprimerSelection()
 				}
@@ -1309,8 +1342,9 @@ export default {
 	position: absolute;
 	left: 40px;
 	top: 0;
-	display: grid;
-    grid-template-columns: repeat(20, auto);
+	display: flex;
+    justify-content: flex-start;
+	align-items: center;
     background: #fff;
     padding: 5px;
     margin: 0;
@@ -1340,17 +1374,8 @@ export default {
 	cursor: default;
 }
 
-#options .option.taille,
 #options .option.epaisseur {
 	line-height: 1;
-}
-
-#options .option.taille {
-	font-size: 24px;
-}
-
-#options .option.taille span:active {
-	opacity: 0.5;
 }
 
 #options .option.epaisseur {
@@ -1360,6 +1385,10 @@ export default {
 
 #options .option.epaisseur.actif {
 	border: 1px solid #000;
+}
+
+#options .option.icone span:active {
+	opacity: 0.5;
 }
 
 #options .option .couleur {
@@ -1409,6 +1438,7 @@ export default {
 #options .separateur {
     margin: 5px 5px;
     border: 1px solid #ddd;
+	height: 10px;
 }
 
 #annotation-texte .modale .conteneur textarea {
@@ -1437,6 +1467,15 @@ export default {
 	width: auto;
 }
 
+#options .option.icone.orange span {
+	color: #ff6600;
+}
+
+#options .option.icone.rouge span {
+	color: #ff6259;
+}
+
+#options .option.icone span,
 #options .option.icone label {
 	font-size: 24px;
 }
