@@ -336,20 +336,33 @@ export default {
 	mounted () {
 		this.verifierDimensions()
 		this.activerDefilementHorizontal()
+
 		document.querySelector('#chargement').addEventListener('animationend', function () {
 			this.chargement = false
 		}.bind(this))
-		const langue = navigator.language
+
 		const langues = ['fr', 'en', 'it', 'es', 'nl', 'de', 'hr']
-		if (langues.includes(langue.substring(0, 2)) === true) {
-			this.$root.$i18n.locale = langue.substring(0, 2)
-			this.langue = langue.substring(0, 2)
-			document.getElementsByTagName('html')[0].setAttribute('lang', this.langue)
+		const params = new URLSearchParams(document.location.search)
+		let langue = params.get('lang')
+		if (langues.includes(langue) === true) {
+			this.langue = langue
+			localStorage.setItem('digiscreen_lang', langue)
 		}
+		const langueNavigateur = navigator.language.substring(0, 2)
+		if (langues.includes(langue) === false && langues.includes(langueNavigateur) === true) {
+			this.langue = langueNavigateur
+		}
+		if (localStorage.getItem('digiscreen_lang')) {
+			this.langue = localStorage.getItem('digiscreen_lang')
+		}
+		this.$root.$i18n.locale = this.langue
+		document.getElementsByTagName('html')[0].setAttribute('lang', this.langue)
+
 		this.recupererVoix()
 		if (window.speechSynthesis.onvoiceschanged !== undefined) {
 			window.speechSynthesis.onvoiceschanged = this.recupererVoix
 		}
+
 		document.addEventListener('keydown', function (event) {
 			if (event.ctrlKey && event.key === 'k') {
 				this.capturer()
@@ -367,6 +380,7 @@ export default {
 				this.nav = !this.nav
 			}
 		}.bind(this))
+
 		fscreen.addEventListener('fullscreenchange', function () {
 			if (fscreen.fullscreenElement === null) {
 				this.pleinEcran = false
@@ -374,6 +388,7 @@ export default {
 				this.pleinEcran = true
 			}
 		}.bind(this))
+
 		window.addEventListener('resize', this.verifierDimensions)
 		window.addEventListener('beforeunload', function (event) {
 			event.preventDefault()
@@ -533,7 +548,7 @@ export default {
 		},
 		importer (event) {
 			const fichier = event.target.files[0]
-			if (fichier == null || fichier.length == 0) {
+			if (fichier === null || fichier.length === 0) {
 				document.querySelector('#televerser').value = ''
 				return false
 			} else {
