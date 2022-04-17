@@ -22,7 +22,7 @@
 					<div class="editeur" :style="{'font-size': $convertirRem(taille) + 'px'}" />
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
-				<div class="contenu inactif" v-else>
+				<div class="contenu actif" v-else>
 					<div class="texte" :style="{'font-size': $convertirRem(taille) + 'px'}" v-html="texte" />
 				</div>
 			</div>
@@ -243,6 +243,10 @@ export default {
 </script>
 
 <style>
+.panneau .panneau-texte .contenu {
+	width: auto!important;
+}
+
 .panneau .panneau-texte .edition {
 	width: 100%;
 	height: 100%;
