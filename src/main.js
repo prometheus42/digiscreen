@@ -25,9 +25,14 @@ Vue.prototype.$convertirPixels = function (valeur) {
 	return valeur / parseFloat(taille)
 }
 
-Vue.prototype.$verifierURL = function (url) {
-	const res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g)
-	return (res !== null)
+Vue.prototype.$verifierURL = function (lien) {
+	let url
+	try {
+		url = new URL(lien)
+	} catch (_) {
+		return false
+	}
+	return url.protocol === 'http:' || url.protocol === 'https:'
 }
 
 Vue.prototype.$melanger = function (array) {
