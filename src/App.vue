@@ -195,6 +195,15 @@
 				<span :class="{'selectionne': page === index}" @click="afficherPage(index)" v-for="index in pages.length" :key="'page_' + index" />
 			</div>
 		</div>
+
+		<audio id="audio-de" preload="auto" v-if="modules.includes('des')"><source src="static/audio/des.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-bip" preload="auto" v-if="modules.includes('rebours')"><source src="static/audio/bip.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-fin" preload="auto" v-if="modules.includes('rebours')"><source src="static/audio/fin.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-applaudissements" preload="auto" v-if="modules.includes('retroaction')"><source src="static/audio/applaudissements.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-vrai" preload="auto" v-if="modules.includes('retroaction')"><source src="static/audio/vrai.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-faux" preload="auto" v-if="modules.includes('retroaction')"><source src="static/audio/faux.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-dommage" preload="auto" v-if="modules.includes('retroaction')"><source src="static/audio/dommage.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
+		<audio id="audio-victoire" preload="auto" v-if="modules.includes('retroaction')"><source src="static/audio/victoire.mp3" type="audio/mpeg" :style="{'display': 'none'}"></audio>
 	</main>
 </template>
 

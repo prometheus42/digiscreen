@@ -163,7 +163,7 @@ export default {
 				const resultat = Math.floor(Math.random() * (6 - 1 + 1) + 1);
 				this.resultats.push(resultat)
 			}
-			const audio = new Audio('./static/audio/des.mp3')
+			const audio = document.querySelector('#audio-de')
 			this.$lireAudio(audio)
 		}
 	}

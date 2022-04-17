@@ -197,13 +197,13 @@ export default {
 				document.querySelector('#' + this.id + ' .decompte').classList.add('rouge')
 			}
 			if (temps.total <= 10000 && temps.total > 0) {
-				audio = new Audio('./static/audio/bip.mp3')
+				audio = document.querySelector('#audio-bip')
 				this.$lireAudio(audio)
 			}
 			if (temps.total <= 0) {
 				clearInterval(this.decompte)
 				this.tempsEcoule = true
-				audio = new Audio('./static/audio/fin.mp3')
+				audio = document.querySelector('#audio-fin')
 				this.$lireAudio(audio)
 			}
 		},
@@ -271,6 +271,7 @@ export default {
 
 .actions .bouton.danger:hover,
 .actions .bouton.danger {
+	color: #001d1d!important;
 	background: #ff7575!important;
 	cursor: default;
 }

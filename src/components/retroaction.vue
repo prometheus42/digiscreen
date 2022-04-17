@@ -154,7 +154,7 @@ export default {
 		ouvrirCarte (audio, carte) {
 			this.carte = carte
 			if (this.son === 'oui') {
-				this.audio = new Audio('./static/audio/' + audio + '.mp3')
+				this.audio = document.querySelector('#audio-' + audio)
 				this.$lireAudio(this.audio)
 			}
 			if (carte === 'confettis' || carte === 'applaudissements' || carte === 'victoire') {
