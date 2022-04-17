@@ -15,7 +15,7 @@
 				<div class="contenu inactif" v-if="!chargementDocument">
 					<label>{{ $t('documentAppareil') }}</label>
 					<label class="bouton" role="button" tabindex="0" :for="'selectionner-document-' + id">{{ $t('selectionnerDocument') }}</label>
-					<input :id="'selectionner-document-' + id" type="file" @change="televerserDocument" style="display: none" accept=".pdf, .ods, .odt, .odp">
+					<input :id="'selectionner-document-' + id" type="file" @change="televerserDocument" style="display: none" accept=".pdf, .ods, .odt, .odp, .odg">
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="conteneur-chargement">
@@ -152,7 +152,7 @@ export default {
 						this.document = window.URL.createObjectURL(fichier)
 						this.generer()
 					}.bind(this)
-				} else if (extension.toLowerCase() === 'odt' || extension.toLowerCase() === 'odp' || extension.toLowerCase() === 'ods') {
+				} else if (extension.toLowerCase() === 'odt' || extension.toLowerCase() === 'odp' || extension.toLowerCase() === 'ods' || extension.toLowerCase() === 'odg') {
 					if (fichier.size < 1024000) {
 						this.chargementDocument = true
 						this.type = 'doc'

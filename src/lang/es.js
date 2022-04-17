@@ -44,7 +44,7 @@ export default {
 	fichierAppareil: 'Archivo en su dispositivo',
 	rechercher: 'Buscar',
 	document: 'Documento',
-	documentAppareil: 'Documento en su dispositivo (.pdf, .odt, .odp, .ods)',
+	documentAppareil: 'Documento en su dispositivo (.pdf, .odt, .odp, .ods, .odg)',
 	selectionnerDocument: 'Seleccionar un documento',
 	selectionnerAudio: 'Seleccionar un fichero de audio',
 	selectionnerVideo: 'Seleccionar un vídeo',

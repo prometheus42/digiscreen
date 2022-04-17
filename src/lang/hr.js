@@ -44,7 +44,7 @@ export default {
 	fichierAppareil: 'Datoteka na vašem uređaju',
 	rechercher: 'Traži',
 	document: 'Dokument',
-	documentAppareil: 'Dokument na uređaju (.pdf, .odt, .odp, .ods)',
+	documentAppareil: 'Dokument na uređaju (.pdf, .odt, .odp, .ods, .odg)',
 	selectionnerDocument: 'Odaberite dokument',
 	selectionnerAudio: 'Odaberite zvučni zapis',
 	selectionnerVideo: 'Odaberite video',

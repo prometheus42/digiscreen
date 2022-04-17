@@ -44,7 +44,7 @@ export default {
 	fichierAppareil: 'Eigen bestand',
 	rechercher: 'Zoek',
 	document: 'Bestand',
-	documentAppareil: 'Eigen bestand (.pdf, .odt, .odp, .ods)',
+	documentAppareil: 'Eigen bestand (.pdf, .odt, .odp, .ods, .odg)',
 	selectionnerDocument: 'Kies en bestand',
 	selectionnerAudio: 'Kies een audiofile',
 	selectionnerVideo: 'Kies een video',
