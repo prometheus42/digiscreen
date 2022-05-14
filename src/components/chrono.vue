@@ -265,11 +265,15 @@ export default {
 	margin-top: 0;
 }
 
-.panneau .panneau-chrono .conteneur-affichage-heures .oui {
-	margin-right: 2.5rem;
+.panneau .panneau-chrono .conteneur-affichage-heures > label {
+	margin-bottom: 0.5rem;
 }
 
-.panneau .panneau-chrono .conteneur-affichage-heures label {
+.panneau .panneau-chrono .affichage-heures .oui {
+	margin-right: 2rem;
+}
+
+.panneau .panneau-chrono .affichage-heures label {
 	display: inline-block;
     width: auto;
     margin-left: 1rem;
