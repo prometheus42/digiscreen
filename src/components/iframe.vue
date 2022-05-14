@@ -11,11 +11,16 @@
 					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
-			<div class="conteneur actif panneau-iframe" v-if="mode === 'edition'">
+			<div class="conteneur actif panneau-iframe" v-if="mode === 'edition' && !chargementIframe">
 				<div class="contenu inactif">
 					<label>{{ $t('lienContenuLigne') }}</label>
 					<input type="search" :value="lien" @input="lien = $event.target.value" @keydown.enter="generer">
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
+				</div>
+			</div>
+			<div class="contenu inactif panneau-iframe chargement" v-else-if="mode === 'edition' && chargementIframe">
+				<div class="conteneur-chargement">
+					<div class="chargement" />
 				</div>
 			</div>
 			<div class="conteneur actif panneau-iframe" v-else>
@@ -62,7 +67,8 @@ export default {
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0 },
 			lien: '',
-			iframe: ''
+			iframe: '',
+			chargementIframe: false
 		}
 	},
 	watch: {
@@ -119,6 +125,7 @@ export default {
 	methods: {
 		generer () {
 			if (this.$verifierURL(this.lien) === true) {
+				this.chargementIframe = true
 				const regex = RegExp('<iframe(.+)</iframe>', 'g')
 				if (regex.test(this.lien) === true) {
 					this.lien = this.lien.match(/<iframe [^>]*src="[^"]*"[^>]*>/g).map(x => x.replace(/.*src="([^"]*)".*/, '$1'))[0]
@@ -129,14 +136,15 @@ export default {
 						const donnees = JSON.parse(xhr.responseText)
 						if (donnees.hasOwnProperty('error')) {
 							this.iframe = this.lien
+						} else if (donnees.provider_name.toLowerCase() === 'learningapps.org') {
+							donnees.html = donnees.html.replace('http://LearningApps.org', 'https://learningapps.org')
+							this.iframe = donnees.html.match(/<iframe [^>]*src="[^"]*"[^>]*>/g).map(x => x.replace(/.*src="([^"]*)".*/, '$1'))[0]
 						} else {
-							if (donnees.provider_name.toLowerCase() === 'learningapps.org') {
-								donnees.html = donnees.html.replace('http://LearningApps.org', 'https://learningapps.org')
-							}
 							this.iframe = donnees.html.match(/<iframe [^>]*src="[^"]*"[^>]*>/g).map(x => x.replace(/.*src="([^"]*)".*/, '$1'))[0]
 						}
 						this.mode = 'lecture'
 						this.redimensionnement = true
+						this.chargementIframe = false
 						if (this.donnees.w > 0 && this.donnees.h > 0) {
 							this.w = this.donnees.w
 							this.h = this.donnees.h
@@ -149,8 +157,15 @@ export default {
 							this.y = this.donnees.y
 						}
 						this.positionner()
+					} else {
+						this.chargementIframe = false
+						this.iframe = this.lien
 					}
 				}.bind(this)
+				xhr.onerror = function () {
+					this.chargementIframe = false
+					this.iframe = this.lien
+				}
 				xhr.open('GET', 'https://noembed.com/embed?url=' + this.lien, true)
 				xhr.send()
 			}
@@ -160,12 +175,40 @@ export default {
 </script>
 
 <style>
-.panneau-iframe {
+.panneau .panneau-iframe {
 	overflow: auto!important;
 }
 
-.panneau-iframe iframe {
+.panneau .panneau-iframe iframe {
 	border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
+}
+
+.panneau .panneau-iframe.contenu.chargement {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: calc(100% - 6rem);
+}
+
+.panneau .panneau-iframe .conteneur-chargement {
+	font-size: 0;
+	line-height: 1;
+	text-align: center;
+}
+
+.panneau .panneau-iframe .conteneur-chargement .chargement {
+	display: inline-block;
+	border: 7px solid #ddd;
+	border-top: 7px solid #00ced1;
+	border-radius: 50%;
+	width: 45px;
+	height: 45px;
+	animation: rotation 0.7s linear infinite;
+}
+  
+@keyframes rotation {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 </style>
