@@ -17,6 +17,7 @@
 						<span :class="{'selectionne': $parent.langue === 'hr'}" @click="modifierLangue('hr')">HR</span>
 						<span :class="{'selectionne': $parent.langue === 'en'}" @click="modifierLangue('en')">EN</span>
 					</div>
+
 					<label>{{ $t('arrierePlanPage') }}</label>
 					<div class="fond">
 						<span @click="modifierFond('./static/img/digitale.jpg')">
@@ -41,15 +42,35 @@
 							<img src="@/assets/img/miniatures/aurore.jpg" alt="Aurore">
 						</span>
 						<span class="couleur-fond" @click="modifierFond('#ffffff')" style="background-color: #ffffff; border: 1px solid #ddd;" />
+						<span @click="modifierFond('./static/img/points.png')">
+							<img src="@/assets/img/miniatures/points.png" alt="Points" style="border: 1px solid #ddd;">
+						</span>
+						<span @click="modifierFond('./static/img/lignes-horizontales.png')">
+							<img src="@/assets/img/miniatures/lignes-horizontales.png" alt="Lignes" style="border: 1px solid #ddd;">
+						</span>
+						<span @click="modifierFond('./static/img/quadrillage.png')">
+							<img src="@/assets/img/miniatures/quadrillage.png" alt="Quadrillage" style="border: 1px solid #ddd;">
+						</span>
+						<span @click="modifierFond('./static/img/quadrillage-grand.png')">
+							<img src="@/assets/img/miniatures/quadrillage-grand.png" alt="Quadrillage grand" style="border: 1px solid #ddd;">
+						</span>
+						<span @click="modifierFond('./static/img/quadrillage-gris.png')">
+							<img src="@/assets/img/miniatures/quadrillage-gris.png" alt="Quadrillage gris" style="border: 1px solid #ddd;">
+						</span>
+						<span @click="modifierFond('./static/img/quadrillage-gris-grand.png')">
+							<img src="@/assets/img/miniatures/quadrillage-gris-grand.png" alt="Quadrillage gris grand" style="border: 1px solid #ddd;">
+						</span>
 						<span class="couleur-fond" @click="modifierFond('#00ced1')" style="background-color: #00ced1;" />
 						<span class="couleur-fond" @click="modifierFond('#ff2d55')" style="background-color: #ff2d55;" />
 						<span class="couleur-fond" @click="modifierFond('#f7d000')" style="background-color: #f7d000;" />
 						<span class="couleur-fond" @click="modifierFond('#dddddd')" style="background-color: #dddddd;" />
+						<span class="couleur-fond" @click="modifierFond('#777777')" style="background-color: #777777;" />
 						<span class="couleur-fond icone">
 							<label for="couleur-fond-page"><i class="material-icons">colorize</i></label>
 							<input type="color" id="couleur-fond-page" value="#001d1d" :title="$t('selectionnerCouleur')">
 						</span>
 					</div>
+
 					<div class="recherche" v-if="pixabayAPIKey !== ''">
 						<div class="rechercher">
 							<input type="text" :value="requete" @input="requete = $event.target.value" @keyup="verifierRequete" @keydown.enter="valider" :placeholder="$t('lienImageRecherche')">
@@ -65,18 +86,22 @@
 							<span :class="{'invisible': pageResultats >= (resultats.total / 15)}" @click="modifierPageResultats('suivante')">{{ $t('pageSuivante') }}</span>
 						</div>
 					</div>
+
 					<label>{{ $t('pages') }}</label>
 					<div class="pages">
 						<draggable v-model="$parent.pages" @sort="verifierPages">
 							<span class="page" :class="{'selectionne': $parent.page === indexPage + 1}" @click="afficherPage(indexPage + 1)" v-for="(page, indexPage) in $parent.pages" :key="'page_' + indexPage">{{ indexPage + 1 }}</span>
 						</draggable>
-						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 7"><i class="material-icons">add_circle_outline</i></span>
+						<span role="button" tabindex="0" :title="$t('supprimerPage')" class="bouton-secondaire" @click="afficherSupprimerPage" v-if="this.$parent.pages.length > 1"><i class="material-icons">remove_circle_outline</i></span>
+						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 6"><i class="material-icons">add_circle_outline</i></span>
 					</div>
+
 					<label>{{ $t('exporter') }}</label>
 					<span role="button" tabindex="0" class="bouton" @click="exporter">{{ $t('exporterEcran') }}</span>
 					<label>{{ $t('importer') }}</label>
 					<label for="televerser" class="bouton">{{ $t('importerEcran') }}</label>
 					<input id="televerser" type="file" style="display: none;" accept=".dgb, .dgs" @change="importer">
+
 					<label>{{ $t('modules') }}</label>
 					<div class="modules">
 						<div class="module">
@@ -251,6 +276,20 @@
 				</div>
 			</div>
 		</div>
+
+		<div id="confirmation" class="conteneur-modale" v-if="confirmation">
+			<div class="modale">
+				<div class="conteneur">
+					<div class="contenu">
+						<p v-html="$t('confirmationSuppressionPage', { page: $parent.page })" />
+						<div class="actions">
+							<span class="bouton" role="button" tabindex="0" @click="confirmation = false">{{ $t('annuler') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="supprimerPage">{{ $t('valider') }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -269,7 +308,8 @@ export default {
 			pixabayAPIKey: '',
 			requete: '',
 			resultats: {},
-			pageResultats: 1
+			pageResultats: 1,
+			confirmation: false
 		}
 	},
 	watch: {
@@ -352,7 +392,7 @@ export default {
 		},
 		ajouterPage () {
 			let index = this.$parent.pages.length
-			if (index < 7) {
+			if (index < 6) {
 				index++
 				let fond = ''
 				switch (index) {
@@ -366,16 +406,32 @@ export default {
 					fond = './static/img/lac.jpg'
 					break
 				case 5:
-					fond = './static/img/feuilles.jpg'
-					break
-				case 6:
 					fond = './static/img/arbre.jpg'
 					break
-				case 7:
+				case 6:
 					fond = './static/img/aurore.jpg'
 					break
 				}
 				this.$parent.pages.push({ fond: fond, grille: {}, annotations: {}, annotation: false })
+			}
+		},
+		afficherSupprimerPage () {
+			this.confirmation = true
+		},
+		supprimerPage () {
+			this.confirmation = false
+			const index = this.$parent.page - 1
+			const pages = this.$parent.pages.length
+			this.$parent.pages.splice(index, 1)
+			if (index + 1 < pages) {
+				this.$parent.page = index + 1
+			} else {
+				this.$parent.page = index
+			}
+			if (this.$parent.pages[this.$parent.page - 1].annotation === false) {
+				this.$parent.annotation = false
+			} else {
+				this.$parent.annotation = true
 			}
 		},
 		afficherPage (page) {
@@ -484,6 +540,10 @@ export default {
 
 .menu .pages .bouton-secondaire {
 	height: 4.5rem!important;
+}
+
+.menu .pages .bouton-secondaire:first-of-type {
+	margin-right: 0.5rem;
 }
 
 .menu .pages .bouton-secondaire i {
