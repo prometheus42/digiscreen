@@ -10,7 +10,7 @@
 		<div id="chargement" v-if="chargement">Digiscreen by La Digitale</div>
 
 		<div id="import" :class="{'termine': importTermine}" v-if="importDonnees">
-			<div class="chargement"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			<div class="chargement"><div /><div /><div /><div /><div /><div /><div /><div /><div /></div>
 		</div>
 
 		<annotation :panneaux="panneaux" :annotations="annotations" :largeur="largeur" :hauteur="hauteur" :nav="nav" @fermer="arreterAnnoter" v-if="annotation" />
@@ -408,6 +408,8 @@ export default {
 		definirFond () {
 			if (this.fond.substring(0, 1) === '#') {
 				return { 'background-color': this.fond }
+			} else if (this.fond.split('.').pop() === 'png') {
+				return { 'background-image': 'url(' + this.fond + ')', 'background-size': 'auto', 'background-repeat': 'repeat' }
 			} else {
 				return { 'background-image': 'url(' + this.fond + ')' }
 			}
@@ -474,7 +476,7 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 48, h: 22.2, x: largeur - this.$convertirRem(24), y: hauteur - this.$convertirRem(11.1), z: z })
 				break
 			case 'rebours':
-				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 22.2, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(11.1), z: z })
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 42, h: 22.2, x: largeur - this.$convertirRem(21), y: hauteur - this.$convertirRem(11.1), z: z })
 				break
 			case 'horloge':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 42, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(21), z: z })

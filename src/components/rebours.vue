@@ -12,7 +12,11 @@
 			</header>
 			<div class="conteneur actif panneau-rebours">
 				<div class="contenu inactif" v-if="mode === 'edition'">
-					<div class="rebours">
+					<div class="rebours edition">
+						<div class="heures" v-if="affichageHeures === 'oui'">
+							<label>{{ $t('heures') }}</label>
+							<input type="number" :value="heures" :min="0" :max="23" @input="heures = $event.target.value">
+						</div>
 						<div class="minutes">
 							<label>{{ $t('minutes') }}</label>
 							<input type="number" :value="minutes" :min="0" @input="minutes = $event.target.value">
@@ -24,11 +28,26 @@
 					</div>
 					<div class="actions">
 						<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
+						<div class="conteneur-affichage-heures">
+							<label>{{ $t('afficherHeures') }}</label>
+							<div class="affichage-heures" >
+								<span class="oui">
+									<input type="radio" :id="'heures_oui_' + id" :name="'heures_oui_' + id" value="oui" :checked="affichageHeures === 'oui'" @change="modifierAffichageHeures($event.target.value)">
+									<label :for="'heures_oui_' + id">{{ $t('oui') }}</label>
+								</span>
+								<span class="non">
+									<input type="radio" :id="'heures_non_' + id" :name="'heures_oui_' + id" value="non" :checked="affichageHeures === 'non'" @change="modifierAffichageHeures($event.target.value)">
+									<label :for="'heures_non_' + id">{{ $t('non') }}</label>
+								</span>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="rebours">
 						<div class="decompte">
+							<span class="heures" v-if="affichageHeures === 'oui'">{{ texteHeures }}</span>
+							<span class="separateur" v-if="affichageHeures === 'oui'">:</span>
 							<span class="minutes">{{ texteMinutes }}</span>
 							<span class="separateur">:</span>
 							<span class="secondes">{{ texteSecondes }}</span>
@@ -76,24 +95,27 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 40,
+			minw: 42,
 			minh: 22.2,
 			statut: '',
 			dimensions: {},
+			heures: 0,
 			minutes: 0,
 			secondes: 0,
+			texteHeures: '',
 			texteMinutes: '',
 			texteSecondes: '',
 			duree: '',
 			decompte: '',
 			tempsRestant: '',
-			tempsEcoule: false
+			tempsEcoule: false,
+			affichageHeures: 'non'
 		}
 	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { minutes: this.minutes, secondes: this.secondes }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { heures: this.heures, minutes: this.minutes, secondes: this.secondes, affichageHeures: this.affichageHeures }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -123,8 +145,14 @@ export default {
 			this.minimiser()
 		}
 		if (this.panneau.contenu !== '') {
+			if (this.panneau.contenu.hasOwnProperty('heures')) {
+				this.heures = this.panneau.contenu.heures
+			}
 			this.minutes = this.panneau.contenu.minutes
 			this.secondes = this.panneau.contenu.secondes
+			if (this.panneau.contenu.hasOwnProperty('affichageHeures')) {
+				this.affichageHeures = this.panneau.contenu.affichageHeures
+			}
 		}
 		if (this.mode === 'lecture' || this.mode === 'decompte') {
 			this.generer()
@@ -140,7 +168,7 @@ export default {
 	},
 	methods: {
 		generer () {
-			if (this.minutes >= 1 || this.secondes >= 1) {
+			if (this.heures >= 1 || this.minutes >= 1 || this.secondes >= 1) {
 				this.mode = 'lecture'
 				if (this.secondes < 10) {
 					this.texteSecondes = '0' + this.secondes
@@ -152,10 +180,16 @@ export default {
 				} else {
 					this.texteMinutes = this.minutes
 				}
+				if (this.heures < 10) {
+					this.texteHeures = '0' + this.heures
+				} else {
+					this.texteHeures = this.heures
+				}
 			}
 		},
 		editer () {
 			this.mode = 'edition'
+			this.texteHeures = ''
 			this.texteMinutes = ''
 			this.texteSecondes = ''
 			this.duree = ''
@@ -172,7 +206,7 @@ export default {
 		demarrer (laps) {
 			if (laps === 0) {
 				const maintenant = Date.parse(new Date())
-				this.duree = new Date(maintenant + (((parseInt(this.texteMinutes) * 60) + (parseInt(this.texteSecondes) - 1)) * 1000));
+				this.duree = new Date(maintenant + (((parseInt(this.texteHeures) * 3600) + (parseInt(this.texteMinutes) * 60) + (parseInt(this.texteSecondes) - 1)) * 1000));
 			} else {
 				this.duree = laps
 			}
@@ -192,6 +226,11 @@ export default {
 				this.texteMinutes = '0' + temps.minutes
 			} else {
 				this.texteMinutes = temps.minutes
+			}
+			if (temps.heures < 10) {
+				this.texteHeures = '0' + temps.heures
+			} else {
+				this.texteHeures = temps.heures
 			}
 			if (temps.total <= 10000) {
 				document.querySelector('#' + this.id + ' .decompte').classList.add('rouge')
@@ -219,20 +258,26 @@ export default {
 		},
 		calculerTempsRestant (d) {
 			const temps = Date.parse(d) - Date.parse(new Date())
-			const secondes = Math.floor((temps / 1000) % 60 )
-			const minutes = Math.floor((temps / 1000 / 60) % 60 )
-			return { 'total': temps, 'minutes': minutes, 'secondes': secondes }
+			const secondes = Math.floor((temps / 1000) % 60)
+			const minutes = Math.floor((temps / 1000 / 60) % 60)
+			const heures = Math.floor((temps / 1000 / 3600) % 60)
+			return { total: temps, heures: heures, minutes: minutes, secondes: secondes }
+		},
+		modifierAffichageHeures (affichage) {
+			this.affichageHeures = affichage
 		}
 	}
 }
 </script>
 
 <style>
+.rebours .heures,
 .rebours .minutes,
 .rebours .secondes {
 	display: inline-block;
 }
 
+.rebours .heures,
 .rebours .minutes {
 	margin-right: 2rem;
 }
@@ -255,6 +300,7 @@ export default {
 	text-indent: 0.5rem;
 }
 
+.rebours .decompte .heures,
 .rebours .decompte .minutes,
 .rebours .decompte .secondes {
 	width: 11rem;
@@ -274,5 +320,36 @@ export default {
 	color: #001d1d!important;
 	background: #ff7575!important;
 	cursor: default;
+}
+
+.rebours.edition + .actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 2rem;
+}
+
+.rebours.edition + .actions .conteneur-affichage-heures {
+	margin-left: 2rem;
+	text-align: center;
+}
+
+.rebours.edition + .actions .bouton {
+	margin-top: 0;
+}
+
+.rebours.edition + .actions .conteneur-affichage-heures > label {
+	margin-bottom: 0.5rem;
+}
+
+.rebours.edition + .actions .affichage-heures .oui {
+	margin-right: 2rem;
+}
+
+.rebours.edition + .actions .affichage-heures label {
+	display: inline-block;
+    width: auto;
+    margin-left: 1rem;
+	margin-bottom: 0;
 }
 </style>
