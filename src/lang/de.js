@@ -67,6 +67,7 @@ export default {
 	verifier: 'Überprüfen',
 	bravoExercice: 'Gut gemacht!',
 	remiseOrdre: 'Sortieren',
+	heures: 'Stunden',
 	minutes: 'Minuten',
 	secondes: 'Sekunden',
 	tempsEcoule: 'Vergangene Zeit',
@@ -175,5 +176,7 @@ export default {
 	plateauJeu: 'Spielbrett',
 	nombrePions: 'Anzahl der Spielfigren',
 	afficherHeures: 'Stunden zeigen?',
-	dupliquer: 'Duplizieren'
+	dupliquer: 'Duplizieren',
+	confirmationSuppressionPage: 'Möchten Sie die Seite {page} und ihren Inhalt wirklich löschen?',
+	supprimerPage: 'Löschen der aktuellen Seite'
 }

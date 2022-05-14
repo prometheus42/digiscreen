@@ -67,6 +67,7 @@ export default {
 	verifier: 'Vérifier',
 	bravoExercice: 'Bravo !',
 	remiseOrdre: 'Remise en ordre',
+	heures: 'Heures',
 	minutes: 'Minutes',
 	secondes: 'Secondes',
 	tempsEcoule: 'Temps écoulé',
@@ -156,7 +157,7 @@ export default {
 	mettreDerriere: 'Mettre derrière',
 	reduireTaille: 'Réduire la taille du texte',
 	augmenterTaille: 'Augmenter la taille du texte',
-	reinitialiserAnnotations: 'Souhaitez-vous vraiment supprimer toutes les annotations ?',
+	reinitialiserAnnotations: 'Souhaitez-vous vraiment supprimer toutes les annotations&nbsp;?',
 	reinitialiser: 'Réinitialiser',
 	soutien: 'Je souhaite apporter mon soutien ❤️.',
 	codeSource: 'Code source',
@@ -175,5 +176,7 @@ export default {
 	plateauJeu: 'Plateau de jeu',
 	nombrePions: 'Nombre de pions',
 	afficherHeures: 'Afficher les heures ?',
-	dupliquer: 'Dupliquer'
+	dupliquer: 'Dupliquer',
+	confirmationSuppressionPage: 'Souhaitez-vous vraiment suppimer la page {page} et son contenu&nbsp;?',
+	supprimerPage: 'Supprimer la page en cours'
 }

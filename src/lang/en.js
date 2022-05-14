@@ -67,6 +67,7 @@ export default {
 	verifier: 'Check',
 	bravoExercice: 'Well done!',
 	remiseOrdre: 'Reorder',
+	heures: 'Hours',
 	minutes: 'Minutes',
 	secondes: 'Seconds',
 	tempsEcoule: 'Time elapsed',
@@ -175,5 +176,7 @@ export default {
 	plateauJeu: 'Game board',
 	nombrePions: 'Number of pawns',
 	afficherHeures: 'Display the hours?',
-	dupliquer: 'Duplicate'
+	dupliquer: 'Duplicate',
+	confirmationSuppressionPage: 'Do you really want to delete page {page} and its content?',
+	supprimerPage: 'Delete current page'
 }

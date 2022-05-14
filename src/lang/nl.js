@@ -67,6 +67,7 @@ export default {
 	verifier: 'Controleer',
 	bravoExercice: 'Goed gedaan!',
 	remiseOrdre: 'Herschik',
+	heures: 'Uren',
 	minutes: 'Minuten',
 	secondes: 'Seconds',
 	tempsEcoule: 'Verlopen tijd',
@@ -175,5 +176,7 @@ export default {
 	plateauJeu: 'Spelbord',
 	nombrePions: 'Aantal stuks',
 	afficherHeures: 'De uren weergeven?',
-	dupliquer: 'Duplicaat'
+	dupliquer: 'Duplicaat',
+	confirmationSuppressionPage: 'Wil je echt pagina {page} en zijn inhoud verwijderen?',
+	supprimerPage: 'Verwijder de huidige pagina'
 }

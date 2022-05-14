@@ -67,6 +67,7 @@ export default {
 	verifier: 'Provjeri',
 	bravoExercice: 'Well done!',
 	remiseOrdre: 'Preurediti',
+	heures: 'Sati',
 	minutes: 'Minute',
 	secondes: 'Sekunde',
 	tempsEcoule: 'Vrijeme je isteklo',
@@ -175,5 +176,7 @@ export default {
 	plateauJeu: 'Igra na ploči',
 	nombrePions: 'Broj igrača',
 	afficherHeures: 'Prikaži sate?',
-	dupliquer: 'Duplicirati'
+	dupliquer: 'Duplicirati',
+	confirmationSuppressionPage: 'Jeste li sigurni da želite izbrisati stranicu {page} i njezin sadržaj?',
+	supprimerPage: 'Brisanje trenutne stranice'
 }
