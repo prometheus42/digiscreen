@@ -179,7 +179,7 @@
 			<div class="modale">
 				<div class="conteneur">
 					<div class="contenu">
-						<p>{{ $t('reinitialiserAnnotations') }}</p>
+						<p v-html="$t('reinitialiserAnnotations')" />
 						<div class="actions">
 							<span class="bouton" role="button" tabindex="0" @click="confirmation = false">{{ $t('annuler') }}</span>
 							<span class="bouton" role="button" tabindex="0" @click="reinitialiser">{{ $t('valider') }}</span>
@@ -1452,15 +1452,6 @@ export default {
 	line-height: 1.4;
 	font-size: 1.6rem;
 	height: 12rem;
-}
-
-#confirmation .modale .conteneur {
-	padding: 4rem;
-}
-
-#confirmation .modale .conteneur p {
-	text-align: center;
-	margin-bottom: 0;
 }
 
 #options .option.icone {

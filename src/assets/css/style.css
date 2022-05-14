@@ -995,6 +995,15 @@ nav .separateur {
 	visibility: hidden;
 }
 
+#confirmation .modale .conteneur {
+	padding: 4rem;
+}
+
+#confirmation .modale .conteneur p {
+	text-align: center;
+	margin-bottom: 0;
+}
+
 @keyframes fonduEntrant {
     0% {
         opacity: 0;
@@ -1015,14 +1024,14 @@ nav .separateur {
 
 /* Chargement
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-.chargement {
+#import .chargement {
     display: inline-block;
     position: relative;
     width: 8rem;
     height: 8rem;
 }
 
-.chargement div {
+#import .chargement div {
     position: absolute;
     width: 1.6rem;
     height: 1.6rem;
@@ -1031,55 +1040,55 @@ nav .separateur {
     animation: chargement 1.2s linear infinite;
 }
 
-.chargement div:nth-child(1) {
+#import .chargement div:nth-child(1) {
     top: 0.8rem;
     left: 0.8rem;
     animation-delay: 0s;
 }
 
-.chargement div:nth-child(2) {
+#import .chargement div:nth-child(2) {
     top: 0.8rem;
     left: 3.2rem;
     animation-delay: -0.4s;
 }
 
-.chargement div:nth-child(3) {
+#import .chargement div:nth-child(3) {
     top: 0.8rem;
     left: 5.6rem;
     animation-delay: -0.8s;
 }
 
-.chargement div:nth-child(4) {
+#import .chargement div:nth-child(4) {
     top: 3.2rem;
     left: 0.8rem;
     animation-delay: -0.4s;
 }
 
-.chargement div:nth-child(5) {
+#import .chargement div:nth-child(5) {
     top: 3.2rem;
     left: 3.2rem;
     animation-delay: -0.8s;
 }
 
-.chargement div:nth-child(6) {
+#import .chargement div:nth-child(6) {
     top: 3.2rem;
     left: 5.6rem;
     animation-delay: -1.2s;
 }
 
-.chargement div:nth-child(7) {
+#import .chargement div:nth-child(7) {
     top: 5.6rem;
     left: 0.8rem;
     animation-delay: -0.8s;
 }
 
-.chargement div:nth-child(8) {
+#import .chargement div:nth-child(8) {
     top: 5.6rem;
     left: 3.2rem;
     animation-delay: -1.2s;
 }
 
-.chargement div:nth-child(9) {
+#import .chargement div:nth-child(9) {
     top: 5.6rem;
     left: 5.6rem;
     animation-delay: -1.6s;
