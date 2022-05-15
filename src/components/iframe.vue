@@ -4,6 +4,7 @@
 			<header class="actif">
 				<div class="titre sans-zoom actif" :class="{'visible': statut === 'min'}" @dblclick="renommer(titre)">{{ titre }}</div>
 				<div class="actions-panneau inactif">
+					<span class="envoyer" role="button" tabindex="0" @click="envoyer(id)" v-if="mode === 'lecture' && $parent.pages.length > 1"><i class="material-icons">send</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -124,12 +125,12 @@ export default {
 	},
 	methods: {
 		generer () {
+			const regex = /<iframe(.+)<\/iframe>/g
+			if (regex.test(this.lien) === true) {
+				this.lien = this.lien.match(/<iframe [^>]*src="[^"]*"[^>]*>/g).map(x => x.replace(/.*src="([^"]*)".*/, '$1'))[0]
+			}
 			if (this.$verifierURL(this.lien) === true) {
 				this.chargementIframe = true
-				const regex = RegExp('<iframe(.+)</iframe>', 'g')
-				if (regex.test(this.lien) === true) {
-					this.lien = this.lien.match(/<iframe [^>]*src="[^"]*"[^>]*>/g).map(x => x.replace(/.*src="([^"]*)".*/, '$1'))[0]
-				}
 				const xhr = new XMLHttpRequest()
 				xhr.onload = function () {
 					if (xhr.readyState === xhr.DONE && xhr.status === 200) {

@@ -10,6 +10,7 @@
 				</div>
 				<div class="actions-panneau inactif">
 					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture' && requete !== ''"><i class="material-icons">arrow_back</i></span>
+					<span class="envoyer" role="button" tabindex="0" @click="envoyer(id)" v-if="mode === 'lecture' && $parent.pages.length > 1"><i class="material-icons">send</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'lecture' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -90,7 +91,7 @@ export default {
 			x: 0,
 			y: 0,
 			z: 0,
-			minw: 25,
+			minw: 27,
 			minh: 15,
 			statut: '',
 			dimensions: {},

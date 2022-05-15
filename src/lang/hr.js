@@ -178,5 +178,6 @@ export default {
 	afficherHeures: 'Prikaži sate?',
 	dupliquer: 'Duplicirati',
 	confirmationSuppressionPage: 'Jeste li sigurni da želite izbrisati stranicu {page} i njezin sadržaj?',
-	supprimerPage: 'Brisanje trenutne stranice'
+	supprimerPage: 'Brisanje trenutne stranice',
+	envoyerPage: 'Pošalji na stranicu:'
 }

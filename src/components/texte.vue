@@ -10,6 +10,7 @@
 				</div>
 				<div class="actions-panneau inactif">
 					<span class="editer" role="button" tabindex="0" @click="editer" v-if="mode === 'lecture'"><i class="material-icons">arrow_back</i></span>
+					<span class="envoyer" role="button" tabindex="0" @click="envoyer(id)" v-if="mode === 'lecture' && $parent.pages.length > 1"><i class="material-icons">send</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="minimiser" v-if="statut === ''"><i class="material-icons">expand_less</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="normaliser" v-else-if="statut === 'min'"><i class="material-icons">expand_more</i></span>
 					<span class="afficher" role="button" tabindex="0" @click="maximiser" v-if="mode === 'edition' && statut === ''"><i class="material-icons">fullscreen</i></span>
@@ -115,7 +116,7 @@ export default {
 			this.texte = this.panneau.contenu
 		}
 		if (this.mode === 'lecture') {
-			this.minw = 20
+			this.minw = 23
 			this.minh = 8
 		}
 		this.positionner()
@@ -153,7 +154,7 @@ export default {
 					this.x = this.donnees.x
 					this.y = this.donnees.y
 				}
-				this.minw = 20
+				this.minw = 23
 				this.minh = 8
 				this.positionner()
 			}

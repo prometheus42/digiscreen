@@ -74,6 +74,25 @@ export default {
 			if (titre !== null) {
 				this.titre = titre
 			}
+		},
+		envoyer (id) {
+			const page = prompt(this.$t('envoyerPage'), this.$parent.page)
+			if (page !== null && this.$parent.page !== parseInt(page) && parseInt(page) > 0 && parseInt(page) <= this.$parent.pages.length) {
+				this.$parent.exportDonnees = true
+				this.$nextTick(function () {
+					this.$parent.panneaux.forEach(function (panneau) {
+						if (panneau.id === id) {
+							panneau.page = parseInt(page)
+							this.$parent.panneauxPage.forEach(function (item, index) {
+								if (item.id === id) {
+									this.$parent.panneauxPage.splice(index, 1)
+									this.$parent.exportDonnees = false
+								}
+							}.bind(this))
+						}
+					}.bind(this))
+				}.bind(this))
+			}
 		}
 	}
 }

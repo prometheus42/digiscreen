@@ -178,5 +178,6 @@ export default {
 	afficherHeures: 'De uren weergeven?',
 	dupliquer: 'Duplicaat',
 	confirmationSuppressionPage: 'Wil je echt pagina {page} en zijn inhoud verwijderen?',
-	supprimerPage: 'Verwijder de huidige pagina'
+	supprimerPage: 'Verwijder de huidige pagina',
+	envoyerPage: 'Stuur naar pagina:'
 }

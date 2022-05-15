@@ -596,6 +596,14 @@ nav .separateur {
 	outline: none;
 }
 
+.panneau .actions-panneau .envoyer {
+	font-size: 2rem;
+	line-height: 2.4rem;
+	padding: 0 0.2rem;
+	margin-right: 1rem;
+	outline: none;
+}
+
 .panneau .conteneur {
     position: relative;
     overflow-x: hidden;
