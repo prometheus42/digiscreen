@@ -43,10 +43,7 @@
 <script>
 import VueDragResize from 'vue-drag-resize'
 import Panneau from '@/panneau'
-import '@interactjs/auto-start'
-import '@interactjs/actions/drag'
-import '@interactjs/modifiers'
-import interact from '@interactjs/interact'
+import interact from 'interactjs'
 
 export default {
 	name: 'PPlateau',
