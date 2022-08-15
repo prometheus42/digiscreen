@@ -97,6 +97,7 @@ import es from 'video.js/dist/lang/es.json'
 import it from 'video.js/dist/lang/it.json'
 import de from 'video.js/dist/lang/de.json'
 import nl from 'video.js/dist/lang/nl.json'
+import hr from 'video.js/dist/lang/hr.json'
 import en from 'video.js/dist/lang/en.json'
 import Panneau from '@/panneau'
 
@@ -219,7 +220,7 @@ export default {
 		this.chargement = false
 		if (this.mode === 'lecture' && this.videoId === '' && !this.video.includes('https://vimeo.com')) {
 			this.$nextTick(function () {
-				this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, en } })
+				this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, hr, en } })
 			}.bind(this))
 		} else if (this.mode === 'edition' && this.statut !== 'min') {
 			this.$nextTick(function () {
@@ -300,7 +301,7 @@ export default {
 				this.definirTemps()
 			} else if (this.videoId === '' && !this.video.includes('https://vimeo.com')) {
 				this.$nextTick(function () {
-					this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, en } }, function onPlayerReady () {
+					this.lecteur = videojs('#' + this.id + ' .video-js', { language: this.$parent.langue, languages: { fr, es, it, de, nl, hr, en } }, function onPlayerReady () {
 						setTimeout(function () {
 							const hauteurLecteur = document.querySelector('#' + this.id + ' .conteneur').scrollHeight
 							this.h = Math.ceil(this.$convertirPixels(hauteurLecteur)) + 3.5
