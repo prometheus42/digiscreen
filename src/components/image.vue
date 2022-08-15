@@ -308,11 +308,11 @@ export default {
 					const img = new Image()
 					img.src = e.target.result
 					img.onload = function () {
-						if (img.width > 1000) {
+						if (img.width > 1200) {
 							const canvas = document.createElement('canvas')
 							const ratio = img.width / img.height
-							const largeur = 1000
-							const hauteur = 1000 / ratio
+							const largeur = 1200
+							const hauteur = 1200 / ratio
 							canvas.width = largeur
 							canvas.height = hauteur
 							canvas.getContext('2d').drawImage(img, 0, 0, largeur, hauteur)
