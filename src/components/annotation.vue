@@ -11,6 +11,10 @@
 						<v-arrow :config="item" v-else-if="item.objet === 'fleche'" @dragstart="selectionnerObjet" @dragmove="deplacerForme" @dragend="enregistrer" :key="'fleche_' + indexItem" />
 						<v-circle :config="item" v-else-if="item.objet === 'ancre'" @dragstart="selectionnerObjet" @dragmove="deplacerAncre" @dragend="enregistrer" :key="'ancre_' + indexItem" />
 						<v-text :config="item" v-else-if="item.objet === 'texte'" @dragstart="selectionnerObjet" @dragend="deplacerFin" @dblclick="modifierTexte" @dbltap="modifierTexte" @transform="redimensionnerTexte" @transformend="redimensionnerFin" :key="'texte_' + indexItem" />
+						<v-label :config="item" v-else-if="item.objet === 'label'" @dragstart="selectionnerObjet" @dragend="deplacerFin" @dblclick="modifierTexte" @dbltap="modifierTexte" @transformend="redimensionnerFin" :key="'label_' + indexItem">
+							<v-tag :config="item.tag" />
+							<v-text :config="item.text" />
+						</v-label>
 						<v-line :config="item" v-else-if="item.objet === 'dessin'" @dragstart="selectionnerObjet" @dragend="deplacerFin" :key="'dessin_' + indexItem" />
 					</template>
 					<v-rect :config="{name: 'selection', fill: 'rgba(1, 206, 209, 0.2)', visible: selection, x: positionSelectionX, y: positionSelectionY, width: largeurSelection, height: hauteurSelection}" @dragend="deplacerFin" @transformend="redimensionnerFin" />
@@ -71,6 +75,9 @@
 			<span id="outil-texte" class="outil" :title="$t('texte')" :class="{'actif': outilSelectionner && outil === 'texte'}" @click="selectionnerOutil('texte')">
 				<img src="~@/assets/img/texte.png" :alt="$t('texte')">
 			</span>
+			<span id="outil-label" class="outil" :title="$t('label')" :class="{'actif': outilSelectionner && outil === 'label'}" @click="selectionnerOutil('label')">
+				<img src="~@/assets/img/label.png" :alt="$t('label')">
+			</span>
 			<span class="separateur" />
 			<span class="outil" :title="$t('reinitialiser')" @click="afficherReinitialiser">
 				<img src="~@/assets/img/reinitialiser.png" :alt="$t('reinitialiser')">
@@ -94,10 +101,10 @@
 				<span><i class="material-icons">flip_to_back</i></span>
 			</span>
 			<span class="separateur" v-if="outilSelectionner" />
-			<span class="option noir" :class="{'actif': outilDessiner && couleurStylo === '#000000'}" :title="$t('noir')" @click="modifierCouleur('#000000')" v-if="nom !== 'selection'">
+			<span class="option noir" :class="{'actif': outilDessiner && couleurStylo === '#000000'}" :title="$t('noir')" @click="modifierCouleur('#000000')" v-if="nom !== 'selection' && objet !== 'label'">
 				<span class="couleur noir" />
 			</span>
-			<span class="option blanc" :class="{'actif': outilDessiner && couleurStylo === '#ffffff'}" :title="$t('blanc')" @click="modifierCouleur('#ffffff')" v-if="nom !== 'selection'">
+			<span class="option blanc" :class="{'actif': outilDessiner && couleurStylo === '#ffffff'}" :title="$t('blanc')" @click="modifierCouleur('#ffffff')" v-if="nom !== 'selection' && objet !== 'label'">
 				<span class="couleur blanc" />
 			</span>
 			<span class="option rouge" :class="{'actif': outilDessiner && couleurStylo === '#ff0000'}" :title="$t('rouge')" @click="modifierCouleur('#ff0000')" v-if="nom !== 'selection'">
@@ -167,7 +174,7 @@
 						<textarea :value="texte" @input="texte = $event.target.value" :placeholder="$t('monTexte')" />
 						<div class="actions">
 							<span class="bouton" role="button" tabindex="0" @click="fermerModale">{{ $t('annuler') }}</span>
-							<span class="bouton" role="button" tabindex="0" @click="ajouterTexte" v-if="outil === 'texte'">{{ $t('valider') }}</span>
+							<span class="bouton" role="button" tabindex="0" @click="ajouterTexte" v-if="outil === 'texte' || outil === 'label'">{{ $t('valider') }}</span>
 							<span class="bouton" role="button" tabindex="0" @click="enregistrerTexte" v-else>{{ $t('valider') }}</span>
 						</div>
 					</div>
@@ -395,6 +402,11 @@ export default {
 				this.nom = 'text' + this.id
 				this.objet = 'texte'
 				break
+			case 'label':
+				this.items.push({ name: 'labl' + this.id, objet: 'label', x: this.positionX1, y: this.positionY1, opacity: 1, draggable: true, verrouille: false, tag: { name: 'labl' + this.id, objet: 'label', shadowColor: '#222222', shadowBlur: 10, shadowOffset: [7, 7], shadowOpacity: 0.2, fill: '#ffff00' }, text: { name: 'labl' + this.id, objet: 'label', text: this.texte, fontSize: 25, lineHeight: 1.25, verticalAlign: 'middle', fill: '#000000', padding: 15, wrap: 'word', align: 'center' } })
+				this.nom = 'labl' + this.id
+				this.objet = 'label'
+				break
 			}
 			this.enregistrer()
 			this.$nextTick(function () {
@@ -517,7 +529,7 @@ export default {
 				}
 				if (type === 'labl') {
 					item.tag.name = type + id
-					item.tag.text = type + id
+					item.text.name = type + id
 				}
 			})
 			this.items.forEach(function (item, index) {
@@ -746,7 +758,7 @@ export default {
 						this.dessinerForme('etoile')
 						this.creation = false
 						this.activerSelecteur()
-					} else if (this.outil === 'texte') {
+					} else if (this.outil === 'texte' || this.outil === 'label') {
 						this.modale = true
 						this.creation = false
 						setTimeout(function () {
@@ -843,7 +855,7 @@ export default {
 						this.objetVerrouille = false
 						this.desactiverSelecteur()
 					}
-				} else if (this.outil !== '' && this.outil !== 'etoile' && this.outil !== 'texte' && this.largeurObjet > 0 && this.hauteurObjet > 0) {
+				} else if (this.outil !== '' && this.outil !== 'etoile' && this.outil !== 'texte' && this.outil !== 'label' && this.largeurObjet > 0 && this.hauteurObjet > 0) {
 					if (!this.creation) {
 						return
 					}
@@ -953,7 +965,7 @@ export default {
 			transformer.getLayer().batchDraw()
 		},
 		ajouterTexte () {
-			this.ajouter('texte')
+			this.ajouter(this.outil)
 			this.reinitialiserOutils()
 			this.fermerModale()
 			this.selection = false
@@ -967,8 +979,17 @@ export default {
 			}, 10)
 		},
 		enregistrerTexte () {
-			const forme = this.items.find((r) => r.name === this.nom)
-			forme.text = this.texte
+			const type = this.nom.substring(0, 4)
+			const item = this.items.find(r => r.name === this.nom)
+			const texte = this.texte
+			if (type === 'text') {
+				item.text = texte
+			} else {
+				item.text.text = texte
+				this.$nextTick(function () {
+					this.transformer()
+				}.bind(this))
+			}
 			this.fermerModale()
 			this.enregistrer()
 		},
@@ -1010,6 +1031,11 @@ export default {
 					this.couleurSelecteur = item.fill
 				}
 				break
+			case 'label':
+				if (['#000000', '#ffffff', '#ff0000', '#ffff00', '#00ff00', '#04fdff', '#cccccc'].includes(item.tag.fill) === false) {
+					this.couleurSelecteur = item.tag.fill
+				}
+				break
 			}
 		},
 		definirCouleur () {
@@ -1049,6 +1075,9 @@ export default {
 					item.stroke = couleur
 					item.fill = couleur
 					break
+				case 'label':
+					item.tag.fill = couleur
+					break
 				}
 			} else if (this.outilDessiner) {
 				this.couleurStylo = couleur
@@ -1067,6 +1096,7 @@ export default {
 				case 'circ':
 					ancres = ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
 					break
+				case 'labl':
 				case 'imag':
 				case 'star':
 					ancres = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
@@ -1304,6 +1334,7 @@ export default {
 	max-height: calc(100% - 7.5rem);
 	overflow-y: auto;
 	overflow-x: hidden;
+	user-select: none;
 }
 
 #outils-annotation .outil {
@@ -1354,6 +1385,7 @@ export default {
 	max-width: calc(100% - 100px);
 	overflow-x: auto;
 	overflow-y: hidden;
+	user-select: none;
 }
 
 #options .option {
