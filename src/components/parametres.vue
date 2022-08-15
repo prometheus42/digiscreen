@@ -92,8 +92,8 @@
 						<draggable v-model="$parent.pages" @sort="verifierPages">
 							<span class="page" :class="{'selectionne': $parent.page === indexPage + 1}" @click="afficherPage(indexPage + 1)" v-for="(page, indexPage) in $parent.pages" :key="'page_' + indexPage">{{ indexPage + 1 }}</span>
 						</draggable>
-						<span role="button" tabindex="0" :title="$t('supprimerPage')" class="bouton-secondaire" @click="afficherSupprimerPage" v-if="this.$parent.pages.length > 1"><i class="material-icons">remove_circle_outline</i></span>
-						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" @click="ajouterPage" v-if="this.$parent.pages.length < 6"><i class="material-icons">add_circle_outline</i></span>
+						<span role="button" tabindex="0" :title="$t('supprimerPage')" class="bouton-secondaire visible" v-if="$parent.pages.length > 1" @click="afficherSupprimerPage"><i class="material-icons">remove_circle_outline</i></span>
+						<span role="button" tabindex="0" :title="$t('ajouterPage')" class="bouton-secondaire" :class="{'visible': $parent.pages.length < 12, 'invisible': $parent.pages.length > 11}" @click="ajouterPage"><i class="material-icons">add_circle_outline</i></span>
 					</div>
 
 					<label>{{ $t('exporter') }}</label>
@@ -122,6 +122,13 @@
 							<span>{{ $t('image') }}</span>
 							<label class="interrupteur">
 								<input type="checkbox" value="image" :checked="$parent.modules.includes('image')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
+							<span>{{ $t('galerieImages') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="galerie" :checked="$parent.modules.includes('galerie')" @change="modifierModule">
 								<span class="curseur" />
 							</label>
 						</div>
@@ -196,9 +203,16 @@
 							</label>
 						</div>
 						<div class="module">
-							<span>{{ $t('tirageSort') }}</span>
+							<span>{{ $t('tirageSortTexte') }}</span>
 							<label class="interrupteur">
-								<input type="checkbox" value="tirage" :checked="$parent.modules.includes('tirage')" @change="modifierModule">
+								<input type="checkbox" value="tirage-texte" :checked="$parent.modules.includes('tirage-texte')" @change="modifierModule">
+								<span class="curseur" />
+							</label>
+						</div>
+						<div class="module">
+							<span>{{ $t('tirageSortImage') }}</span>
+							<label class="interrupteur">
+								<input type="checkbox" value="tirage-image" :checked="$parent.modules.includes('tirage-image')" @change="modifierModule">
 								<span class="curseur" />
 							</label>
 						</div>
@@ -392,31 +406,43 @@ export default {
 		},
 		ajouterPage () {
 			let index = this.$parent.pages.length
-			if (index < 6) {
+			if (index < 12) {
 				index++
 				let fond = ''
 				switch (index) {
 				case 2:
+				case 9:
 					fond = './static/img/lavande.jpg'
 					break
 				case 3:
+				case 10:
 					fond = './static/img/plage.jpg'
 					break
 				case 4:
+				case 11:
 					fond = './static/img/lac.jpg'
 					break
 				case 5:
+				case 12:
 					fond = './static/img/arbre.jpg'
 					break
 				case 6:
 					fond = './static/img/aurore.jpg'
+					break
+				case 7:
+					fond = './static/img/feuilles.jpg'
+					break
+				case 8:
+					fond = './static/img/digitale.jpg'
 					break
 				}
 				this.$parent.pages.push({ fond: fond, grille: {}, annotations: {}, annotation: false })
 			}
 		},
 		afficherSupprimerPage () {
-			this.confirmation = true
+			if (this.$parent.pages.length > 1) {
+				this.confirmation = true
+			}
 		},
 		supprimerPage () {
 			this.confirmation = false
@@ -491,7 +517,11 @@ export default {
 			if (minutes < 10) {
 				minutes = '0' + minutes
 			}
-			const fichier = 'ecran_' + jour + '-' + mois + '-' + annee + '_' + heures + '-' + minutes
+			let secondes = date.getSeconds()
+			if (secondes < 10) {
+				secondes = '0' + secondes
+			}
+			const fichier = 'digiscreen_' + jour + '-' + mois + '-' + annee + '_' + heures + '-' + minutes + '-' + secondes
 			this.$parent.exporter(fichier)
 			this.$parent.fermerMenu()
 		},
@@ -503,10 +533,16 @@ export default {
 </script>
 
 <style>
-.menu .pages,
 .menu .langue,
 .menu .recherche {
 	margin-bottom: 2rem;
+}
+
+.menu .pages {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 1rem;
 }
 
 .menu .pages span:not(.bouton-secondaire),
@@ -525,6 +561,10 @@ export default {
 	user-select: none;
 }
 
+.menu .pages span:not(.bouton-secondaire) {
+	margin-bottom: 1rem;
+}
+
 .menu .pages span.selectionne,
 .menu .langue span.selectionne {
 	background: #444;
@@ -532,14 +572,9 @@ export default {
 	border: 1px solid #222;
 }
 
-.menu .pages {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-}
-
 .menu .pages .bouton-secondaire {
 	height: 4.5rem!important;
+	margin-bottom: 1rem;
 }
 
 .menu .pages .bouton-secondaire:first-of-type {
@@ -548,6 +583,14 @@ export default {
 
 .menu .pages .bouton-secondaire i {
 	line-height: 4.5rem!important;
+}
+
+.menu .pages .bouton-secondaire.visible {
+	visibility: visible;
+}
+
+.menu .pages .bouton-secondaire.invisible {
+	visibility: hidden;
 }
 
 .menu .fond {
