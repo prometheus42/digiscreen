@@ -118,6 +118,9 @@ export default {
 		if (this.mode === 'lecture') {
 			this.minw = 23
 			this.minh = 8
+			this.$nextTick(function () {
+				window.MathJax.typeset()
+			})
 		}
 		this.positionner()
 	},
@@ -157,6 +160,9 @@ export default {
 				this.minw = 23
 				this.minh = 8
 				this.positionner()
+				this.$nextTick(function () {
+					window.MathJax.typeset()
+				})
 			}
 		},
 		editer () {
