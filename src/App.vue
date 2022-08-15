@@ -32,6 +32,10 @@
 				<span class="icone"><i class="material-icons">insert_photo</i></span>
 				<span class="titre">{{ $t('image') }}</span>
 			</div>
+			<div @click="creerPanneau('galerie')" v-if="modules.includes('galerie')" :title="$t('galerieImages')">
+				<span class="icone"><i class="material-icons">collections</i></span>
+				<span class="titre">{{ $t('galerie') }}</span>
+			</div>
 			<div @click="creerPanneau('dessin')" v-if="modules.includes('dessin')" :title="$t('dessin')">
 				<span class="icone"><i class="material-icons">gesture</i></span>
 				<span class="titre">{{ $t('dessin') }}</span>
@@ -72,9 +76,13 @@
 				<span class="icone"><i class="material-icons">wysiwyg</i></span>
 				<span class="titre">{{ $t('trous') }}</span>
 			</div>
-			<div @click="creerPanneau('tirage')" v-if="modules.includes('tirage')" :title="$t('tirageSort')">
+			<div @click="creerPanneau('tirage-texte')" v-if="modules.includes('tirage-texte')" :title="$t('tirageSortTexte')">
 				<span class="icone"><i class="material-icons">shuffle</i></span>
-				<span class="titre">{{ $t('tirage') }}</span>
+				<span class="titre">{{ $t('tirageTexte') }}</span>
+			</div>
+			<div @click="creerPanneau('tirage-image')" v-if="modules.includes('tirage-image')" :title="$t('tirageSortImage')">
+				<span class="icone"><i class="material-icons">style</i></span>
+				<span class="titre">{{ $t('tirageImage') }}</span>
 			</div>
 			<div @click="creerPanneau('plateau')" v-if="modules.includes('plateau')" :title="$t('plateau')">
 				<span class="icone"><i class="material-icons">grid_on</i></span>
@@ -164,6 +172,7 @@
 			<PCodeqr :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-if="panneau.type === 'codeqr'" :key="panneau.id" />
 			<PTexte :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'texte'" :key="panneau.id" />
 			<PImage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'image'" :key="panneau.id" />
+			<PGalerie :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'galerie'" :key="panneau.id" />
 			<PDessin :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'dessin'" :key="panneau.id" />
 			<PDocument :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'document'" :key="panneau.id" />
 			<PAudio :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'audio'" :key="panneau.id" />
@@ -174,7 +183,8 @@
 			<PNuage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'nuage'" :key="panneau.id" />
 			<POrdre :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'ordre'" :key="panneau.id" />
 			<PTrous :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'trous'" :key="panneau.id" />
-			<PTirage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'tirage'" :key="panneau.id" />
+			<PTirageTexte :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'tirage' || panneau.type === 'tirage-texte'" :key="panneau.id" />
+			<PTirageImage :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'tirage-image'" :key="panneau.id" />
 			<PPlateau :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'plateau'" :key="panneau.id" />
 			<PDes :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'des'" :key="panneau.id" />
 			<PGroupes :panneau="panneau" :largeurPage="largeur" :hauteurPage="hauteur" :finRedimensionnement="finRedimensionnement" :zIndex="zIndex" :export="exportDonnees" @zIndex="zIndex++" @fermer="fermerPanneau" @export="modifierPanneau" v-else-if="panneau.type === 'groupes'" :key="panneau.id" />
@@ -211,6 +221,7 @@
 import PCodeqr from '@/components/codeqr.vue'
 import PTexte from '@/components/texte.vue'
 import PImage from '@/components/image.vue'
+import PGalerie from '@/components/galerie.vue'
 import PDessin from '@/components/dessin.vue'
 import PDocument from '@/components/document.vue'
 import PAudio from '@/components/audio.vue'
@@ -221,7 +232,8 @@ import PIframe from '@/components/iframe.vue'
 import PNuage from '@/components/nuage.vue'
 import POrdre from '@/components/ordre.vue'
 import PTrous from '@/components/trous.vue'
-import PTirage from '@/components/tirage.vue'
+import PTirageTexte from '@/components/tirage-texte.vue'
+import PTirageImage from '@/components/tirage-image.vue'
 import PPlateau from '@/components/plateau.vue'
 import PDes from '@/components/des.vue'
 import PGroupes from '@/components/groupes.vue'
@@ -245,6 +257,7 @@ export default {
 		PCodeqr,
 		PTexte,
 		PImage,
+		PGalerie,
 		PDessin,
 		PDocument,
 		PAudio,
@@ -255,7 +268,8 @@ export default {
 		PNuage,
 		POrdre,
 		PTrous,
-		PTirage,
+		PTirageTexte,
+		PTirageImage,
 		PPlateau,
 		PDes,
 		PGroupes,
@@ -278,7 +292,7 @@ export default {
 			hauteur: 0,
 			pages: [{ fond: './static/img/digitale.jpg', grille: {}, annotations: {}, annotation: false }],
 			page: 1,
-			modules: ['codeqr', 'texte', 'image', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage', 'plateau', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
+			modules: ['codeqr', 'texte', 'image', 'galerie', 'dessin', 'document', 'audio', 'video', 'lien', 'iframe', 'nuage', 'ordre', 'trous', 'tirage-texte', 'tirage-image', 'plateau', 'des', 'groupes', 'chrono', 'rebours', 'horloge', 'calendrier', 'retroaction', 'grille'],
 			panneaux: [],
 			panneauxPage: [],
 			langue: 'fr',
@@ -348,7 +362,7 @@ export default {
 
 		document.querySelector('#chargement').addEventListener('animationend', function () {
 			this.chargement = false
-		}.bind(this))
+		}.bind(this), false)
 
 		const langues = ['fr', 'en', 'it', 'es', 'nl', 'de', 'hr']
 		const params = new URLSearchParams(document.location.search)
@@ -374,21 +388,111 @@ export default {
 
 		document.addEventListener('keydown', function (event) {
 			if (event.ctrlKey && event.key === 'k') {
+				event.preventDefault()
 				this.capturer()
 			} else if (event.ctrlKey && event.key === 'm' && !this.menu) {
+				event.preventDefault()
 				this.ouvrirMenu()
 			} else if (event.ctrlKey && event.key === 'm' && this.menu) {
+				event.preventDefault()
 				this.fermerMenu()
 			} else if (event.ctrlKey && event.key === 'i') {
-				this.ouvrirModale('info')
+				event.preventDefault()
+				if (this.modale === 'info') {
+					this.fermerModale()
+				} else {
+					this.ouvrirModale('info')
+				}
 			} else if (event.ctrlKey && event.key === 'e' && !this.pleinEcran) {
 				this.entrerPleinEcran()
 			} else if (event.ctrlKey && event.key === 'e' && this.pleinEcran) {
 				this.sortirPleinEcran()
 			} else if (event.ctrlKey && (event.key === '*' || event.key === 'l')) {
+				event.preventDefault()
 				this.nav = !this.nav
+			} else if (event.ctrlKey && event.key === 'ArrowLeft') {
+				event.preventDefault()
+				if (this.page === 1) {
+					this.page = this.pages.length
+				} else {
+					this.page--
+				}
+			} else if (event.ctrlKey && event.key === 'ArrowRight') {
+				event.preventDefault()
+				if (this.page === this.pages.length) {
+					this.page = 1
+				} else {
+					this.page++
+				}
 			}
-		}.bind(this))
+		}.bind(this), false)
+
+		document.querySelector('main').addEventListener('dragover', function (event) {
+			event.preventDefault()
+			event.stopPropagation()
+		}, false)
+
+		document.querySelector('main').addEventListener('dragcenter', function (event) {
+			event.preventDefault()
+			event.stopPropagation()
+		}, false)
+
+		document.querySelector('main').addEventListener('drop', function (event) {
+			event.preventDefault()
+			event.stopPropagation()
+			if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+				for (let i = 0; i < event.dataTransfer.files.length; i++) {
+					if (event.dataTransfer.files[i].type.substring(0, 5) === 'image' || event.dataTransfer.files[i].type.substring(0, 5) === 'audio' || event.dataTransfer.files[i].type.substring(0, 5) === 'video') {
+						const id = 'panneau_' + (new Date()).getTime() + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
+						const largeur = document.body.clientWidth / 2
+						const hauteur = (document.body.clientHeight - this.$convertirRem(7.5)) / 2
+						this.zIndex++
+						const z = this.zIndex
+						const type = event.dataTransfer.files[i].type.substring(0, 5)
+						let fichier, reader
+						if (type === 'image') {
+							reader = new FileReader()
+							reader.readAsDataURL(event.dataTransfer.files[i])
+							reader.onloadend = function (e) {
+								const img = new Image()
+								img.src = e.target.result
+								img.onload = function () {
+									if (img.width > 1200) {
+										const canvas = document.createElement('canvas')
+										const ratio = img.width / img.height
+										const largeur = 1200
+										const hauteur = 1200 / ratio
+										canvas.width = largeur
+										canvas.height = hauteur
+										canvas.getContext('2d').drawImage(img, 0, 0, largeur, hauteur)
+										fichier = canvas.toDataURL('image/jpeg', 0.85)
+									} else {
+										fichier = e.target.result
+									}
+									this.panneaux.push({ page: this.page, id: id, type: type, mode: 'lecture', statut: '', dimensions: {}, contenu: { image: fichier, requete: '', page: 1, zoom: 1 }, w: 40, h: 30, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(15), z: z })
+								}.bind(this)
+							}.bind(this)
+						} else if (type === 'audio') {
+							reader = new FileReader()
+							reader.readAsDataURL(event.dataTransfer.files[i])
+							reader.onloadend = function (e) {
+								const dataURL = e.target.result
+								fichier = window.URL.createObjectURL(event.dataTransfer.files[i])
+								this.panneaux.push({ page: this.page, id: id, type: type, mode: 'lecture', statut: '', dimensions: {}, contenu: { audio: fichier, dataURL: dataURL, vitesse: 1 }, w: 40, h: 14, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(7), z: z })
+							}.bind(this)
+						} else if (type === 'video') {
+							reader = new FileReader()
+							reader.readAsDataURL(event.dataTransfer.files[i])
+							reader.onloadend = function (e) {
+								const dataURL = e.target.result
+								fichier = window.URL.createObjectURL(event.dataTransfer.files[i])
+								this.panneaux.push({ page: this.page, id: id, type: type, mode: 'lecture', statut: '', dimensions: {}, contenu: { video: fichier, videoId: '', type: event.dataTransfer.files[i].type, dataURL: dataURL, debutMinutes: '', debutSecondes: '', finMinutes: '', finSecondes: '' }, w: 38, h: 31.5, x: largeur - this.$convertirRem(19), y: hauteur - this.$convertirRem(15.75), z: z })
+							}.bind(this)
+						}
+					}
+				}
+			}
+		}.bind(this), false)
 
 		fscreen.addEventListener('fullscreenchange', function () {
 			if (fscreen.fullscreenElement === null) {
@@ -398,11 +502,12 @@ export default {
 			}
 		}.bind(this))
 
-		window.addEventListener('resize', this.verifierDimensions)
+		window.addEventListener('resize', this.verifierDimensions, false)
+
 		window.addEventListener('beforeunload', function (event) {
 			event.preventDefault()
 			event.returnValue = ''
-		})
+		}, false)
 	},
 	methods: {
 		definirFond () {
@@ -429,6 +534,9 @@ export default {
 				break
 			case 'image':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 27, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(13.5), z: z })
+				break
+			case 'galerie':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 60, h: 34, x: largeur - this.$convertirRem(30), y: hauteur - this.$convertirRem(17), z: z })
 				break
 			case 'dessin':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 48, h: 35, x: largeur - this.$convertirRem(24), y: hauteur - this.$convertirRem(17.5), z: z })
@@ -461,7 +569,11 @@ export default {
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 46, h: 48, x: largeur - this.$convertirRem(23), y: hauteur - this.$convertirRem(24), z: z })
 				break
 			case 'tirage':
+			case 'tirage-texte':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 46, h: 40, x: largeur - this.$convertirRem(23), y: hauteur - this.$convertirRem(20), z: z })
+				break
+			case 'tirage-image':
+				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 60, h: 40, x: largeur - this.$convertirRem(30), y: hauteur - this.$convertirRem(20), z: z })
 				break
 			case 'plateau':
 				this.panneaux.push({ page: this.page, id: id, type: type, mode: '', statut: '', dimensions: {}, contenu: '', w: 40, h: 50, x: largeur - this.$convertirRem(20), y: hauteur - this.$convertirRem(25), z: z })
