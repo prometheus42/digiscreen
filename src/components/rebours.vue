@@ -46,6 +46,9 @@
 				</div>
 				<div class="contenu inactif" v-else>
 					<div class="rebours">
+						<svg :height="$convertirRem(42)" :width="$convertirRem(42)" :class="{'actif': this.mode === 'decompte'}" :style="{'animation': 'rebours ' + dureeMs + 'ms linear forwards', 'stroke-dasharray': Math.PI * 2 * $convertirRem(20.2), 'stroke-dashoffset': Math.PI * 2 * $convertirRem(20.2)}">
+							<circle :cx="$convertirRem(21)" :cy="$convertirRem(21)" :r="$convertirRem(20.2)" stroke="#00ced1" :stroke-width="$convertirRem(1.6)" fill="#f9f9f9" />
+						</svg>
 						<div class="decompte">
 							<span class="heures" v-if="affichageHeures === 'oui'">{{ texteHeures }}</span>
 							<span class="separateur" v-if="affichageHeures === 'oui'">:</span>
@@ -107,6 +110,7 @@ export default {
 			texteMinutes: '',
 			texteSecondes: '',
 			duree: '',
+			dureeMs: 0,
 			decompte: '',
 			tempsRestant: '',
 			tempsEcoule: false,
@@ -186,6 +190,10 @@ export default {
 				} else {
 					this.texteHeures = this.heures
 				}
+				this.dureeMs = (((this.heures * 3600) + (this.minutes * 60) + this.secondes) * 1000) - 1000
+				this.w = 46
+				this.h = 55
+				this.positionner()
 			}
 		},
 		editer () {
@@ -194,6 +202,7 @@ export default {
 			this.texteMinutes = ''
 			this.texteSecondes = ''
 			this.duree = ''
+			this.dureeMs = 0
 			this.tempsRestant = ''
 			this.tempsEcoule = false
 			if (this.statut !== '') {
@@ -203,6 +212,9 @@ export default {
 				clearInterval(this.decompte)
 				this.decompte = ''
 			}
+			this.w = 42
+			this.h = 22.2
+			this.positionner()
 		},
 		demarrer (laps) {
 			if (laps === 0) {
@@ -233,8 +245,8 @@ export default {
 			} else {
 				this.texteHeures = temps.heures
 			}
-			if (temps.total <= 10000) {
-				document.querySelector('#' + this.id + ' .decompte').classList.add('rouge')
+			if (temps.total <= 10000 && document.querySelector('#' + this.id + ' svg')) {
+				document.querySelector('#' + this.id + ' svg').classList.add('rouge')
 			}
 			if (temps.total <= 10000 && temps.total > 0) {
 				audio = document.querySelector('#audio-bip')
@@ -272,6 +284,10 @@ export default {
 </script>
 
 <style>
+.rebours {
+	position: relative;
+}
+
 .rebours .heures,
 .rebours .minutes,
 .rebours .secondes {
@@ -284,14 +300,16 @@ export default {
 }
 
 .rebours .decompte {
+	position: absolute;
+	top: 50%;
+	display: flex;
+	justify-content: center;
+	width: 100%;
 	font-family: 'Orbitron', sans-serif;
 	font-size: 5rem;
 	letter-spacing: 0.5rem;
-    padding: 2rem;
-	border: 2px solid #ddd;
-	border-radius: 1em;
-	display: flex;
-	justify-content: center;
+	line-height: 1;
+	margin-top: -2.5rem;
 	text-align: center;
 	user-select: none;
 }
@@ -352,5 +370,24 @@ export default {
     width: auto;
     margin-left: 1rem;
 	margin-bottom: 0;
+}
+
+.rebours svg {
+	transform: rotate(90deg) scale(-1, 1);
+	animation-play-state: paused!important;
+}
+
+.rebours svg.actif {
+	animation-play-state: running!important;
+}
+
+.rebours svg.rouge circle {
+	stroke: #ff7575!important;
+}
+
+@keyframes rebours {
+	to {
+		stroke-dashoffset: 0;
+	}
 }
 </style>
