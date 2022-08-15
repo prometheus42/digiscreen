@@ -13,11 +13,19 @@
 					<span class="fermer" role="button" tabindex="0" @click="$emit('fermer', id)"><i class="material-icons">close</i></span>
 				</div>
 			</header>
-			<div class="conteneur panneau-tirage actif">
+			<div class="conteneur panneau-tirage-image actif">
 				<div class="contenu inactif" v-if="mode === 'edition'">
-					<label>{{ $t('texteTirage') }}</label>
-					<span class="consigne" v-html="$t('consigneTirage')" />
-					<textarea class="tirage" :value="texte" @input="texte = $event.target.value" :placeholder="$t('exempleListe')"></textarea>
+					<label>{{ $t('texteTirageImage') }}</label>
+					<div class="zone" @dragover.prevent @drop.prevent>
+						<input :id="'selectionner-images-' + id" type="file" multiple @change="selectionnerImages" style="display: none;">
+						<label :for="'selectionner-images-' + id" @drop="glisserImages">{{ $t('selectionnerImages') }}</label>
+					</div>
+					<div class="images">
+						<div class="image" v-for="(image, index) in images" :key="'image_' + index">
+							<img :src="image" :alt="'Image' + index">
+							<span class="fermer" @click="supprimerImage(index)"><i class="material-icons">highlight_off</i></span>
+						</div>
+					</div>
 					<label>{{ $t('supprimerItemTirage') }}</label>
 					<div class="choix">
 						<span class="oui">
@@ -31,8 +39,13 @@
 					</div>
 					<span class="bouton" role="button" tabindex="0" @click="generer">{{ $t('valider') }}</span>
 				</div>
-				<div class="contenu inactif" v-else>
-					<div class="tirage" v-html="tirage" />
+				<div class="contenu inactif lecture" v-else>
+					<div class="tirage" v-if="tirage !== 'tirage'" :class="{'tirage-en-cours': tirageEnCours}">
+						<img :src="tirage" alt="Image">
+					</div>
+					<div class="tirage texte" v-else>
+						✨✨✨
+					</div>
 					<div class="actions">
 						<span class="bouton" role="button" tabindex="0" @click="tirer" v-if="items.length > 1">{{ $t('tirer') }}</span>
 					</div>
@@ -47,7 +60,7 @@ import VueDragResize from 'vue-drag-resize'
 import Panneau from '@/panneau'
 
 export default {
-	name: 'PTirage',
+	name: 'PTirageImage',
 	components: {
 		VueDragResize
 	},
@@ -74,20 +87,22 @@ export default {
 			y: 0,
 			z: 0,
 			minw: 30,
-			minh: 15,
+			minh: 20,
 			statut: '',
 			dimensions: {},
 			donnees: { w: 0, h: 0, x: 0, y: 0 },
-			texte: '',
+			images: [],
 			items: [],
 			tirage: '',
-			suppression: 'non'
+			zone: false,
+			suppression: 'non',
+			tirageEnCours: false
 		}
 	},
 	watch: {
 		export: function (valeur) {
 			if (valeur === true) {
-				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { texte: this.texte, suppression: this.suppression }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
+				this.$emit('export', { id: this.id, titre: this.titre, mode: this.mode, statut: this.statut, dimensions: this.dimensions, contenu: { images: this.images, suppression: this.suppression }, w: this.w, h: this.h, x: this.x, y: this.y, z: this.z })
 			}
 		},
 		finRedimensionnement: function () {
@@ -98,7 +113,7 @@ export default {
 		}
 	},
 	created () {
-		this.titre = this.$t('tirageSort')
+		this.titre = this.$t('tirageSortImage')
 		this.id = this.panneau.id
 		this.w = this.panneau.w
 		this.h = this.panneau.h
@@ -119,36 +134,29 @@ export default {
 			this.minimiser()
 		}
 		if (this.panneau.contenu !== '') {
-			this.texte = this.panneau.contenu.texte
+			this.images = this.panneau.contenu.images
 			this.suppression = this.panneau.contenu.suppression
 		}
-		if (this.mode === 'lecture') {
-			if (this.texte !== '') {
-				this.redimensionnement = true
-				this.creer()
-			}
+		if (this.mode === 'lecture' && this.images.length > 0) {
+			this.redimensionnement = true
+			this.creer()
 		}
 		this.positionner()
 	},
 	mounted () {
 		this.chargement = false
-		if (this.mode === 'edition' && this.statut !== 'min') {
-			this.$nextTick(function () {
-				document.querySelector('#' + this.id + ' textarea').focus()
-			}.bind(this))
-		}
 	},
 	methods: {
 		generer () {
-			if (this.texte !== '') {
+			if (this.images.length > 1) {
 				this.mode = 'lecture'
 				this.redimensionnement = true
 				if (this.donnees.w > 0 && this.donnees.h > 0) {
 					this.w = this.donnees.w
 					this.h = this.donnees.h
 				} else {
-					this.w = 40
-					this.h = 30
+					this.w = 50
+					this.h = 40
 				}
 				if (this.donnees.x > 0 && this.donnees.y > 0) {
 					this.x = this.donnees.x
@@ -159,12 +167,11 @@ export default {
 			}
 		},
 		creer () {
-			let items = this.texte.split(',').map(item => item.trim())
-			items = items.filter((item) => item !== '')
+			let items = JSON.parse(JSON.stringify(this.images))
 			items = items.filter((item, i, ar) => ar.indexOf(item) === i)
 			items = this.$melanger(items)
 			this.items = items
-			this.tirage = '✨✨✨'
+			this.tirage = 'tirage'
 		},
 		tirer () {
 			if (this.suppression === 'oui') {
@@ -177,10 +184,12 @@ export default {
 			const tirageEnCours = setInterval(function () {
 				let tirage = this.items[Math.floor(Math.random() * this.items.length)]
 				this.tirage = tirage
-			}.bind(this), 3)
+				this.tirageEnCours = true
+			}.bind(this), 70)
 			setTimeout(function () {
 				clearInterval(tirageEnCours)
-			}, 1200)
+				this.tirageEnCours = false
+			}.bind(this), 1500)
 		},
 		editer () {
 			this.mode = 'edition'
@@ -192,43 +201,157 @@ export default {
 			this.donnees.h = this.h
 			this.donnees.x = this.x
 			this.donnees.y = this.y
-			this.w = 46
+			this.w = 60
 			this.h = 40
 			this.positionner()
+		},
+		selectionnerImages (event) {
+			for (let i = 0; i < event.target.files.length; i++) {
+				const reader = new FileReader()
+				reader.readAsDataURL(event.target.files[i])
+				reader.onloadend = function (e) {
+					const img = new Image()
+					img.src = e.target.result
+					img.onload = function () {
+						if (img.width > 1200) {
+							const canvas = document.createElement('canvas')
+							const ratio = img.width / img.height
+							const largeur = 1200
+							const hauteur = 1200 / ratio
+							canvas.width = largeur
+							canvas.height = hauteur
+							canvas.getContext('2d').drawImage(img, 0, 0, largeur, hauteur)
+							this.images.push(canvas.toDataURL('image/jpeg', 0.85))
+						} else {
+							this.images.push(e.target.result)
+						}
+					}.bind(this)
+				}.bind(this)
+			}
+		},
+		glisserImages (event) {
+			for (let i = 0; i < event.dataTransfer.files.length; i++) {
+				const reader = new FileReader()
+				reader.readAsDataURL(event.dataTransfer.files[i])
+				reader.onloadend = function (e) {
+					const img = new Image()
+					img.src = e.target.result
+					img.onload = function () {
+						if (img.width > 1200) {
+							const canvas = document.createElement('canvas')
+							const ratio = img.width / img.height
+							const largeur = 1200
+							const hauteur = 1200 / ratio
+							canvas.width = largeur
+							canvas.height = hauteur
+							canvas.getContext('2d').drawImage(img, 0, 0, largeur, hauteur)
+							this.images.push(canvas.toDataURL('image/jpeg', 0.85))
+						} else {
+							this.images.push(e.target.result)
+						}
+					}.bind(this)
+				}.bind(this)
+			}
+		},
+		supprimerImage (index) {
+			this.images.splice(index, 1)
 		}
 	}
 }
 </script>
 
 <style>
-.panneau .panneau-tirage textarea.tirage {
-	height: 15rem;
-	max-height: 15rem;
-	margin-bottom: 2rem;
+.panneau .panneau-tirage-image .contenu.lecture {
+	width: 100%;
+	height: 100%;
 }
 
-.panneau .panneau-tirage .oui {
+.panneau .panneau-tirage-image .zone {
+	height: 7rem;
+	border: 2px dashed #00ced1;
+	cursor: pointer;
+}
+
+.panneau .panneau-tirage-image .zone label {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	Height: 100%;
+	font-weight: 700;
+	font-size: 1.4rem;
+	text-transform: uppercase;
+	margin-bottom: 0;
+}
+
+.panneau .panneau-tirage-image .images {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 1rem;
+}
+
+.panneau .panneau-tirage-image .images .image {
+	position: relative;
+	margin: 1rem;
+	padding: 0.5rem;
+	border: 1px solid #ddd;
+}
+
+.panneau .panneau-tirage-image .images .image img {
+	width: 8.8rem;
+	height: auto;
+}
+
+.panneau .panneau-tirage-image .images .image .fermer {
+	position: absolute;
+	top: -1.1rem;
+	right: -1.1rem;
+	font-size: 2.2rem;
+	color: #777;
+	background: #fff;
+	border-radius: 50%;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.panneau .panneau-tirage-image .oui {
 	margin-right: 2.5rem;
 }
 
-.panneau .panneau-tirage .choix label {
+.panneau .panneau-tirage-image .choix label {
 	display: inline-block;
     width: auto;
     margin-left: 1rem;
 	margin-bottom: 0;
 }
 
-.panneau .panneau-tirage div.tirage {
+.panneau .panneau-tirage-image div.tirage {
     display: flex;
     justify-content: center;
+	align-items: center;
 	flex-wrap: wrap;
-	font-size: 5rem;
-	font-weight: 400;
-	margin-bottom: 2rem;
+	width: 100%;
+	height: calc(100% - 6rem);
+	background: #fff;
 }
 
-.panneau .panneau-tirage div.tirage span {
-    font-size: 2rem;
-	color: orange;
+.panneau .panneau-tirage-image div.tirage.texte {
+	display: flex;
+    justify-content: center;
+	align-items: center;
+	font-size: 5rem;
+	font-weight: 400;
+}
+
+.panneau .panneau-tirage-image div.tirage img {
+    max-width: 100%;
+	max-height: 100%;
+	align-self: center;
+}
+
+.panneau .panneau-tirage-image div.tirage.tirage-en-cours img {
+	opacity: 0.25;
 }
 </style>
