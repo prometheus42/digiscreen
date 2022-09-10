@@ -350,13 +350,12 @@ nav {
 	background: rgba(0, 29, 29, 0.6);
 	border-top: 2px solid #001d1d;
 	z-index: 10;
-	overflow: auto;
-	scrollbar-width: none;
+	overflow-x: auto;
 	transition: bottom 0.2s ease-in-out;
 }
 
 nav::-webkit-scrollbar {
-	display: none;
+	height: 5px;
 }
 
 nav.masque {
